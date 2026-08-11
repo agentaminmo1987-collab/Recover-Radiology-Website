@@ -3,12 +3,11 @@ import { modalities } from "@/lib/clinic";
 import { Section, SectionLabel, H2, Lead } from "@/components/ui";
 
 /**
- * The four modalities. Each is a slice section in the 3D narrative (§5): as the
- * camera traverses the volume, the cut plane at each of these reveals that
- * section's content. The `data-slice` attribute is the hook the canvas reads in
- * Phase D to know which treatment to run.
+ * The four modalities.
  *
- * Content is fully rendered without JS. The canvas only ever decorates.
+ * Fully server rendered, no client JavaScript. These previously carried
+ * `data-slice` hooks so a background canvas could sync a per-modality treatment
+ * to them; that canvas is gone and the hooks went with it.
  */
 export function Services() {
   return (
@@ -25,7 +24,7 @@ export function Services() {
 
       <ul className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] md:grid-cols-2">
         {modalities.map((m, i) => (
-          <li key={m.slug} data-slice={m.slug} className="bg-[var(--card-bg)]">
+          <li key={m.slug} className="bg-[var(--card-bg)]">
             <Link
               href={`/${m.slug}`}
               className="group flex h-full flex-col p-8 transition-colors duration-[var(--rr-dur-base)] ease-[var(--rr-ease)] hover:bg-surface-sunken md:p-10"

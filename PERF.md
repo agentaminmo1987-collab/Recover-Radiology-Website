@@ -43,8 +43,14 @@ connection. It also pauses when scrolled out of view rather than decoding frames
 nobody is looking at.
 
 **Almost everything is a Server Component.** The only client components on the
-site are the enquiry form, the scroll logo and the video mount. Nothing else
-ships JavaScript.
+site are the enquiry form, the scroll logo, the video mount and the Lenis
+smooth-scroll initialiser. Nothing else ships JavaScript.
+
+**There is no WebGL on this site.** The background shader field was removed
+along with three.js, react-three-fiber, drei, postprocessing and gsap. Removing
+them did NOT shrink the bundle, because nothing had imported them since the
+video hero replaced the canvas and tree-shaking had already dropped them. The
+gain is install size and maintenance surface, not runtime.
 
 **CLS is 0, not merely under budget.** Every image has explicit dimensions or a
 fixed aspect container, and the fonts are self-hosted through `next/font` with
