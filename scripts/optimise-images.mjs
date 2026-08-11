@@ -25,6 +25,8 @@ const WIDTHS = {
   social: [1200],
   textures: [512, 1024],
   ref: [640, 1024, 1600, 2560],
+  clinic: [640, 1024, 1600, 2560],
+  staff: [320, 640],
 };
 
 // Textures are sampled by the GPU and must stay lossless-ish and square-safe.

@@ -100,8 +100,10 @@
    LAYER 2, SEMANTIC
    Role based. This is what components consume.
 
-   LIGHT IS THE BASE. The clinic is bright, warm and spa-like, so the site is.
-   Dark is served only to visitors whose OS asks for it.
+   LIGHT ONLY. The practice is bright, warm and spa-like and the palette is
+   built for it. There is deliberately no dark variant: an automatic dark theme
+   was showing a dark site to anyone whose OS preference happened to be dark,
+   which is the opposite of the clinic it represents.
 
    Forest leads. Bloom is the second voice, used sparingly where something needs
    to feel cooler and more technical. Rain and Dust are the calm bands that make
@@ -128,34 +130,10 @@
   --focus-ring:         var(--rr-bloom);
   --danger:             var(--rr-danger-light);
 
-  color-scheme: light;
+  color-scheme: light only;
 }
 
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) {
-    --surface:          var(--rr-canvas-dark);
-    --surface-raised:   #191713;
-    --surface-sunken:   #0C0A08;
-    --surface-cool:     #101614;
 
-    --fg:               var(--rr-white);
-    --fg-muted:         #C9D6BE;
-    --fg-subtle:        #94A587;
-
-    --accent:           var(--rr-sky);       /* Sky is the dark-mode voice */
-    --accent-hover:     #A7CBE2;
-    --accent-contrast:  var(--rr-canvas-dark);
-    --accent-quiet:     #B6BFA8;
-
-    --border:           #2C2A22;
-    --border-strong:    #46503A;
-
-    --focus-ring:       var(--rr-sky);
-    --danger:           var(--rr-danger-dark);
-
-    color-scheme: dark;
-  }
-}
 
 html[data-theme="light"] {
   --surface: var(--rr-canvas-light); --surface-raised: var(--rr-paper);
@@ -165,19 +143,10 @@ html[data-theme="light"] {
   --accent-contrast: var(--rr-white); --accent-quiet: var(--rr-bloom);
   --border: var(--rr-forest-20); --border-strong: var(--rr-forest-40);
   --focus-ring: var(--rr-bloom); --danger: var(--rr-danger-light);
-  color-scheme: light;
+  color-scheme: light only;
 }
 
-html[data-theme="dark"] {
-  --surface: var(--rr-canvas-dark); --surface-raised: #191713;
-  --surface-sunken: #0C0A08; --surface-cool: #101614;
-  --fg: var(--rr-white); --fg-muted: #C9D6BE; --fg-subtle: #94A587;
-  --accent: var(--rr-sky); --accent-hover: #A7CBE2;
-  --accent-contrast: var(--rr-canvas-dark); --accent-quiet: #B6BFA8;
-  --border: #2C2A22; --border-strong: #46503A;
-  --focus-ring: var(--rr-sky); --danger: var(--rr-danger-dark);
-  color-scheme: dark;
-}
+
 
 /* ---------------------------------------------------------------------------
    LAYER 3, COMPONENT
@@ -228,11 +197,7 @@ html[data-theme="dark"] {
      minimum without the logo growing to fill it. */
   background-size: auto 38px;
 }
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .brand-lockup {
-    background-image: url("/brand/logo-h-white.png");
-  }
-}
+
 
 /* The two "r" forms, isolated from the horizontal lockup so each can move
    independently. The guide sanctions this: "In a brand extension, the shape may
@@ -245,14 +210,8 @@ html[data-theme="dark"] {
   background-size: 296% auto;
   background-position: -35% -30.6%;
 }
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .brand-r {
-    background-image: url("/brand/logo-h-white.png");
-  }
-}
-html[data-theme="dark"] .brand-r {
-  background-image: url("/brand/logo-h-white.png");
-}
+
+
 /* The forms interlock on a diagonal, so the split sits at 53% where the gap
    between them naturally falls. */
 .brand-r-left  { clip-path: inset(0 47% 0 0); }
@@ -265,28 +224,14 @@ html[data-theme="dark"] .brand-r {
   background-position: left center;
   background-size: contain;
 }
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .brand-lockup-v {
-    background-image: url("/brand/logo-v-white.png");
-  }
-}
-html[data-theme="dark"] .brand-lockup-v {
-  background-image: url("/brand/logo-v-white.png");
-}
-html[data-theme="dark"] .brand-lockup {
-  background-image: url("/brand/logo-h-white.png");
-}
+
+
+
 
 /* ---------------------------------------------------------------------------
    LIGHT VARIANT
    Dark is the base, so components opt into light-mode overrides with `light:`.
    --------------------------------------------------------------------------- */
-@custom-variant dark {
-  @media (prefers-color-scheme: dark) {
-    &:where(html:not([data-theme="light"]) *) { @slot; }
-  }
-  &:where(html[data-theme="dark"] *) { @slot; }
-}
 
 /* ---------------------------------------------------------------------------
    TAILWIND BRIDGE

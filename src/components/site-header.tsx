@@ -12,6 +12,7 @@ const nav = [
   { href: "/ct", label: "CT" },
   { href: "/x-ray", label: "X-ray" },
   { href: "/interventional", label: "Procedures" },
+  { href: "/our-clinic", label: "Our clinic" },
   { href: "/patient-information", label: "Patient info" },
   { href: "/billing", label: "Billing" },
   { href: "/referrers", label: "For referrers" },

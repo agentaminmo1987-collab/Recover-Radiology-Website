@@ -17,8 +17,8 @@ import { Section, SectionLabel, H2, Card } from "@/components/ui";
  */
 const pillars = [
   {
-    title: "Named sub-specialties",
-    body: `${team.chiefSonographer.name} is our ${team.chiefSonographer.role}, specialising in ${team.chiefSonographer.speciality.toLowerCase()} imaging. Our ${team.sonographerCount} sonographers bring ${team.combinedExperience}.`,
+    title: "Sub-specialty ultrasound",
+    body: `Musculoskeletal, vascular, obstetric and general ultrasound, performed by ${team.sonographerCount} sonographers with ${team.combinedExperience}.`,
   },
   {
     title: "Reports that arrive",

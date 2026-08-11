@@ -19,8 +19,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/patient-information", priority: 0.9 },
     { path: "/billing", priority: 0.9 },
     { path: "/contact", priority: 0.9 },
+    { path: "/our-clinic", priority: 0.8 },
     { path: "/referrers", priority: 0.7 },
     { path: "/about", priority: 0.6 },
+    { path: "/legal/privacy", priority: 0.3 },
   ];
 
   return [

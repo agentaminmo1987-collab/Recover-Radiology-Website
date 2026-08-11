@@ -22,6 +22,7 @@ const columns = [
     links: [
       { href: "/patient-information", label: "Preparing for your scan" },
       { href: "/billing", label: "Billing and bulk billing" },
+      { href: "/our-clinic", label: "Our clinic" },
       { href: "/contact", label: "Contact and location" },
       { href: "/about", label: "About us" },
     ],
@@ -110,6 +111,10 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-[var(--card-border)] pt-6 text-[0.85rem] text-fg-subtle md:flex-row md:items-center md:justify-between">
           <p>
+            <Link href="/legal/privacy" className="hover:text-fg">
+              Privacy
+            </Link>
+            <span aria-hidden className="px-2">&middot;</span>
             &copy; {new Date().getFullYear()} {clinic.name}. Serving{" "}
             {clinic.serviceArea}.
           </p>

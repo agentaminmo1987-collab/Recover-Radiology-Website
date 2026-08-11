@@ -242,19 +242,19 @@ export const billing = {
 
 /**
  * Team. No surnames, photos or qualifications are published for most staff and
- * none may be invented. Khoa Le is the only person named with a speciality on
- * the existing site.
+ * none may be invented.
+ *
+ * The former Chief Sonographer was removed on 2026-08-12 when the practice
+ * confirmed they had left. Named individuals are a liability as much as an
+ * asset: the moment someone leaves, every page naming them is wrong. Anything
+ * here that is a headcount or a total survives staff turnover; anything that is
+ * a name does not.
  */
 export const team = {
   practiceManager: { name: "Emily", role: "Practice Manager" },
   clericalLead: { name: "Ashleigh", role: "Clerical Lead" },
   clerical: [{ name: "Chilali" }, { name: "Melanie" }],
   sonographers: [{ name: "Matt" }, { name: "David" }, { name: "Laura" }],
-  chiefSonographer: {
-    name: "Khoa Le",
-    role: "Chief Sonographer",
-    speciality: "Vascular",
-  },
   combinedExperience: "25 years of combined experience",
   sonographerCount: 3,
 } as const;

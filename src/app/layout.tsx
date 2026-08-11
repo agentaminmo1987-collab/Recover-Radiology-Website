@@ -44,10 +44,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Never disable zoom. §4.4, and a High severity rule in ui-ux-pro-max.
   maximumScale: 5,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAF7F2" },
-    { media: "(prefers-color-scheme: dark)", color: "#12100D" },
-  ],
+  // One theme only, so one theme colour.
+  themeColor: "#FBF9F4",
 };
 
 /**

@@ -23,7 +23,6 @@ export const metadata: Metadata = {
  */
 export default function AboutPage() {
   const roster = [
-    { ...team.chiefSonographer, lead: true },
     ...team.sonographers.map((s) => ({
       name: s.name,
       role: "Sonographer",

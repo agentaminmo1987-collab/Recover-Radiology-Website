@@ -68,7 +68,7 @@ export function ScrollLogo() {
       <div
         ref={wrap}
         aria-hidden
-        className="relative h-[190px] w-[170px] origin-left will-change-transform md:h-[268px] md:w-[239px]"
+        className="relative h-[220px] w-[196px] origin-left will-change-transform md:h-[320px] md:w-[285px]"
       >
         <div
           ref={left}
