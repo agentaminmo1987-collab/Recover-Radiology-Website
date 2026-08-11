@@ -145,7 +145,7 @@ procedural path is genuinely the better default here, so this is optional.
 
 ---
 
-## 5. Supabase is not authenticated
+## 8. Supabase is not authenticated
 
 `supabase login` has not been run, so no project exists yet for the enquiry form.
 
@@ -159,7 +159,7 @@ create one once authenticated.
 
 ---
 
-## 6. Obstetric scans and the bulk billing message
+## 9. Obstetric scans and the bulk billing message
 
 The single highest anxiety question on the site is "will this cost me anything?"
 The honest answer is "usually no, except obstetric and some interventional".
@@ -175,7 +175,7 @@ the same visual block, not in a footnote. No asterisks.
 
 ---
 
-## 8. Logo is shipping as PNG, not SVG
+## 10. Logo is shipping as PNG, not SVG
 
 The brand kit ships vector EPS, which is the right master. Converting EPS to SVG
 needs ImageMagick, Inkscape or Ghostscript, and none is installed. The `convert`
@@ -193,7 +193,7 @@ for the build.
 
 ---
 
-## 9. Content gaps against the brief's page list
+## 11. Content gaps against the brief's page list
 
 §6 asks for a Blog index and post template. There is no existing blog content and
 none was supplied.
