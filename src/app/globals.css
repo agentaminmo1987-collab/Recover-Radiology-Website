@@ -13,50 +13,67 @@
 
 /* ---------------------------------------------------------------------------
    LAYER 1, PRIMITIVES
-   Raw scale values. Never consumed directly by a component.
-   Contrast noted against the light canvas (#FCFDFB) and dark canvas (#0E1411).
+   The official brand palette, taken from the client's brand guidelines rather
+   than sampled from the logo. Tints are mixes toward white at the percentages
+   the guidelines themselves publish.
+
+   The guidelines also state usage, and measurement agrees with every line of
+   it, which is a good sign the palette was built properly:
+
+     Forest  7.19 as text            guide: text, or background with white text
+     Bloom   5.68 as text            guide: text, or background with white text
+     Sky     2.07 as text  FAILS     guide: background with black text only
+     Moss    2.64 as text  FAILS     guide: background with black text only
+     Rain    1.45 as text  FAILS     guide: background only
+     Dust    1.47 as text  FAILS     guide: background only
+
+   So Forest and Bloom are the only two that may ever carry type. The other four
+   are surfaces. That is not a restriction we invented; it is the brand's own.
    --------------------------------------------------------------------------- */
 :root {
-  /* Brand blue, generated from the measured #8AC2E0 */
-  --rr-blue-50:  #F8FBFD;   /* dark 17.93 AA */
-  --rr-blue-100: #EFF6FB;   /* dark 17.08 AA */
-  --rr-blue-200: #DCEDF6;   /* dark 15.52 AA */
-  --rr-blue-300: #C5E1F0;   /* dark 13.67 AA */
-  --rr-blue-400: #A8D2E8;   /* dark 11.58 AA */
-  --rr-blue-500: #8AC2E0;   /* BRAND. dark 9.65 AA / light 1.89 FILL ONLY */
-  --rr-blue-600: #719FB8;   /* dark  6.53 AA */
-  --rr-blue-700: #5B8094;   /* light 4.15 / dark 4.40, both large-text or UI only */
-  --rr-blue-800: #456170;   /* light 6.44 AA */
-  --rr-blue-900: #2F424C;   /* light 10.27 AA */
+  /* Core */
+  --rr-forest: #4A5E26;   /* Pantone 4217C */
+  --rr-sky:    #8DBAD8;   /* Pantone 550C  */
+  /* Secondary */
+  --rr-moss:   #9DA700;   /* Pantone 2305C */
+  --rr-bloom:  #495AD4;   /* Pantone 2726C */
+  --rr-rain:   #B9DDDD;   /* Pantone 566C  */
+  --rr-dust:   #DCD7A5;   /* Pantone 614C  */
 
-  /* Brand green, generated from the measured #465E19 */
-  --rr-green-50:  #F4F5F1;  /* dark 17.02 AA */
-  --rr-green-100: #E5E8DF;  /* dark 15.03 AA */
-  --rr-green-200: #C8CFBA;  /* dark 11.62 AA */
-  --rr-green-300: #A3AF8C;  /* dark  8.05 AA */
-  --rr-green-400: #768855;  /* dark  4.81 AA, lowest green usable on dark */
-  --rr-green-500: #465E19;  /* BRAND. light 7.16 AA / dark 2.55 NEVER TEXT */
-  --rr-green-600: #394D15;  /* light  9.16 AA */
-  --rr-green-700: #2E3E11;  /* light 11.35 AA */
-  --rr-green-800: #232F0D;  /* light 13.87 AA */
-  --rr-green-900: #182009;  /* light 16.47 AA */
+  /* Published tints. Forest on each is noted; all clear AA. */
+  --rr-forest-80: #6E7E51;
+  --rr-forest-60: #929E7D;
+  --rr-forest-40: #B6BFA8;
+  --rr-forest-20: #DBDFD4;
 
-  /* Warm neutrals, matched to the clinic interior: warm cove light, pale oak,
-     polished concrete. Warm rather than clinical-cold on purpose; the rooms are
-     spa-like and the site should read the same way.
-     Verified: ink on canvas 16.42, ink on sunken 14.92. */
-  --rr-canvas-light: #FAF7F2;   /* warm white, the ceiling glow */
-  --rr-paper:        #FFFFFF;   /* cards lift off the canvas */
-  --rr-oat:          #F1ECE3;   /* concrete / oak, the recessed tone */
-  --rr-sand:         #E7E0D4;   /* hairline separators */
-  --rr-clay:         #D2C8B6;   /* stronger edges, form fields */
+  --rr-sky-40:  #D1E3EF;  /* Forest 5.46 */
+  --rr-sky-20:  #E8F1F7;  /* Forest 6.29 */
+
+  --rr-rain-40: #E3F1F1;  /* Forest 6.20 */
+  --rr-rain-30: #EAF5F5;  /* Forest 6.46 */
+  --rr-rain-20: #F1F8F8;  /* Forest 6.69 */
+
+  --rr-dust-40: #F1EFDB;  /* Forest 6.20 */
+  --rr-dust-30: #F5F3E4;  /* Forest 6.45 */
+  --rr-dust-20: #F8F7ED;  /* Forest 6.68 */
+
+  --rr-bloom-20: #DBDEF6;
+  --rr-moss-20:  #EBEDCC;
+
+  /* Forest, darkened, for high-emphasis type */
+  --rr-forest-d1: #435522;  /* 7.73 on canvas */
+  --rr-forest-d2: #3B4B1E;  /* 8.95 on canvas */
+
+  /* Neutrals. Warm, matched to the clinic: cove light, pale oak, concrete. */
+  --rr-canvas-light: #FBF9F4;   /* Forest 6.83, ink 16.68 */
+  --rr-paper:        #FFFFFF;
   --rr-ink:          #1B1915;   /* warm near-black, never pure */
-
-  --rr-canvas-dark:  #12100D;   /* warm dark, for the dark preference only */
   --rr-white:        #FFFFFF;
 
-  --rr-danger-light: #A32014;   /* verified on light canvas */
-  --rr-danger-dark:  #FF9A8F;   /* verified on dark canvas */
+  --rr-canvas-dark:  #12100D;
+
+  --rr-danger-light: #A32014;
+  --rr-danger-dark:  #FF9A8F;
 
   /* Spacing, density dial 3 of 10 (spacious). Healthcare audience, §4.4. */
   --rr-space-2xs: 0.5rem;
@@ -73,7 +90,6 @@
   --rr-radius-lg: 1.25rem;
   --rr-radius-pill: 999px;
 
-  /* Motion. One easing curve for the whole site. */
   --rr-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --rr-dur-micro: 150ms;
   --rr-dur-base:  260ms;
@@ -84,33 +100,32 @@
    LAYER 2, SEMANTIC
    Role based. This is what components consume.
 
-   LIGHT IS THE BASE. The clinic is bright, warm and spa-like, so the site is
-   too. Dark is offered only to visitors who ask for it at the OS level.
+   LIGHT IS THE BASE. The clinic is bright, warm and spa-like, so the site is.
+   Dark is served only to visitors whose OS asks for it.
 
-   The inverted-contrast rule from BRAND.md still governs: green passes on light
-   (6.83 on the warm canvas) and fails on dark, blue passes on dark and fails on
-   light (1.81). So light is green led, dark is blue led. That has not changed,
-   only which one is the default.
+   Forest leads. Bloom is the second voice, used sparingly where something needs
+   to feel cooler and more technical. Rain and Dust are the calm bands that make
+   this read as a day spa rather than a clinic corridor.
    --------------------------------------------------------------------------- */
 :root {
   --surface:            var(--rr-canvas-light);
   --surface-raised:     var(--rr-paper);
-  --surface-sunken:     var(--rr-oat);
+  --surface-sunken:     var(--rr-dust-20);   /* warm, Forest 6.68 */
+  --surface-cool:       var(--rr-rain-20);   /* cool, Forest 6.69 */
 
-  --fg:                 var(--rr-ink);          /* 16.42 */
-  --fg-muted:           var(--rr-blue-800);     /* 6.15  */
-  --fg-subtle:          var(--rr-blue-800);     /* 6.15, never blue-700 at small sizes */
+  --fg:                 var(--rr-ink);       /* 16.68 */
+  --fg-muted:           #4E5A43;             /* warm grey-green, 7.0 */
+  --fg-subtle:          #5E6B52;             /* 5.6 */
 
-  /* Light mode is green led */
-  --accent:             var(--rr-green-500);    /* 6.83 */
-  --accent-hover:       var(--rr-green-600);    /* 8.75 */
-  --accent-contrast:    var(--rr-white);        /* 7.30 on the accent */
-  --accent-quiet:       var(--rr-blue-800);
+  --accent:             var(--rr-forest);    /* 6.83 */
+  --accent-hover:       var(--rr-forest-d1); /* 7.73 */
+  --accent-contrast:    var(--rr-white);     /* 7.19 on Forest */
+  --accent-quiet:       var(--rr-bloom);     /* 5.35, the cool second voice */
 
-  --border:             var(--rr-sand);
-  --border-strong:      var(--rr-clay);
+  --border:             var(--rr-forest-20);
+  --border-strong:      var(--rr-forest-40);
 
-  --focus-ring:         var(--rr-green-600);
+  --focus-ring:         var(--rr-bloom);
   --danger:             var(--rr-danger-light);
 
   color-scheme: light;
@@ -121,64 +136,46 @@
     --surface:          var(--rr-canvas-dark);
     --surface-raised:   #191713;
     --surface-sunken:   #0C0A08;
+    --surface-cool:     #101614;
 
     --fg:               var(--rr-white);
-    --fg-muted:         var(--rr-blue-200);
-    --fg-subtle:        var(--rr-blue-600);
+    --fg-muted:         #C9D6BE;
+    --fg-subtle:        #94A587;
 
-    /* Dark mode is blue led */
-    --accent:           var(--rr-blue-500);
-    --accent-hover:     var(--rr-blue-400);
+    --accent:           var(--rr-sky);       /* Sky is the dark-mode voice */
+    --accent-hover:     #A7CBE2;
     --accent-contrast:  var(--rr-canvas-dark);
-    --accent-quiet:     var(--rr-green-400);
+    --accent-quiet:     #B6BFA8;
 
-    --border:           #302B23;
-    --border-strong:    var(--rr-blue-700);
+    --border:           #2C2A22;
+    --border-strong:    #46503A;
 
-    --focus-ring:       var(--rr-blue-400);
+    --focus-ring:       var(--rr-sky);
     --danger:           var(--rr-danger-dark);
 
     color-scheme: dark;
   }
 }
 
-/* Manual overrides. Both directions stated in full rather than relying on
-   fallthrough, and `html[...]` (0,1,1) outranks plain `:root` (0,1,0), which
-   matters because the minifier rewrites `:root[data-theme=x]` down to
-   `[data-theme=x]` and collapses its specificity. */
 html[data-theme="light"] {
-  --surface:          var(--rr-canvas-light);
-  --surface-raised:   var(--rr-paper);
-  --surface-sunken:   var(--rr-oat);
-  --fg:               var(--rr-ink);
-  --fg-muted:         var(--rr-blue-800);
-  --fg-subtle:        var(--rr-blue-800);
-  --accent:           var(--rr-green-500);
-  --accent-hover:     var(--rr-green-600);
-  --accent-contrast:  var(--rr-white);
-  --accent-quiet:     var(--rr-blue-800);
-  --border:           var(--rr-sand);
-  --border-strong:    var(--rr-clay);
-  --focus-ring:       var(--rr-green-600);
-  --danger:           var(--rr-danger-light);
+  --surface: var(--rr-canvas-light); --surface-raised: var(--rr-paper);
+  --surface-sunken: var(--rr-dust-20); --surface-cool: var(--rr-rain-20);
+  --fg: var(--rr-ink); --fg-muted: #4E5A43; --fg-subtle: #5E6B52;
+  --accent: var(--rr-forest); --accent-hover: var(--rr-forest-d1);
+  --accent-contrast: var(--rr-white); --accent-quiet: var(--rr-bloom);
+  --border: var(--rr-forest-20); --border-strong: var(--rr-forest-40);
+  --focus-ring: var(--rr-bloom); --danger: var(--rr-danger-light);
   color-scheme: light;
 }
 
 html[data-theme="dark"] {
-  --surface:          var(--rr-canvas-dark);
-  --surface-raised:   #191713;
-  --surface-sunken:   #0C0A08;
-  --fg:               var(--rr-white);
-  --fg-muted:         var(--rr-blue-200);
-  --fg-subtle:        var(--rr-blue-600);
-  --accent:           var(--rr-blue-500);
-  --accent-hover:     var(--rr-blue-400);
-  --accent-contrast:  var(--rr-canvas-dark);
-  --accent-quiet:     var(--rr-green-400);
-  --border:           #302B23;
-  --border-strong:    var(--rr-blue-700);
-  --focus-ring:       var(--rr-blue-400);
-  --danger:           var(--rr-danger-dark);
+  --surface: var(--rr-canvas-dark); --surface-raised: #191713;
+  --surface-sunken: #0C0A08; --surface-cool: #101614;
+  --fg: var(--rr-white); --fg-muted: #C9D6BE; --fg-subtle: #94A587;
+  --accent: var(--rr-sky); --accent-hover: #A7CBE2;
+  --accent-contrast: var(--rr-canvas-dark); --accent-quiet: #B6BFA8;
+  --border: #2C2A22; --border-strong: #46503A;
+  --focus-ring: var(--rr-sky); --danger: var(--rr-danger-dark);
   color-scheme: dark;
 }
 
@@ -275,6 +272,7 @@ html[data-theme="dark"] .brand-lockup {
   --color-surface:        var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-sunken: var(--surface-sunken);
+  --color-surface-cool:   var(--surface-cool);
   --color-band-raised:    var(--band-raised);
   --color-band-sunken:    var(--band-sunken);
   --color-fg:           var(--fg);

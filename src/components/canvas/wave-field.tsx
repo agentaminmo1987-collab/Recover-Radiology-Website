@@ -92,8 +92,8 @@ const fragment = /* glsl */ `
     float rim  = smoothstep(0.52, 0.72, mixed) * (1.0 - smoothstep(0.72, 0.94, mixed));
 
     vec3 col = uBase;
-    col = mix(col, uInk,  band * 0.72);
-    col = mix(col, uCool, rim  * 0.55);
+    col = mix(col, uInk,  band * 1.0);
+    col = mix(col, uCool, rim  * 0.85);
 
     // Vignette toward the page colour at the edges, so the field has no frame
     // and simply dissolves into the surface.
@@ -141,9 +141,9 @@ function Field({ scroll }: { scroll: number }) {
       uScroll: { value: 0 },
       uStrength: { value: 0.5 },
       uCalm: { value: 0 },
-      uBase: { value: new THREE.Color("#FAF7F2") },
-      uInk: { value: new THREE.Color("#465E19") },
-      uCool: { value: new THREE.Color("#456170") },
+      uBase: { value: new THREE.Color("#FBF9F4") },
+      uInk: { value: new THREE.Color("#F8F7ED") },
+      uCool: { value: new THREE.Color("#DBDEF6") },
     }),
     [],
   );
@@ -152,16 +152,20 @@ function Field({ scroll }: { scroll: number }) {
     const u = mat.current?.uniforms;
     if (!u) return;
     if (tone === "light") {
-      // Ink on warm paper. Brand green leads because blue fails contrast on a
-      // light field, exactly as BRAND.md's inverted-contrast rule requires.
-      u.uBase.value.set("#FAF7F2");
-      u.uInk.value.set("#465E19");
-      u.uCool.value.set("#456170");
-      u.uStrength.value = 0.34;
+      // Dust 20% and Bloom 20%, straight from the brand tint chart. Both are
+      // background tints in the guidelines and neither ever carries type, so
+      // using them as a field is exactly what they are for. At 20% they are a
+      // whisper rather than a wash, which is the point: calm, not decorated.
+      u.uBase.value.set("#FBF9F4");
+      u.uInk.value.set("#F8F7ED");  // Dust 20%, the warm body
+      u.uCool.value.set("#DBDEF6"); // Bloom 20%, the cool wave
+      // These tints sit very close to the canvas, so the field needs more
+      // strength than a saturated palette would to register at all.
+      u.uStrength.value = 0.9;
     } else {
       u.uBase.value.set("#12100D");
-      u.uInk.value.set("#7E9E3C");
-      u.uCool.value.set("#8AC2E0");
+      u.uInk.value.set("#2A3320");
+      u.uCool.value.set("#8DBAD8"); // Sky, the dark-mode voice
       u.uStrength.value = 0.5;
     }
   }, [tone]);
