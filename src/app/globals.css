@@ -1,26 +1,283 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   RECOVER RADIOLOGY, TOKEN SYSTEM
+   Three layers: primitive -> semantic -> component.
+   Nothing outside this file may reference a raw hex value.
+
+   The governing rule (see BRAND.md): the two brand colours have inverted
+   accessibility. Green passes on light and fails on dark. Blue passes on dark
+   and fails on light. So light mode is green led and dark mode is blue led.
+   Every value below was measured, not chosen by eye.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   LAYER 1, PRIMITIVES
+   Raw scale values. Never consumed directly by a component.
+   Contrast noted against the light canvas (#FCFDFB) and dark canvas (#0E1411).
+   --------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand blue, generated from the measured #8AC2E0 */
+  --rr-blue-50:  #F8FBFD;   /* dark 17.93 AA */
+  --rr-blue-100: #EFF6FB;   /* dark 17.08 AA */
+  --rr-blue-200: #DCEDF6;   /* dark 15.52 AA */
+  --rr-blue-300: #C5E1F0;   /* dark 13.67 AA */
+  --rr-blue-400: #A8D2E8;   /* dark 11.58 AA */
+  --rr-blue-500: #8AC2E0;   /* BRAND. dark 9.65 AA / light 1.89 FILL ONLY */
+  --rr-blue-600: #719FB8;   /* dark  6.53 AA */
+  --rr-blue-700: #5B8094;   /* light 4.15 / dark 4.40, both large-text or UI only */
+  --rr-blue-800: #456170;   /* light 6.44 AA */
+  --rr-blue-900: #2F424C;   /* light 10.27 AA */
+
+  /* Brand green, generated from the measured #465E19 */
+  --rr-green-50:  #F4F5F1;  /* dark 17.02 AA */
+  --rr-green-100: #E5E8DF;  /* dark 15.03 AA */
+  --rr-green-200: #C8CFBA;  /* dark 11.62 AA */
+  --rr-green-300: #A3AF8C;  /* dark  8.05 AA */
+  --rr-green-400: #768855;  /* dark  4.81 AA, lowest green usable on dark */
+  --rr-green-500: #465E19;  /* BRAND. light 7.16 AA / dark 2.55 NEVER TEXT */
+  --rr-green-600: #394D15;  /* light  9.16 AA */
+  --rr-green-700: #2E3E11;  /* light 11.35 AA */
+  --rr-green-800: #232F0D;  /* light 13.87 AA */
+  --rr-green-900: #182009;  /* light 16.47 AA */
+
+  /* Neutrals, carrying a slight green bias so they read as related to the mark */
+  --rr-canvas-light: #FCFDFB;
+  --rr-canvas-dark:  #0E1411;
+  --rr-ink:          #0B0F0A;
+  --rr-white:        #FFFFFF;   /* 18.64 on canvas-dark */
+
+  --rr-danger-light: #A32014;   /* verified on light canvas */
+  --rr-danger-dark:  #FF9A8F;   /* verified on dark canvas */
+
+  /* Spacing, density dial 3 of 10 (spacious). Healthcare audience, §4.4. */
+  --rr-space-2xs: 0.5rem;
+  --rr-space-xs:  0.75rem;
+  --rr-space-sm:  1rem;
+  --rr-space-md:  1.5rem;
+  --rr-space-lg:  2.5rem;
+  --rr-space-xl:  4rem;
+  --rr-space-2xl: 6rem;
+  --rr-space-3xl: 8rem;
+
+  --rr-radius-sm: 0.375rem;
+  --rr-radius-md: 0.75rem;
+  --rr-radius-lg: 1.25rem;
+  --rr-radius-pill: 999px;
+
+  /* Motion. One easing curve for the whole site. */
+  --rr-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --rr-dur-micro: 150ms;
+  --rr-dur-base:  260ms;
+  --rr-dur-enter: 560ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---------------------------------------------------------------------------
+   LAYER 2, SEMANTIC
+   Role based. This is what components consume.
+   Dark is the default (dark first, per the direction). Light overrides below.
+   --------------------------------------------------------------------------- */
+:root {
+  --surface:            var(--rr-canvas-dark);
+  --surface-raised:     #141B17;
+  --surface-sunken:     #080C0A;
+
+  --text:               var(--rr-white);
+  --text-muted:         var(--rr-blue-200);
+  --text-subtle:        var(--rr-blue-600);
+
+  /* Dark mode is blue led */
+  --accent:             var(--rr-blue-500);
+  --accent-hover:       var(--rr-blue-400);
+  --accent-contrast:    var(--rr-canvas-dark);   /* text ON the accent */
+  --accent-quiet:       var(--rr-green-400);     /* the only green safe on dark */
+
+  --border:             #2A3630;
+  --border-strong:      var(--rr-blue-700);
+
+  --focus-ring:         var(--rr-blue-400);
+  --danger:             var(--rr-danger-dark);
+
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --surface:          var(--rr-canvas-light);
+    --surface-raised:   var(--rr-white);
+    --surface-sunken:   var(--rr-green-50);
+
+    --text:             var(--rr-ink);
+    --text-muted:       var(--rr-blue-800);
+    --text-subtle:      var(--rr-blue-700);
+
+    /* Light mode is green led */
+    --accent:           var(--rr-green-500);
+    --accent-hover:     var(--rr-green-600);
+    --accent-contrast:  var(--rr-white);
+    --accent-quiet:     var(--rr-blue-800);      /* darkened blue, safe on light */
+
+    --border:           var(--rr-green-200);
+    --border-strong:    var(--rr-blue-700);
+
+    --focus-ring:       var(--rr-green-600);
+    --danger:           var(--rr-danger-light);
+
+    color-scheme: light;
   }
 }
 
+/* Explicit override wins over the media query, for a manual toggle */
+:root[data-theme="light"] {
+  --surface:          var(--rr-canvas-light);
+  --surface-raised:   var(--rr-white);
+  --surface-sunken:   var(--rr-green-50);
+  --text:             var(--rr-ink);
+  --text-muted:       var(--rr-blue-800);
+  --text-subtle:      var(--rr-blue-700);
+  --accent:           var(--rr-green-500);
+  --accent-hover:     var(--rr-green-600);
+  --accent-contrast:  var(--rr-white);
+  --accent-quiet:     var(--rr-blue-800);
+  --border:           var(--rr-green-200);
+  --border-strong:    var(--rr-blue-700);
+  --focus-ring:       var(--rr-green-600);
+  --danger:           var(--rr-danger-light);
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------------------
+   LAYER 3, COMPONENT
+   Resolved from semantic tokens. Components reference these, never layer 1.
+   --------------------------------------------------------------------------- */
+:root {
+  --btn-primary-bg:      var(--accent);
+  --btn-primary-text:    var(--accent-contrast);
+  --btn-primary-bg-hover: var(--accent-hover);
+
+  --btn-ghost-text:      var(--text);
+  --btn-ghost-border:    var(--border-strong);
+
+  --card-bg:             var(--surface-raised);
+  --card-border:         var(--border);
+
+  --field-bg:            var(--surface-sunken);
+  --field-border:        var(--border-strong);
+  --field-text:          var(--text);
+  --field-placeholder:   var(--text-subtle);
+  --field-invalid:       var(--danger);
+
+  --nav-bg:              color-mix(in srgb, var(--surface) 82%, transparent);
+  --nav-border:          var(--border);
+
+  /* The 3D canvas sits behind everything and never carries information */
+  --canvas-fog:          var(--surface);
+}
+
+/* ---------------------------------------------------------------------------
+   TAILWIND BRIDGE
+   Exposes semantic tokens as utilities: bg-surface, text-muted, border-strong.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --color-surface:        var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-text:           var(--text);
+  --color-text-muted:     var(--text-muted);
+  --color-text-subtle:    var(--text-subtle);
+  --color-accent:         var(--accent);
+  --color-accent-hover:   var(--accent-hover);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-quiet:   var(--accent-quiet);
+  --color-line:           var(--border);
+  --color-line-strong:    var(--border-strong);
+  --color-danger:         var(--danger);
+
+  --font-sans: var(--font-figtree);
+  --font-mono: var(--font-plex-mono);
+
+  --radius-sm: var(--rr-radius-sm);
+  --radius-md: var(--rr-radius-md);
+  --radius-lg: var(--rr-radius-lg);
+
+  --ease-brand: var(--rr-ease);
+}
+
+/* ---------------------------------------------------------------------------
+   BASE
+   --------------------------------------------------------------------------- */
+* {
+  min-width: 0;
+}
+
+html {
+  /* Lenis drives smooth scroll; native smooth would fight it. Reduced-motion
+     users get native behaviour because Lenis is not initialised for them. */
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  /* §4.4 requires a 17px minimum body size on mobile */
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 768px) {
+  body { font-size: 1.125rem; }
+}
+
+/* Focus is never removed, only restyled. §4.4 and the ui-ux-pro-max High rule. */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* Measured values, the instrumentation layer. Only ever real numbers. */
+.tabular {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Every interactive element gets a pointer, per the pre-delivery checklist */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href],
+label[for],
+summary {
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+   REDUCED MOTION
+   A first-class path, not an afterthought (§4.4). Everything that moves is
+   disabled here; the 3D canvas is never mounted at all (handled in JS).
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Screen-reader-only, used for canvas alternatives and skip links */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
