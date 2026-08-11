@@ -69,26 +69,13 @@ const rooms = [
     title: "Inside the door",
     body: "The mark on the glass, so you know you are in the right place.",
   },
-  // TODO(amin): street frontage goes here, and it belongs LAST because it is
-  // what someone looks for from the car park.
-  //
-  // Waiting on the file: the two exterior shots were pasted into chat rather
-  // than saved, and there is no exterior frame anywhere in the Brand Kit.
-  //
-  // Amin is regenerating it without the parked cars, so it goes in UNCROPPED.
-  // Do not crop it: a full frame showing the entrance and the car park is more
-  // useful to someone arriving than a tighter architectural one.
-  //
-  // When it arrives, drop it at public/img/_raw/clinic/exterior.jpg, run
-  // `node scripts/optimise-images.mjs`, and uncomment.
-  //
-  // {
-  //   src: "/img/clinic/exterior",
-  //   alt: "Recover Radiology street frontage, with the X-ray, CT scan, ultrasound and interventional signage above the entrance",
-  //   title: "Finding us",
-  //   body: `${clinic.address.full}. Look for the sign above the entrance, next to the pharmacy. Parking is at the door.`,
-  //   wide: true,
-  // },
+  {
+    src: "/img/clinic/exterior",
+    alt: "Recover Radiology street frontage, with X-ray, CT scan, ultrasound and interventional signage above the entrance",
+    title: "Finding us",
+    body: `${clinic.address.full}. Look for the sign above the entrance, next to the pharmacy. Parking is at the door.`,
+    wide: true,
+  },
 ];
 
 export default function OurClinicPage() {

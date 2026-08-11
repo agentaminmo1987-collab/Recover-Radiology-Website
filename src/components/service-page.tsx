@@ -30,9 +30,19 @@ const PLATE: Record<ModalitySlug, string> = {
  * Same rules as the landing page: the poster carries first paint, and the video
  * never loads under reduced-motion, Data Saver or 2g.
  */
-const HERO_VIDEO: Partial<Record<ModalitySlug, string>> = {
-  "x-ray": "/video/ct-forming.mp4",
-  ct: "/video/ct-scan.mp4",
+const HERO_VIDEO: Partial<Record<ModalitySlug, { src: string; poster: string }>> = {
+  "x-ray": {
+    src: "/video/ct-forming.mp4",
+    poster: "/img/poster/ct-forming-1600.avif",
+  },
+  ct: {
+    src: "/video/ct-scan.mp4",
+    poster: "/img/poster/ct-scan-1600.avif",
+  },
+  ultrasound: {
+    src: "/video/ultrasound.mp4",
+    poster: "/img/poster/ultrasound-1600.avif",
+  },
 };
 
 /** Abstract brand art, not a depiction of the premises. Safe under AHPRA. */
@@ -109,8 +119,8 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
           {HERO_VIDEO[slug] ? (
             <>
               <HeroVideo
-                src={HERO_VIDEO[slug]!}
-                poster={`${PLATE[slug]}-1600.avif`}
+                src={HERO_VIDEO[slug]!.src}
+                poster={HERO_VIDEO[slug]!.poster}
                 className="-z-10"
               />
               <div

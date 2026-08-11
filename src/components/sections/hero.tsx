@@ -19,7 +19,7 @@ export function Hero() {
     <section className="relative flex min-h-[min(100svh,54rem)] items-center overflow-hidden">
       <HeroVideo
         src="/video/ct-forming.mp4"
-        poster="/img/ref/wave-ref-1-1600.webp"
+        poster="/img/poster/ct-forming-1600.avif"
         className="-z-10"
       />
 
