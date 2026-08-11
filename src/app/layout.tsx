@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree, IBM_Plex_Mono } from "next/font/google";
 import { clinic } from "@/lib/clinic";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import "./globals.css";
 
 /**
@@ -123,6 +124,7 @@ export default function RootLayout({
           Skip to content
         </a>
         {children}
+        <SmoothScroll />
         <StructuredData />
       </body>
     </html>
