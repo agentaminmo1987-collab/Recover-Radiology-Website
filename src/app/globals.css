@@ -199,31 +199,33 @@ html[data-theme="light"] {
 }
 
 
-/* The two "r" forms, isolated from the horizontal lockup so each can move
-   independently. The guide sanctions this: "In a brand extension, the shape may
-   be broken up and used in smaller parts."
-   Both halves share one background image, so only one file is ever fetched. */
-.brand-r {
-  background-image: url("/brand/logo-h-colour.png");
+/* The mark and the wordmark are real cropped files, generated from the master
+   with sharp. They used to be percentage crops of the full lockup, which is how
+   the hero logo ended up invisible: percentage background-position resolves as
+   (container - image) * percent, so with an oversized background a negative
+   percentage shifts the image the wrong way and the window lands off the art. */
+.brand-mark {
+  background-image: url("/brand/mark-colour.png");
   background-repeat: no-repeat;
-  /* 1597 / 540 = 296%: scales the master so the mark alone fills the box. */
-  background-size: 296% auto;
-  background-position: -35% -30.6%;
+  background-position: center;
+  background-size: contain;
 }
-
-
-/* The wordmark, from the same master. Measured off 1597x969: the type runs
-   roughly x 780-1420, y 355-625. */
 .brand-word {
-  background-image: url("/brand/logo-h-colour.png");
+  background-image: url("/brand/word-colour.png");
   background-repeat: no-repeat;
-  /* 1597 / 640 = 250% */
-  background-size: 250% auto;
-  background-position: -122% -131%;
+  background-position: left center;
+  background-size: contain;
 }
 
-/* The forms interlock on a diagonal, so the split sits at 53% where the gap
-   between them naturally falls. */
+/* The two "r" forms interlock on a diagonal; the split sits at 53%, where the
+   gap between them naturally falls. Both halves show the SAME cropped mark,
+   each clipped to its side, so they can move independently. */
+.brand-r {
+  background-image: url("/brand/mark-colour.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
 .brand-r-left  { clip-path: inset(0 47% 0 0); }
 .brand-r-right { clip-path: inset(0 0 0 53%); }
 

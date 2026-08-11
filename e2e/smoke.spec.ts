@@ -176,7 +176,16 @@ async function shoot(page: Page, path: string, name: string, w: number, h: numbe
   // Not networkidle: the hero video loops, so the network never goes idle and
   // the wait always burns its full timeout.
   await page.goto(path, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(700);
+  // Wait for images to actually decode rather than guessing with a fixed
+  // delay. Image-heavy pages at 2560 full-page were timing out on the guess.
+  await page
+    .waitForFunction(
+      () => [...document.images].every((i) => i.complete),
+      undefined,
+      { timeout: 15_000 },
+    )
+    .catch(() => {});
+  await page.waitForTimeout(300);
   await page.screenshot({
     path: `screenshots/${name}-${w}.png`,
     fullPage: true,
@@ -196,7 +205,7 @@ const WIDTHS: [number, number][] = [
 for (const path of ROUTES) {
   const name = path === "/" ? "home" : path.replace(/^\//, "").replace(/\//g, "-");
   test(`screenshots: ${name}`, async ({ page }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(180_000);
     for (const [w, h] of WIDTHS) await shoot(page, path, name, w, h);
   });
 }

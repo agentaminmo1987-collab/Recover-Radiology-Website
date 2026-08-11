@@ -74,7 +74,6 @@ const rooms = [
     alt: "Recover Radiology street frontage, with X-ray, CT scan, ultrasound and interventional signage above the entrance",
     title: "Finding us",
     body: `${clinic.address.full}. Look for the sign above the entrance, next to the pharmacy. Parking is at the door.`,
-    wide: true,
   },
 ];
 

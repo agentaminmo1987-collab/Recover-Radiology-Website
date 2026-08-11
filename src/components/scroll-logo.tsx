@@ -69,7 +69,7 @@ export function ScrollLogo() {
         <div
           ref={wrap}
           aria-hidden
-          className="relative h-[128px] w-[114px] shrink-0 origin-center will-change-transform md:h-[168px] md:w-[150px]"
+          className="relative h-[132px] w-[118px] shrink-0 origin-center will-change-transform md:h-[176px] md:w-[158px]"
         >
           <div
             ref={left}
@@ -82,7 +82,7 @@ export function ScrollLogo() {
         </div>
         {/* The wordmark completes the lockup. Static, because the animation
             belongs to the mark; letters pulling apart would just look broken. */}
-        <div aria-hidden className="brand-word h-[52px] w-[200px] md:h-[68px] md:w-[262px]" />
+        <div aria-hidden className="brand-word h-[56px] w-[125px] md:h-[74px] md:w-[165px]" />
       </div>
     </div>
   );
