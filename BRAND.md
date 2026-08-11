@@ -44,6 +44,35 @@ colour in the file is antialiasing at under 0.05 percent.
 A near even two colour system. There is no third brand colour, so the extended
 palette below is derived, not invented.
 
+## Direction change, 2026-08-11: light first, and warm
+
+The original direction was dark first. That was wrong for this practice. The
+clinic interior is bright, warm and spa-like: warm cove lighting, pale oak,
+polished concrete, a lot of natural light. The site now matches it.
+
+**Light is the base.** Dark is served only to visitors whose OS asks for it.
+
+The neutrals are warm rather than the cool near-white they started as, because a
+cool grey page next to those rooms reads as a different business.
+
+| Token | Hex | Role |
+|---|---|---|
+| `surface` | `#FAF7F2` | warm white, the ceiling glow |
+| `surface-raised` | `#FFFFFF` | cards lift off the canvas |
+| `surface-sunken` | `#F1ECE3` | concrete and oak, recessed bands |
+| `border` | `#E7E0D4` | hairline separators |
+| `border-strong` | `#D2C8B6` | form fields, stronger edges |
+| `fg` | `#1B1915` | warm near-black, never pure |
+
+Verified on the warm canvas: ink 16.42, green accent 6.83, green-600 8.75,
+darkened blue 6.15, white on the green accent 7.30. Brand blue is 1.81 and
+remains fill-only, exactly as the rule below already required.
+
+Note that the hairline border tokens sit at 1.2 to 1.6 against the canvas. That
+is deliberate. WCAG 1.4.11 requires 3:1 only for boundaries needed to identify a
+control, so decorative separators are exempt; anything functional, such as a form
+field, uses `border-strong`.
+
 ## The governing constraint
 
 The two brand colours have inverted accessibility. Measured as WCAG 2.1 relative

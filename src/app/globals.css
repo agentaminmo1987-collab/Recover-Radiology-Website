@@ -236,6 +236,22 @@ html[data-theme="dark"] {
     background-image: url("/brand/logo-h-white.png");
   }
 }
+
+/* Vertical lockup, used once, in the hero. */
+.brand-lockup-v {
+  background-image: url("/brand/logo-v-colour.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .brand-lockup-v {
+    background-image: url("/brand/logo-v-white.png");
+  }
+}
+html[data-theme="dark"] .brand-lockup-v {
+  background-image: url("/brand/logo-v-white.png");
+}
 html[data-theme="dark"] .brand-lockup {
   background-image: url("/brand/logo-h-white.png");
 }

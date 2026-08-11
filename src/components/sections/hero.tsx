@@ -40,7 +40,16 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
-        <p className="text-[0.9rem] font-medium tracking-[0.01em] text-accent">
+        {/* Vertical lockup. The mark is two interlocking forms resolving into
+            one another, which is the same argument the page makes, so it earns
+            its place at full size here rather than only in the header. */}
+        <div
+          role="img"
+          aria-label={`${clinic.name} logo`}
+          className="brand-lockup-v h-[104px] w-[190px] md:h-[132px] md:w-[240px]"
+        />
+
+        <p className="mt-8 text-[0.9rem] font-medium tracking-[0.01em] text-accent">
           {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed
         </p>
 
