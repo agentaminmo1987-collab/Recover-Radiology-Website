@@ -45,7 +45,7 @@ export function Referrers() {
           </div>
 
           <div>
-            <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+            <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
               Include on the referral
             </h3>
             <ul className="mt-6 space-y-4">

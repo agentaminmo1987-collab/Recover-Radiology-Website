@@ -45,7 +45,7 @@ export function Services() {
 
               <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-[var(--card-border)] pt-6">
                 <div>
-                  <dt className="text-[0.78rem] uppercase tracking-[0.12em] text-fg-subtle">
+                  <dt className="text-[0.78rem] tracking-[0.01em] text-fg-subtle">
                     Time
                   </dt>
                   <dd className="tabular mt-1 text-[0.95rem] text-fg">
@@ -53,7 +53,7 @@ export function Services() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.78rem] uppercase tracking-[0.12em] text-fg-subtle">
+                  <dt className="text-[0.78rem] tracking-[0.01em] text-fg-subtle">
                     Billing
                   </dt>
                   <dd className="mt-1 text-[0.95rem] text-fg">

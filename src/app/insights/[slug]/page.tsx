@@ -51,7 +51,7 @@ export default async function PostPage({
           </nav>
 
           {post.placeholder ? (
-            <p className="mb-6 inline-flex rounded-[var(--radius-pill)] border border-[var(--border-strong)] px-4 py-1.5 text-[0.8rem] uppercase tracking-[0.13em] text-accent">
+            <p className="mb-6 inline-flex rounded-[var(--radius-pill)] border border-[var(--border-strong)] px-4 py-1.5 text-[0.8rem] tracking-[0.01em] text-accent">
               Placeholder, not published
             </p>
           ) : null}

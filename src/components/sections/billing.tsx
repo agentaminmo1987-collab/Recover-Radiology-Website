@@ -51,7 +51,7 @@ export function Billing() {
         </div>
 
         <Card>
-          <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+          <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
             By situation
           </h3>
           <dl className="mt-6 space-y-6">

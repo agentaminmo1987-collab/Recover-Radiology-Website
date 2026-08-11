@@ -42,7 +42,7 @@ export function LocationBook() {
         </div>
 
         <Card>
-          <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+          <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
             Find us
           </h3>
 

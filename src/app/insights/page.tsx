@@ -29,7 +29,7 @@ export default function InsightsPage() {
 
           {live.length === 0 ? (
             <div className="mt-10 max-w-[62ch] rounded-[var(--radius-lg)] border border-dashed border-[var(--border-strong)] p-8">
-              <p className="text-[0.78rem] uppercase tracking-[0.13em] text-accent">
+              <p className="text-[0.78rem] tracking-[0.01em] text-accent">
                 Not yet published
               </p>
               <p className="mt-4 text-pretty text-[1.08rem] leading-[1.6] text-fg">

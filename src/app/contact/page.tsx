@@ -31,7 +31,7 @@ export default function ContactPage() {
 
           <div className="mt-14 grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:gap-20">
             <div>
-              <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+              <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                 Send an enquiry
               </h2>
               <div className="mt-8">
@@ -41,7 +41,7 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <Card>
-                <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Call us
                 </h2>
                 <p className="mt-4">
@@ -61,7 +61,7 @@ export default function ContactPage() {
               </Card>
 
               <Card>
-                <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Find us
                 </h2>
                 <address className="mt-4 not-italic">
@@ -86,7 +86,7 @@ export default function ContactPage() {
               </Card>
 
               <Card>
-                <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Walk in X-ray
                 </h2>
                 <p className="mt-4 text-pretty leading-[1.55] text-fg-muted">

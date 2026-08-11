@@ -77,7 +77,7 @@ export function Button({
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="tabular text-[0.75rem] uppercase tracking-[0.18em] text-accent">
+    <p className="text-[0.9rem] font-medium tracking-[0.01em] text-accent">
       {children}
     </p>
   );

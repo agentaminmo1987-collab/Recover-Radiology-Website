@@ -89,7 +89,7 @@ export default function PatientInformationPage() {
         {/* Safety first, separated so it cannot be skimmed past. */}
         {safetyItems.length > 0 ? (
           <Section tone="raised" className="border-y border-[var(--card-border)]">
-            <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-accent">
+            <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-accent">
               Tell us before your scan
             </h2>
             <ul className="mt-6 space-y-4">
@@ -135,7 +135,7 @@ export default function PatientInformationPage() {
               <dl className="divide-y divide-[var(--card-border)] border-y border-[var(--card-border)]">
                 {m.preparation.map((p) => (
                   <div key={p.label} className="py-6">
-                    <dt className="text-[0.78rem] uppercase tracking-[0.13em] text-fg-subtle">
+                    <dt className="text-[0.78rem] tracking-[0.01em] text-fg-subtle">
                       {p.label}
                     </dt>
                     {/* One instruction, one line, imperative. */}

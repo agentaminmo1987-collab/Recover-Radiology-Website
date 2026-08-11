@@ -118,7 +118,7 @@ export default function AboutPage() {
             </div>
 
             <Card>
-              <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+              <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                 Practice details
               </h2>
               <dl className="mt-6 space-y-4">

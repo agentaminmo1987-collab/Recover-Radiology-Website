@@ -41,11 +41,19 @@
   --rr-green-800: #232F0D;  /* light 13.87 AA */
   --rr-green-900: #182009;  /* light 16.47 AA */
 
-  /* Neutrals, carrying a slight green bias so they read as related to the mark */
-  --rr-canvas-light: #FCFDFB;
-  --rr-canvas-dark:  #0E1411;
-  --rr-ink:          #0B0F0A;
-  --rr-white:        #FFFFFF;   /* 18.64 on canvas-dark */
+  /* Warm neutrals, matched to the clinic interior: warm cove light, pale oak,
+     polished concrete. Warm rather than clinical-cold on purpose; the rooms are
+     spa-like and the site should read the same way.
+     Verified: ink on canvas 16.42, ink on sunken 14.92. */
+  --rr-canvas-light: #FAF7F2;   /* warm white, the ceiling glow */
+  --rr-paper:        #FFFFFF;   /* cards lift off the canvas */
+  --rr-oat:          #F1ECE3;   /* concrete / oak, the recessed tone */
+  --rr-sand:         #E7E0D4;   /* hairline separators */
+  --rr-clay:         #D2C8B6;   /* stronger edges, form fields */
+  --rr-ink:          #1B1915;   /* warm near-black, never pure */
+
+  --rr-canvas-dark:  #12100D;   /* warm dark, for the dark preference only */
+  --rr-white:        #FFFFFF;
 
   --rr-danger-light: #A32014;   /* verified on light canvas */
   --rr-danger-dark:  #FF9A8F;   /* verified on dark canvas */
@@ -75,67 +83,91 @@
 /* ---------------------------------------------------------------------------
    LAYER 2, SEMANTIC
    Role based. This is what components consume.
-   Dark is the default (dark first, per the direction). Light overrides below.
+
+   LIGHT IS THE BASE. The clinic is bright, warm and spa-like, so the site is
+   too. Dark is offered only to visitors who ask for it at the OS level.
+
+   The inverted-contrast rule from BRAND.md still governs: green passes on light
+   (6.83 on the warm canvas) and fails on dark, blue passes on dark and fails on
+   light (1.81). So light is green led, dark is blue led. That has not changed,
+   only which one is the default.
    --------------------------------------------------------------------------- */
 :root {
-  --surface:            var(--rr-canvas-dark);
-  --surface-raised:     #141B17;
-  --surface-sunken:     #080C0A;
+  --surface:            var(--rr-canvas-light);
+  --surface-raised:     var(--rr-paper);
+  --surface-sunken:     var(--rr-oat);
 
-  --fg:               var(--rr-white);
-  --fg-muted:         var(--rr-blue-200);
-  --fg-subtle:        var(--rr-blue-600);
+  --fg:                 var(--rr-ink);          /* 16.42 */
+  --fg-muted:           var(--rr-blue-800);     /* 6.15  */
+  --fg-subtle:          var(--rr-blue-800);     /* 6.15, never blue-700 at small sizes */
 
-  /* Dark mode is blue led */
-  --accent:             var(--rr-blue-500);
-  --accent-hover:       var(--rr-blue-400);
-  --accent-contrast:    var(--rr-canvas-dark);   /* text ON the accent */
-  --accent-quiet:       var(--rr-green-400);     /* the only green safe on dark */
+  /* Light mode is green led */
+  --accent:             var(--rr-green-500);    /* 6.83 */
+  --accent-hover:       var(--rr-green-600);    /* 8.75 */
+  --accent-contrast:    var(--rr-white);        /* 7.30 on the accent */
+  --accent-quiet:       var(--rr-blue-800);
 
-  --border:             #2A3630;
-  --border-strong:      var(--rr-blue-700);
+  --border:             var(--rr-sand);
+  --border-strong:      var(--rr-clay);
 
-  --focus-ring:         var(--rr-blue-400);
-  --danger:             var(--rr-danger-dark);
+  --focus-ring:         var(--rr-green-600);
+  --danger:             var(--rr-danger-light);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: light) {
-  html:not([data-theme="dark"]) {
-    --surface:          var(--rr-canvas-light);
-    --surface-raised:   var(--rr-white);
-    --surface-sunken:   var(--rr-green-50);
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    --surface:          var(--rr-canvas-dark);
+    --surface-raised:   #191713;
+    --surface-sunken:   #0C0A08;
 
-    --fg:             var(--rr-ink);
-    --fg-muted:       var(--rr-blue-800);
-    --fg-subtle:      var(--rr-blue-800);  /* 6.44 AA. blue-700 is 4.15 and fails at small sizes */
+    --fg:               var(--rr-white);
+    --fg-muted:         var(--rr-blue-200);
+    --fg-subtle:        var(--rr-blue-600);
 
-    /* Light mode is green led */
-    --accent:           var(--rr-green-500);
-    --accent-hover:     var(--rr-green-600);
-    --accent-contrast:  var(--rr-white);
-    --accent-quiet:     var(--rr-blue-800);      /* darkened blue, safe on light */
+    /* Dark mode is blue led */
+    --accent:           var(--rr-blue-500);
+    --accent-hover:     var(--rr-blue-400);
+    --accent-contrast:  var(--rr-canvas-dark);
+    --accent-quiet:     var(--rr-green-400);
 
-    --border:           var(--rr-green-200);
+    --border:           #302B23;
     --border-strong:    var(--rr-blue-700);
 
-    --focus-ring:       var(--rr-green-600);
-    --danger:           var(--rr-danger-light);
+    --focus-ring:       var(--rr-blue-400);
+    --danger:           var(--rr-danger-dark);
 
-    color-scheme: light;
+    color-scheme: dark;
   }
 }
 
-/* Manual overrides. Both directions are stated in full rather than relying on
-   fallthrough to :root, so a toggle can never leave a half-applied theme where
-   the surface flips but the accent does not. `html[...]` (0,1,1) also outranks
-   plain `:root` (0,1,0), which matters because the minifier rewrites
-   `:root[data-theme=x]` down to `[data-theme=x]` and collapses its specificity. */
+/* Manual overrides. Both directions stated in full rather than relying on
+   fallthrough, and `html[...]` (0,1,1) outranks plain `:root` (0,1,0), which
+   matters because the minifier rewrites `:root[data-theme=x]` down to
+   `[data-theme=x]` and collapses its specificity. */
+html[data-theme="light"] {
+  --surface:          var(--rr-canvas-light);
+  --surface-raised:   var(--rr-paper);
+  --surface-sunken:   var(--rr-oat);
+  --fg:               var(--rr-ink);
+  --fg-muted:         var(--rr-blue-800);
+  --fg-subtle:        var(--rr-blue-800);
+  --accent:           var(--rr-green-500);
+  --accent-hover:     var(--rr-green-600);
+  --accent-contrast:  var(--rr-white);
+  --accent-quiet:     var(--rr-blue-800);
+  --border:           var(--rr-sand);
+  --border-strong:    var(--rr-clay);
+  --focus-ring:       var(--rr-green-600);
+  --danger:           var(--rr-danger-light);
+  color-scheme: light;
+}
+
 html[data-theme="dark"] {
   --surface:          var(--rr-canvas-dark);
-  --surface-raised:   #141B17;
-  --surface-sunken:   #080C0A;
+  --surface-raised:   #191713;
+  --surface-sunken:   #0C0A08;
   --fg:               var(--rr-white);
   --fg-muted:         var(--rr-blue-200);
   --fg-subtle:        var(--rr-blue-600);
@@ -143,29 +175,11 @@ html[data-theme="dark"] {
   --accent-hover:     var(--rr-blue-400);
   --accent-contrast:  var(--rr-canvas-dark);
   --accent-quiet:     var(--rr-green-400);
-  --border:           #2A3630;
+  --border:           #302B23;
   --border-strong:    var(--rr-blue-700);
   --focus-ring:       var(--rr-blue-400);
   --danger:           var(--rr-danger-dark);
   color-scheme: dark;
-}
-
-html[data-theme="light"] {
-  --surface:          var(--rr-canvas-light);
-  --surface-raised:   var(--rr-white);
-  --surface-sunken:   var(--rr-green-50);
-  --fg:             var(--rr-ink);
-  --fg-muted:       var(--rr-blue-800);
-  --fg-subtle:      var(--rr-blue-800);  /* 6.44 AA. blue-700 is 4.15 and fails at small sizes */
-  --accent:           var(--rr-green-500);
-  --accent-hover:     var(--rr-green-600);
-  --accent-contrast:  var(--rr-white);
-  --accent-quiet:     var(--rr-blue-800);
-  --border:           var(--rr-green-200);
-  --border-strong:    var(--rr-blue-700);
-  --focus-ring:       var(--rr-green-600);
-  --danger:           var(--rr-danger-light);
-  color-scheme: light;
 }
 
 /* ---------------------------------------------------------------------------
@@ -210,31 +224,31 @@ html[data-theme="light"] {
    tags so the browser only ever fetches the one the winning rule applies.
    --------------------------------------------------------------------------- */
 .brand-lockup {
-  background-image: url("/brand/logo-h-white.png");
+  background-image: url("/brand/logo-h-colour.png");
   background-repeat: no-repeat;
   background-position: left center;
   /* The mark draws at 38px inside a 44px box, so the hit area clears the 44px
      minimum without the logo growing to fill it. */
   background-size: auto 38px;
 }
-@media (prefers-color-scheme: light) {
-  html:not([data-theme="dark"]) .brand-lockup {
-    background-image: url("/brand/logo-h-colour.png");
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .brand-lockup {
+    background-image: url("/brand/logo-h-white.png");
   }
 }
-html[data-theme="light"] .brand-lockup {
-  background-image: url("/brand/logo-h-colour.png");
+html[data-theme="dark"] .brand-lockup {
+  background-image: url("/brand/logo-h-white.png");
 }
 
 /* ---------------------------------------------------------------------------
    LIGHT VARIANT
    Dark is the base, so components opt into light-mode overrides with `light:`.
    --------------------------------------------------------------------------- */
-@custom-variant light {
-  @media (prefers-color-scheme: light) {
-    &:where(html:not([data-theme="dark"]) *) { @slot; }
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(html:not([data-theme="light"]) *) { @slot; }
   }
-  &:where(html[data-theme="light"] *) { @slot; }
+  &:where(html[data-theme="dark"] *) { @slot; }
 }
 
 /* ---------------------------------------------------------------------------

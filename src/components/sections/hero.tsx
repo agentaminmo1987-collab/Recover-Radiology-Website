@@ -19,8 +19,8 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(120% 90% at 68% 22%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 62%), " +
-            "radial-gradient(90% 70% at 22% 78%, color-mix(in srgb, var(--accent-quiet) 12%, transparent) 0%, transparent 58%)",
+            "radial-gradient(120% 90% at 68% 22%, color-mix(in srgb, var(--accent) 7%, transparent) 0%, transparent 62%), " +
+            "radial-gradient(90% 70% at 22% 78%, color-mix(in srgb, var(--accent-quiet) 5%, transparent) 0%, transparent 58%)",
         }}
       />
 
@@ -40,7 +40,7 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
-        <p className="tabular text-[0.75rem] uppercase tracking-[0.2em] text-accent">
+        <p className="text-[0.9rem] font-medium tracking-[0.01em] text-accent">
           {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed
         </p>
 

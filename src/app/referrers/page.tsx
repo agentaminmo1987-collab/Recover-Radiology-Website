@@ -74,7 +74,7 @@ export default function ReferrersPage() {
 
             <div className="space-y-6">
               <Card>
-                <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Access
                 </h3>
                 <p className="mt-4 text-pretty leading-[1.6] text-fg-muted">
@@ -83,7 +83,7 @@ export default function ReferrersPage() {
                 </p>
               </Card>
               <Card>
-                <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Reporting
                 </h3>
                 <p className="tabular mt-4 text-[1.3rem] font-medium text-accent">
@@ -95,7 +95,7 @@ export default function ReferrersPage() {
                 </p>
               </Card>
               <Card>
-                <h3 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   Interventional
                 </h3>
                 <p className="mt-4 text-pretty leading-[1.6] text-fg-muted">

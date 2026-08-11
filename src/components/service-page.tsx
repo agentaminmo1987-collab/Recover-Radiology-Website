@@ -114,7 +114,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
 
               <dl className="mt-10 grid gap-6 border-t border-[var(--card-border)] pt-8 sm:grid-cols-2">
                 <div>
-                  <dt className="text-[0.78rem] uppercase tracking-[0.13em] text-fg-subtle">
+                  <dt className="text-[0.78rem] tracking-[0.01em] text-fg-subtle">
                     How long
                   </dt>
                   <dd className="tabular mt-2 text-[1.05rem] text-fg">
@@ -122,7 +122,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.78rem] uppercase tracking-[0.13em] text-fg-subtle">
+                  <dt className="text-[0.78rem] tracking-[0.01em] text-fg-subtle">
                     Cost
                   </dt>
                   <dd className="mt-2 text-[1.05rem] text-fg">
@@ -190,7 +190,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             {m.preparation.map((p) => (
               <Card key={p.label}>
-                <h3 className="text-[0.78rem] uppercase tracking-[0.13em] text-accent">
+                <h3 className="text-[0.78rem] tracking-[0.01em] text-accent">
                   {p.label}
                 </h3>
                 <p className="mt-3 text-pretty text-[1.05rem] leading-[1.55] text-fg">
@@ -219,7 +219,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
 
         {/* Other services */}
         <Section tone="sunken">
-          <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+          <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
             Other services
           </h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">

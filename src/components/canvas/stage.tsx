@@ -2,7 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { ScrollStageProvider } from "@/components/motion/scroll-stage";
+import { ScrollStageProvider, useScrollStage } from "@/components/motion/scroll-stage";
+
+/** Reads the shared scroll value inside the provider and feeds the field. */
+function WaveFieldMount() {
+  const { progress } = useScrollStage();
+  return <WaveField scroll={progress} />;
+}
 
 /**
  * Gate and mount for the reconstruction canvas.
@@ -16,7 +22,7 @@ import { ScrollStageProvider } from "@/components/motion/scroll-stage";
  * That is the designed fallback, not a blank space.
  */
 
-const Reconstruction = dynamic(() => import("./reconstruction"), {
+const WaveField = dynamic(() => import("./wave-field"), {
   ssr: false,
   loading: () => null,
 });
@@ -105,27 +111,11 @@ export function CanvasStage() {
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10"
-        // Two masks, multiplied.
-        //
-        // The radial fades the cloud into the page background at the edges so
-        // it reads as depth rather than a rectangle stuck to the page.
-        //
-        // The linear is a hard guarantee for the text column: the left 34% of
-        // the viewport is fully masked out and only reaches full strength past
-        // 62%. Points drift, so the composition cannot be trusted to keep
-        // itself clear of the headline. This makes it structural.
-        style={{
-          maskImage:
-            "radial-gradient(120% 100% at 66% 45%, #000 30%, transparent 86%), " +
-            "linear-gradient(to right, transparent 0%, transparent 34%, #000 62%, #000 100%)",
-          WebkitMaskImage:
-            "radial-gradient(120% 100% at 66% 45%, #000 30%, transparent 86%), " +
-            "linear-gradient(to right, transparent 0%, transparent 34%, #000 62%, #000 100%)",
-          maskComposite: "intersect",
-          WebkitMaskComposite: "source-in",
-        }}
+        // No CSS mask. The shader does its own vignette and keeps the left
+        // column clear, so the falloff is part of the image rather than a
+        // rectangle cut out of it.
       >
-        <Reconstruction tier={tier as 1 | 2 | 3} />
+        <WaveFieldMount />
       </div>
     </ScrollStageProvider>
   );

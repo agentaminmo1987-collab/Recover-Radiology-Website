@@ -78,7 +78,7 @@ export function SiteFooter() {
 
           {columns.map((col) => (
             <nav key={col.heading} aria-label={col.heading}>
-              <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+              <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                 {col.heading}
               </h2>
               <ul className="mt-4 space-y-1">
