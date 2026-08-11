@@ -63,35 +63,20 @@ happens.
 
 ---
 
-## 4. The four photographs are AI generated, and that is an AHPRA risk
+## 4. Photography, resolved
 
-`public/img/_raw/photography/` holds four generated interior shots: reception,
-scan room, clinician hands, waiting area. They are **not photographs of Recover
-Radiology.**
+The practice supplied its own shoot on 2026-08-12 and the AI-generated
+placeholders are gone. Real photographs of the actual rooms can be presented as
+the actual rooms, which closes the AHPRA exposure this item was raised for.
 
-This matters more than it would on an ordinary site. Presenting a generated
-reception as this practice's reception is misleading advertising, and misleading
-advertising by a regulated health service is an AHPRA problem, not a taste
-problem. It sits under the same part of the National Law as the testimonial ban.
+Two frames are deliberately unused: both show staff who have since left. The
+X-ray frame is cropped at the wall return so the departed technologist is out of
+shot. The former Chief Sonographer has been removed from every page.
 
-**Default applied:** they are treated strictly as layout placeholders. They give
-the build correctly sized, correctly toned images to compose against. They are
-**not** used anywhere that implies "this is our clinic", and `scan-room-3x2` in
-particular is kept away from CT copy, since a generated machine that does not
-resemble the real one implies capability the practice may not offer.
-
-**Need from you:** a real photographer before launch. Half a day covering the
-actual reception, scan rooms and team. Given that testimonials are unavailable,
-real photography is the highest value trust spend on this project, and it
-replaces four placeholders at once.
-
-If any generated image does ship, it stays clearly non specific and the filename
-keeps the marker so nobody later mistakes it for documentary.
-
-The abstract plates (hero, sections, textures) have none of this problem. They
-are brand art rather than a depiction of the premises, and ship as is.
-
----
+**Standing note, not a question:** any page naming an individual is wrong the
+moment they leave. Counts and totals survive turnover; names do not. If you want
+named radiologists back on the site for credibility, that is worth doing, but it
+needs a process for keeping it current.
 
 ## 5. The generated plates run cooler than the brand blue
 

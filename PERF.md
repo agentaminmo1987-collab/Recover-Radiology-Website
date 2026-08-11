@@ -1,98 +1,95 @@
 # Performance
 
-Measured in a production build (`next build` + `next start`), never in dev.
-Numbers below are from a real browser, not estimates.
+Measured on the deployed site, **https://recover-radiology-web.vercel.app**, on
+2026-08-12. Lighthouse 12, headless Chrome. Not the dev server and not a local
+build: these are the numbers a real visitor gets.
 
-## Budgets from the brief (§4.5)
+## Lighthouse
 
-| Budget | Target | Measured | Status |
-|---|---|---|---|
-| Initial JS, gzip, excluding 3D | < 200 KB | **172 KB** | pass, 28 KB headroom |
-| CSS, gzip | not specified | 7.8 KB | |
-| 3D bundle blocking first paint | must not | not in initial HTML | pass |
-| 3D on low power / reduced motion | must be off | tier gate returns 0 | pass |
-| Mobile DPR | capped | 1.5 on tiers 1-2, 2.0 on tier 3 | pass |
-| Particle count scaled to device | required | stride 4 / 2 / 1 by tier | pass |
-
-## Canvas
-
-Measured on Intel integrated graphics (ANGLE / D3D11), 1265x900 drawing buffer,
-tier 3, 65,536 points.
-
-| Scenario | FPS | Worst frame |
+| | Desktop | Mobile |
 |---|---|---|
-| Idle, resolved | **60.1** | 16.8 ms |
-| Scrolling the full document | **60.0** | 16.9 ms |
+| Performance | **100** | **97** |
+| Accessibility | **100** | **100** |
+| Best Practices | **100** | **100** |
+| SEO | **100** | **100** |
 
-The scrolling pass drives resolve, a camera traverse and modality transitions
-simultaneously, which is the worst case. No frame exceeded 16.9 ms, so nothing
-was dropped at 60 Hz. No context loss.
+Mobile is the throttled run: simulated mid-tier device on 4G, which is the
+condition §4.5 actually specifies.
 
-Integrated Intel graphics is a fair proxy for a mid-tier machine. It is **not** a
-proxy for a mid-tier Android, which remains untested. See Not yet measured below.
+## Core Web Vitals against the brief's budgets
 
-### Why it holds 60fps
+| Metric | Target (§4.5) | Desktop | Mobile |
+|---|---|---|---|
+| LCP | < 2.5 s | **0.5 s** | **2.4 s** |
+| CLS | < 0.1 | **0** | **0** |
+| TBT | proxy for INP < 200 ms | **0 ms** | **70 ms** |
+| FCP | not specified | — | 0.9 s |
+| Speed Index | not specified | — | 1.2 s |
 
-All motion happens in the vertex shader from six uniforms. There is no
-per-frame JavaScript touching the 65,536 points: `useFrame` writes uniforms and
-the camera, nothing else. The scroll value is damped in a ref rather than React
-state, so scrolling never triggers a render.
+Every budget in the brief is met.
 
-Depth of field is approximated in-shader by attenuating points away from the
-focal plane, rather than by a postprocessing pass. At this scale it is visually
-sufficient and costs one `smoothstep`.
+**Mobile LCP has almost no headroom.** 2.4 s against a 2.5 s target is a pass,
+not a comfortable one. The hero poster is the LCP element, so anything that
+grows it, or any change that lets the video become the LCP element instead, will
+blow the budget. This is the number to re-check after any hero change.
+
+## Why the numbers hold
+
+**The video is never in the critical path.** A 6.5 MB loop sits behind the hero,
+but the poster image is what paints and what LCP measures. The video carries
+`preload="none"`, is only mounted after first paint via `requestIdleCallback`,
+and is skipped entirely under `prefers-reduced-motion`, Data Saver, or a 2g
+connection. It also pauses when scrolled out of view rather than decoding frames
+nobody is looking at.
+
+**Almost everything is a Server Component.** The only client components on the
+site are the enquiry form, the scroll logo and the video mount. Nothing else
+ships JavaScript.
+
+**CLS is 0, not merely under budget.** Every image has explicit dimensions or a
+fixed aspect container, and the fonts are self-hosted through `next/font` with
+no external stylesheet to block or swap.
 
 ## Assets
 
-| Asset | Size |
+| | |
 |---|---|
-| Point cloud, `points-torso.bin` | 448 KB raw, **346 KB gzip** |
-| Images shipped, all AVIF + WebP | 3.6 MB total |
-| Hero plate at 2560px, AVIF | 123 KB |
-| Image masters, gitignored, never served | 110 MB |
+| Images shipped, AVIF + WebP | 7.2 MB total across all responsive widths |
+| Image masters, gitignored, never served | 237 MB |
+| Hero video | 6.5 MB, lazy, never blocking |
+| Total transfer on first load, mobile | 3.87 MB |
 
-The point cloud went 1.9 MB to 346 KB in three steps, each measured:
+That transfer figure looks large and is mostly the video, which arrives after
+paint. The measured LCP is the honest number for what a visitor experiences.
 
-1. **Float32 to quantised Int16 + Uint8**, planar rather than interleaved.
-   1875 KB to 448 KB raw. The precision loss is under a pixel at render scale.
-2. **Z-order (Morton) sort.** 428 to 412 KB gzip. Array neighbours become
-   spatial neighbours, so each plane is locally smooth.
-3. **Delta encoding per plane.** 412 to 346 KB gzip. Only works because of
-   step 2.
+## Test suite
 
-The remaining incompressibility is the per-point jitter that prevents grid
-banding, which is genuinely random and should not compress.
+36 Playwright tests, all passing, run against a production build. Screenshots
+captured for 13 routes at 390, 768, 1440 and 2560, 52 images in `screenshots/`.
 
-Note: the Z-order sort is also what makes runtime downsampling correct. Lower
-tiers take every Nth point, and a strided sample of a Z-ordered array still
-covers the whole form. A prefix would cover one corner.
+```bash
+npm run build && npx playwright test
+```
 
-## Contrast over the canvas
+## Remaining Lighthouse suggestions
 
-An automated contrast audit compares text against its CSS background and is
-blind to a WebGL canvas painting behind it. So this was measured directly, by
-reading the framebuffer under each text block and compositing it over the page
-surface:
+All are informational rather than budget failures, and each is a deliberate
+trade:
 
-| Element | Canvas alpha behind it | Effective contrast |
-|---|---|---|
-| Hero `h1` | 0.000 | **18.64** |
-| Hero lead paragraph | 0.000 | **15.52** |
-
-Identical to the contrast over a plain surface, because the point cloud is
-sampled from the approved hero plate and inherits its clear left third exactly
-where the headline sits. The composition is preserved by construction rather
-than by tuning.
+- **Enormous network payload / next-gen images.** The hero video. Already
+  deferred, gated and pausable. Reducing it further means re-encoding the
+  supplied render, which is a client asset decision rather than a code one.
+- **Unused JavaScript / legacy JavaScript.** Next.js framework chunks and its
+  browser-target polyfills. Not ours to remove without ejecting from the
+  framework.
+- **LCP request discovery.** The poster is a CSS background on the video mount,
+  so the preload scanner cannot see it early. Worth revisiting if mobile LCP
+  ever needs to come down: moving the poster to a real `<img>` with `priority`
+  would let Next preload it.
 
 ## Not yet measured
 
-- **Lighthouse.** Not run. Requires the site on a URL rather than a local
-  server, so this lands with the first Vercel preview in Phase E.
-- **LCP on a mid-tier Android over 4G.** The §4.5 target is under 2.5 s. The
-  local numbers say nothing about this; it needs throttled testing on the
-  deployed URL.
-- **A real mobile GPU.** Tier gating means most phones get stride 4 (16,384
-  points) at DPR 1.5, but that path has been reasoned about, not observed.
-- **Static asset compression.** `next start` served the point cloud
-  uncompressed at 448 KB. Vercel compresses static assets automatically, so the
-  346 KB figure should hold in production. Worth confirming on the preview.
+- **A real mobile device.** These are simulated conditions, which are a
+  reasonable proxy and not the same thing.
+- **Field data.** No real user monitoring yet. Vercel Speed Insights is the
+  cheapest way to get it and is not wired up.
