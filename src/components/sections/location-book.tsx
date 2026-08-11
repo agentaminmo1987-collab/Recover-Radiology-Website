@@ -31,7 +31,7 @@ export function LocationBook() {
             <ButtonLink href={clinic.phone.href} size="lg" className="tabular">
               {clinic.phone.display}
             </ButtonLink>
-            <ButtonLink href="/contact" size="lg" variant="ghost">
+            <ButtonLink href="/contact" size="lg" variant="ghost" echo>
               Send an enquiry
             </ButtonLink>
           </div>

@@ -326,6 +326,81 @@ summary {
   cursor: pointer;
 }
 
+
+/* ---------------------------------------------------------------------------
+   BUTTONS
+   Written here rather than as utility soup because the echo needs a
+   pseudo-element and the hover gating needs to be explicit and readable.
+
+   Buttons are in the seen-many-times tier, so the default feedback is
+   deliberately near-imperceptible: a 1px lift and a soft bloom. The one
+   exception is the booking CTA, which is the action this site exists for.
+   --------------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  transition:
+    background-color var(--rr-dur-micro) var(--rr-ease),
+    border-color var(--rr-dur-micro) var(--rr-ease),
+    color var(--rr-dur-micro) var(--rr-ease),
+    box-shadow var(--rr-dur-base) var(--rr-ease),
+    transform var(--rr-dur-micro) var(--rr-ease);
+}
+
+/* Pressing returns it to the resting plane, so the press genuinely undoes the
+   hover rather than travelling further in the same direction. */
+.btn:active {
+  transform: translateY(0);
+  transition-duration: 60ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+
+  /* Ghost fills instead of only recolouring its outline, so it reads as a
+     surface you can press. Dust 30 rather than 20: 20 is already the sunken
+     band colour, and a ghost button sitting on that band would fill invisibly.
+     Forest on Dust 30 measures 6.45. */
+  .btn-ghost:hover {
+    background-color: var(--rr-dust-30);
+    box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* Echo. One ring expands from the edge and fades, the way a returning
+     ultrasound wavefront does.
+     A keyframe animation rather than a transition: a transition needs a
+     visible resting state to travel FROM, which left a permanent second
+     outline around the button. An animation plays once on entry and leaves
+     nothing behind. Restarting on re-entry is the desired behaviour here, not
+     the hazard it would be on a rapidly toggled element. */
+  .btn-echo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .btn-echo:hover::after {
+    animation: rr-echo var(--rr-dur-enter) var(--rr-ease) 1;
+  }
+}
+
+@keyframes rr-echo {
+  from { opacity: 0.8; transform: scale(1); }
+  to   { opacity: 0;   transform: scale(1.16); }
+}
+
+/* Motion out, colour stays. A lift is vestibular; a fill is not. */
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover { transform: none; }
+  .btn-echo::after { display: none; }
+  .btn-echo:hover::after { animation: none; }
+}
+
 /* ---------------------------------------------------------------------------
    REDUCED MOTION
    A first-class path, not an afterthought (§4.4). Everything that moves is

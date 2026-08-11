@@ -65,7 +65,7 @@ export function Hero() {
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <ButtonLink href="/contact" size="lg">
+            <ButtonLink href="/contact" size="lg" echo>
               Book a scan
             </ButtonLink>
             <ButtonLink href="/x-ray" size="lg" variant="ghost">

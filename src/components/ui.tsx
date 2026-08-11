@@ -14,10 +14,11 @@ const cx = (...parts: (string | false | undefined)[]) =>
 type ButtonVariant = "primary" | "ghost";
 type ButtonSize = "md" | "lg";
 
+// Transitions, hover gating and the echo live in globals.css under .btn, so the
+// pseudo-element and the @media (hover: hover) guard stay readable.
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-semibold " +
-  "transition-[background-color,border-color,color,transform] duration-[var(--rr-dur-micro)] " +
-  "ease-[var(--rr-ease)] active:translate-y-px disabled:opacity-60 disabled:pointer-events-none";
+  "btn inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] " +
+  "font-semibold disabled:opacity-60 disabled:pointer-events-none";
 
 // Every target clears 44x44px, a High-severity rule in ui-ux-pro-max and §4.4.
 const buttonSizes: Record<ButtonSize, string> = {
@@ -29,25 +30,38 @@ const buttonVariants: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] hover:bg-[var(--btn-primary-bg-hover)]",
   ghost:
-    "border border-[var(--btn-ghost-border)] text-[var(--btn-ghost-text)] hover:border-accent hover:text-accent",
+    "btn-ghost border border-[var(--btn-ghost-border)] text-[var(--btn-ghost-text)] hover:border-accent hover:text-accent",
 };
 
 interface ButtonLinkProps extends Omit<ComponentProps<typeof Link>, "className"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   className?: string;
+  /**
+   * Adds the echo ring. Reserved for the booking CTA: it is the one action this
+   * site exists for, and a flourish stops being a flourish if every button has
+   * it.
+   */
+  echo?: boolean;
 }
 
 export function ButtonLink({
   variant = "primary",
   size = "md",
   className,
+  echo,
   ...rest
 }: ButtonLinkProps) {
   return (
     <Link
       {...rest}
-      className={cx(buttonBase, buttonSizes[size], buttonVariants[variant], className)}
+      className={cx(
+        buttonBase,
+        buttonSizes[size],
+        buttonVariants[variant],
+        echo && "btn-echo",
+        className,
+      )}
     />
   );
 }
@@ -55,6 +69,7 @@ export function ButtonLink({
 interface ButtonProps extends ComponentProps<"button"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  echo?: boolean;
 }
 
 export function Button({
@@ -62,13 +77,20 @@ export function Button({
   size = "md",
   className,
   type = "button",
+  echo,
   ...rest
 }: ButtonProps) {
   return (
     <button
       type={type}
       {...rest}
-      className={cx(buttonBase, buttonSizes[size], buttonVariants[variant], className)}
+      className={cx(
+        buttonBase,
+        buttonSizes[size],
+        buttonVariants[variant],
+        echo && "btn-echo",
+        className,
+      )}
     />
   );
 }

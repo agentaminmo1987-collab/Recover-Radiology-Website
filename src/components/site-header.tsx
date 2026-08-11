@@ -50,7 +50,7 @@ export function SiteHeader() {
           >
             {clinic.phone.display}
           </a>
-          <ButtonLink href="/contact" className="hidden sm:inline-flex">
+          <ButtonLink href="/contact" echo className="hidden sm:inline-flex">
             Book
           </ButtonLink>
 

@@ -209,3 +209,57 @@ for (const path of ROUTES) {
     for (const [w, h] of WIDTHS) await shoot(page, path, name, w, h);
   });
 }
+
+test("button hover: lift, ghost fill, and an echo that leaves nothing behind", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const cta = page.locator('main a[href="/contact"]').first();
+  const ghost = page.locator('main a[href="/x-ray"]').first();
+
+  // The echo must be invisible at rest. An earlier version used a transition,
+  // which needed a visible resting state to travel from and left a permanent
+  // second outline around the button.
+  await page.mouse.move(0, 0);
+  const restOpacity = await cta.evaluate(
+    (e) => +getComputedStyle(e, "::after").opacity,
+  );
+  expect(restOpacity).toBe(0);
+
+  await cta.hover();
+  await page.waitForTimeout(60);
+  const mid = await cta.evaluate((e) => {
+    const a = getComputedStyle(e, "::after");
+    const s = getComputedStyle(e);
+    return { echo: +a.opacity, transform: s.transform, shadow: s.boxShadow };
+  });
+  expect(mid.echo, "echo should be visible just after entry").toBeGreaterThan(0.1);
+  expect(mid.transform, "button should lift").not.toBe("none");
+  expect(mid.shadow, "button should bloom").not.toBe("none");
+
+  // Ghost fills rather than only recolouring its outline.
+  await ghost.hover();
+  await page.waitForTimeout(120);
+  const bg = await ghost.evaluate((e) => getComputedStyle(e).backgroundColor);
+  expect(bg).toContain("245, 243, 228"); // Dust 30
+});
+
+test("reduced motion removes the lift and the echo, keeps the colour", async ({
+  browser,
+}) => {
+  const ctx = await browser.newContext({ reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto("/");
+  const cta = page.locator('main a[href="/contact"]').first();
+  await cta.hover();
+  await page.waitForTimeout(120);
+  const s = await cta.evaluate((e) => ({
+    transform: getComputedStyle(e).transform,
+    echoDisplay: getComputedStyle(e, "::after").display,
+    bg: getComputedStyle(e).backgroundColor,
+  }));
+  expect(s.transform, "no lift under reduced motion").toBe("none");
+  expect(s.echoDisplay, "no echo under reduced motion").toBe("none");
+  expect(s.bg, "colour feedback is kept").not.toBe("rgba(0, 0, 0, 0)");
+  await ctx.close();
+});
