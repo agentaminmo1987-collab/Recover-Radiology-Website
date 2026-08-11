@@ -110,7 +110,25 @@ the same visual block, not in a footnote. No asterisks.
 
 ---
 
-## 7. Content gaps against the brief's page list
+## 7. Logo is shipping as PNG, not SVG
+
+The brand kit ships vector EPS, which is the right master. Converting EPS to SVG
+needs ImageMagick, Inkscape or Ghostscript, and none is installed. The `convert`
+binary on PATH is the Windows filesystem utility, not ImageMagick, so it must not
+be run.
+
+**Default applied:** the 1597x969 PNG lockups are in `public/brand/`. At a header
+size of roughly 180px wide that is over 8x density, so it looks correct on every
+screen. The cost is bytes, not quality.
+
+**Need from you:** either install one of those tools, or export SVG from
+Illustrator directly. Recommend the latter, since it preserves the original paths
+rather than tracing them. This should be resolved before launch; it is not urgent
+for the build.
+
+---
+
+## 8. Content gaps against the brief's page list
 
 §6 asks for a Blog index and post template. There is no existing blog content and
 none was supplied.
