@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
 import { Section, SectionLabel, ButtonLink, Card } from "@/components/ui";
+import { HeroVideo } from "@/components/hero-video";
 
 /**
  * One template for all four modalities (§6: consistent structure, consistent
@@ -22,6 +23,16 @@ const PLATE: Record<ModalitySlug, string> = {
   ct: "/img/sections/ct-slices-16x9",
   "x-ray": "/img/sections/xray-transmission-16x9",
   interventional: "/img/sections/interventional-guide-16x9",
+};
+
+/**
+ * Modalities with a hero video loop. Anything not listed keeps its still plate.
+ * Same rules as the landing page: the poster carries first paint, and the video
+ * never loads under reduced-motion, Data Saver or 2g.
+ */
+const HERO_VIDEO: Partial<Record<ModalitySlug, string>> = {
+  "x-ray": "/video/ct-forming.mp4",
+  ct: "/video/ct-scan.mp4",
 };
 
 /** Abstract brand art, not a depiction of the premises. Safe under AHPRA. */
@@ -91,7 +102,28 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        {/* Hero */}
+        {/* Hero. X-ray runs the same loop the landing page uses; the others keep
+            their still plate. Same rules apply: the poster carries first paint
+            and the video never loads under reduced-motion or Data Saver. */}
+        <section className="relative overflow-hidden">
+          {HERO_VIDEO[slug] ? (
+            <>
+              <HeroVideo
+                src={HERO_VIDEO[slug]!}
+                poster={`${PLATE[slug]}-1600.avif`}
+                className="-z-10"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 z-0"
+                style={{
+                  background:
+                    "linear-gradient(to right, color-mix(in srgb, var(--surface) 88%, transparent) 0%, color-mix(in srgb, var(--surface) 88%, transparent) 46%, color-mix(in srgb, var(--surface) 55%, transparent) 64%, transparent 84%)",
+                }}
+              />
+            </>
+          ) : null}
+          <div className="relative z-10">
         <Section className="pt-[--rr-space-xl]">
           <nav aria-label="Breadcrumb" className="mb-8">
             <Link
@@ -147,18 +179,22 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
               </div>
             </div>
 
-            <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)]">
-              <Image
-                src={`${PLATE[slug]}-1600.avif`}
-                alt={PLATE_ALT[slug]}
-                fill
-                sizes="(max-width: 1024px) 100vw, 46vw"
-                className="object-cover"
-                priority
-              />
-            </div>
+            {HERO_VIDEO[slug] ? null : (
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)]">
+                <Image
+                  src={`${PLATE[slug]}-1600.avif`}
+                  alt={PLATE_ALT[slug]}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 46vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
           </div>
         </Section>
+          </div>
+        </section>
 
         {/* What we scan */}
         <Section tone="raised" className="border-y border-[var(--card-border)]">

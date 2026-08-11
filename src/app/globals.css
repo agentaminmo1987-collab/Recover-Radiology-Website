@@ -212,6 +212,16 @@ html[data-theme="light"] {
 }
 
 
+/* The wordmark, from the same master. Measured off 1597x969: the type runs
+   roughly x 780-1420, y 355-625. */
+.brand-word {
+  background-image: url("/brand/logo-h-colour.png");
+  background-repeat: no-repeat;
+  /* 1597 / 640 = 250% */
+  background-size: 250% auto;
+  background-position: -122% -131%;
+}
+
 /* The forms interlock on a diagonal, so the split sits at 53% where the gap
    between them naturally falls. */
 .brand-r-left  { clip-path: inset(0 47% 0 0); }

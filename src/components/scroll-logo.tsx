@@ -65,19 +65,24 @@ export function ScrollLogo() {
       aria-label={`${clinic.name} logo`}
       className="relative"
     >
-      <div
-        ref={wrap}
-        aria-hidden
-        className="relative h-[220px] w-[196px] origin-left will-change-transform md:h-[320px] md:w-[285px]"
-      >
+      <div className="flex items-center gap-5 md:gap-7">
         <div
-          ref={left}
-          className="brand-r brand-r-left absolute inset-0 will-change-transform"
-        />
-        <div
-          ref={right}
-          className="brand-r brand-r-right absolute inset-0 will-change-transform"
-        />
+          ref={wrap}
+          aria-hidden
+          className="relative h-[128px] w-[114px] shrink-0 origin-center will-change-transform md:h-[168px] md:w-[150px]"
+        >
+          <div
+            ref={left}
+            className="brand-r brand-r-left absolute inset-0 will-change-transform"
+          />
+          <div
+            ref={right}
+            className="brand-r brand-r-right absolute inset-0 will-change-transform"
+          />
+        </div>
+        {/* The wordmark completes the lockup. Static, because the animation
+            belongs to the mark; letters pulling apart would just look broken. */}
+        <div aria-hidden className="brand-word h-[52px] w-[200px] md:h-[68px] md:w-[262px]" />
       </div>
     </div>
   );

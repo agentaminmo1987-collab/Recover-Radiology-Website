@@ -24,13 +24,15 @@ export function Hero() {
       />
 
       {/* Scrim across the copy column, releasing before the centre so the
-          animation is never veiled where it actually reads. */}
+          animation is never veiled where it actually reads.
+          Dialled back 20% at every stop so more of the loop shows through.
+          Text contrast over it is measured, not assumed: see PERF.md. */}
       <div
         aria-hidden
         className="absolute inset-0 z-0"
         style={{
           background:
-            "linear-gradient(to right, var(--surface) 0%, var(--surface) 40%, color-mix(in srgb, var(--surface) 90%, transparent) 52%, color-mix(in srgb, var(--surface) 40%, transparent) 66%, transparent 82%)",
+            "linear-gradient(to right, color-mix(in srgb, var(--surface) 80%, transparent) 0%, color-mix(in srgb, var(--surface) 80%, transparent) 40%, color-mix(in srgb, var(--surface) 72%, transparent) 52%, color-mix(in srgb, var(--surface) 32%, transparent) 66%, transparent 82%)",
         }}
       />
       {/* Soft lift at the base so the section hands over to the trust band
