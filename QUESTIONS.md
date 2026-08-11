@@ -5,44 +5,7 @@ Nothing here is blocking.
 
 ---
 
-## 1. The tagline conflicts between your two source documents
-
-**This one is on the homepage right now, so it matters most.**
-
-- Your build brief, section 1: **"Forming your road to recovery"**, and it says
-  the tagline stays as written.
-- The official style guide, page 3: **"Informing your road to recovery"**, with a
-  full page explaining the choice. "The word 'inform' represents the nature of
-  the service, providing information to patients and doctors." It also notes the
-  proposition can extend to "Supporting your road to recovery", "Delivering your
-  road to recovery" and similar.
-
-**Default applied:** the brief wins, because it was explicit and more recent to
-me. The site says "Forming". Nothing has been changed on assumption.
-
-**Need from you:** which is correct. If it is "Informing", it is a one line
-change in `lib/clinic.ts` and it propagates everywhere, including the metadata.
-
----
-
-## 2. The style guide names a different web font
-
-Guide page 13: "When selecting a Google Font for use online (on your website
-etc), please use **Nunito Sans**." The logo itself uses Museo Sans Rounded, which
-is licensed and cannot be self hosted.
-
-The site currently uses Figtree, chosen from the `ui-ux-pro-max` healthcare
-pairing before the guide was available.
-
-**Default applied:** unchanged, because you asked me not to touch the font.
-
-**Need from you:** whether to move to Nunito Sans. It is a straight swap in
-`layout.tsx` and, being a rounded humanist face, it is arguably closer to the
-Museo Sans Rounded in the logo than Figtree is.
-
----
-
-## 3. Accreditation marks are unverified
+## 1. Accreditation marks are unverified
 
 **Status:** slots built, rendering suppressed.
 
@@ -61,7 +24,7 @@ the accreditation number and expiry.
 
 ---
 
-## 4. Radiologist names and qualifications
+## 2. Radiologist names and qualifications
 
 Only Khoa Le (Chief Sonographer, vascular) is named on the existing site. The
 reporting radiologists are described only as "experienced".
@@ -77,7 +40,7 @@ headshots can be commissioned.
 
 ---
 
-## 5. GSAP alongside Motion for the pinned camera path
+## 3. GSAP alongside Motion for the pinned camera path
 
 The `ui-ux-pro-max` Three.js guidance is emphatic (three High severity rules)
 that a scroll driven camera must use a scrubbed timeline with pinning, and that
@@ -100,7 +63,7 @@ happens.
 
 ---
 
-## 6. The four photographs are AI generated, and that is an AHPRA risk
+## 4. The four photographs are AI generated, and that is an AHPRA risk
 
 `public/img/_raw/photography/` holds four generated interior shots: reception,
 scan room, clinician hands, waiting area. They are **not photographs of Recover
@@ -130,7 +93,7 @@ are brand art rather than a depiction of the premises, and ship as is.
 
 ---
 
-## 7. The generated plates run cooler than the brand blue
+## 5. The generated plates run cooler than the brand blue
 
 The hero and section plates were generated against the logo, but they land on a
 cyan or teal cast rather than the measured brand blue `#8AC2E0`. Left alone the
@@ -144,7 +107,7 @@ change later.
 
 ---
 
-## 8. The manual theme override is not finished
+## 6. The manual theme override is not finished
 
 Both automatic paths are verified clean: with `prefers-color-scheme: dark` and
 with `prefers-color-scheme: light`, an in-browser audit of all 167 rendered text
@@ -165,7 +128,7 @@ deleted rather than left as a trap for the next person.
 
 ---
 
-## 9. Higgsfield is not available
+## 7. Higgsfield is not available
 
 §5 and §7 step 15 call for Higgsfield to generate HDRIs, matcaps, gradient ramps,
 background plates and the OG image. No Higgsfield tool is available in this
@@ -182,7 +145,7 @@ procedural path is genuinely the better default here, so this is optional.
 
 ---
 
-## 10. Supabase is not authenticated
+## 8. Supabase is not authenticated
 
 `supabase login` has not been run, so no project exists yet for the enquiry form.
 
@@ -196,7 +159,7 @@ create one once authenticated.
 
 ---
 
-## 11. Obstetric scans and the bulk billing message
+## 9. Obstetric scans and the bulk billing message
 
 The single highest anxiety question on the site is "will this cost me anything?"
 The honest answer is "usually no, except obstetric and some interventional".
@@ -212,7 +175,7 @@ the same visual block, not in a footnote. No asterisks.
 
 ---
 
-## 12. Logo is shipping as PNG, not SVG
+## 10. Logo is shipping as PNG, not SVG
 
 The brand kit ships vector EPS, which is the right master. Converting EPS to SVG
 needs ImageMagick, Inkscape or Ghostscript, and none is installed. The `convert`
@@ -230,7 +193,7 @@ for the build.
 
 ---
 
-## 13. Content gaps against the brief's page list
+## 11. Content gaps against the brief's page list
 
 §6 asks for a Blog index and post template. There is no existing blog content and
 none was supplied.

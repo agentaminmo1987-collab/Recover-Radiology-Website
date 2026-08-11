@@ -2,13 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { ScrollStageProvider, useScrollStage } from "@/components/motion/scroll-stage";
 
-/** Reads the shared scroll value inside the provider and feeds the field. */
-function WaveFieldMount() {
-  const { progress } = useScrollStage();
-  return <WaveField scroll={progress} />;
-}
 
 /**
  * Gate and mount for the reconstruction canvas.
@@ -107,16 +101,14 @@ export function CanvasStage() {
   if (!ready || tier === 0) return null;
 
   return (
-    <ScrollStageProvider>
-      <div
+    <div
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10"
         // No CSS mask. The shader does its own vignette and keeps the left
         // column clear, so the falloff is part of the image rather than a
         // rectangle cut out of it.
       >
-        <WaveFieldMount />
+        <WaveField />
       </div>
-    </ScrollStageProvider>
   );
 }

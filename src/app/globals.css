@@ -234,6 +234,30 @@ html[data-theme="dark"] {
   }
 }
 
+/* The two "r" forms, isolated from the horizontal lockup so each can move
+   independently. The guide sanctions this: "In a brand extension, the shape may
+   be broken up and used in smaller parts."
+   Both halves share one background image, so only one file is ever fetched. */
+.brand-r {
+  background-image: url("/brand/logo-h-colour.png");
+  background-repeat: no-repeat;
+  /* 1597 / 540 = 296%: scales the master so the mark alone fills the box. */
+  background-size: 296% auto;
+  background-position: -35% -30.6%;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .brand-r {
+    background-image: url("/brand/logo-h-white.png");
+  }
+}
+html[data-theme="dark"] .brand-r {
+  background-image: url("/brand/logo-h-white.png");
+}
+/* The forms interlock on a diagonal, so the split sits at 53% where the gap
+   between them naturally falls. */
+.brand-r-left  { clip-path: inset(0 47% 0 0); }
+.brand-r-right { clip-path: inset(0 0 0 53%); }
+
 /* Vertical lockup, used once, in the hero. */
 .brand-lockup-v {
   background-image: url("/brand/logo-v-colour.png");
@@ -287,7 +311,7 @@ html[data-theme="dark"] .brand-lockup {
   --color-danger:         var(--danger);
 
   --font-sans: var(--font-figtree);
-  --font-mono: var(--font-plex-mono);
+  --font-mono: var(--font-figtree);
 
   --radius-sm: var(--rr-radius-sm);
   --radius-md: var(--rr-radius-md);
@@ -332,11 +356,8 @@ body {
 }
 :focus:not(:focus-visible) { outline: none; }
 
-/* Measured values, the instrumentation layer. Only ever real numbers. */
 .tabular {
-  font-family: var(--font-plex-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
 }
 
 /* Every interactive element gets a pointer, per the pre-delivery checklist */

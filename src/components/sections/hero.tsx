@@ -1,5 +1,6 @@
 import { clinic, REPORT_TURNAROUND } from "@/lib/clinic";
 import { ButtonLink } from "@/components/ui";
+import { ScrollLogo } from "@/components/scroll-logo";
 
 /**
  * Hero. The 3D reconstruction canvas mounts behind this in Phase D as a fixed
@@ -40,15 +41,8 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
-        {/* Horizontal full colour, per the style guide p11: it is the preferred
-            lockup and the vertical is only for when width does not allow. The
-            mark is two letter "r" forms, each built from three connection
-            points: the doctor, the information, and the patient. */}
-        <div
-          role="img"
-          aria-label={`${clinic.name} logo`}
-          className="brand-lockup h-[56px] w-[254px] md:h-[68px] md:w-[308px]"
-        />
+        {/* Travels up into the header as the page scrolls. See ScrollLogo. */}
+        <ScrollLogo />
 
         <p className="mt-8 text-[0.9rem] font-medium tracking-[0.01em] text-accent">
           {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed

@@ -34,12 +34,10 @@ const fragment = /* glsl */ `
 
   uniform float uTime;
   uniform vec2  uRes;
-  uniform float uScroll;
   uniform vec3  uBase;    // page surface, so the field dissolves into it
   uniform vec3  uInk;     // brand green, the primary wave
   uniform vec3  uCool;    // brand blue, the secondary wave
   uniform float uStrength;
-  uniform float uCalm;
 
   varying vec2 vUv;
 
@@ -49,14 +47,18 @@ const fragment = /* glsl */ `
   }
   float noise(vec2 p) {
     vec2 i = floor(p), f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
+    // Quintic, not cubic. Cubic smoothstep leaves a second-derivative
+    // discontinuity at cell edges, which is exactly the faceted, blocky look.
+    vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
     return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x),
                mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y);
   }
   float fbm(vec2 p) {
     float v = 0.0, a = 0.5;
-    for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.02; a *= 0.5; }
-    return v;
+    // More octaves at a gentler lacunarity: softer, smokier falloff than a few
+    // coarse ones doubling each time.
+    for (int i = 0; i < 7; i++) { v += a * noise(p); p *= 1.72; a *= 0.58; }
+    return v * 0.78;
   }
 
   void main() {
@@ -66,7 +68,10 @@ const fragment = /* glsl */ `
 
     // A slow drift downward and to the right. The period is chosen so every
     // term shares a common multiple: the whole field loops seamlessly.
-    float t = uTime * 0.055 * (1.0 - uCalm * 0.55);
+    // Time only. Scroll deliberately does NOT feed into this: the field is a
+    // steady ambient loop and must look identical at the top and the bottom of
+    // the page. Anything that ties it to scroll makes it appear to accelerate.
+    float t = uTime * 0.055;
 
     // Domain warp. Displacing the sample point by noise is what turns straight
     // wavefronts into flowing, organic fields rather than a striped pattern.
@@ -75,40 +80,64 @@ const fragment = /* glsl */ `
     vec2 r = vec2(fbm(p * 1.9 + 3.4 * q + vec2(1.7, 9.2) + t * 0.6),
                   fbm(p * 1.9 + 3.4 * q + vec2(8.3, 2.8) - t * 0.4));
 
-    // Interference of two wave trains at slightly different frequencies. This
-    // is what a returning ultrasound wavefront actually looks like, and it is
-    // the reason the field reads as sound rather than as smoke.
-    float travel = t * 2.2 + uScroll * 1.6;
-    float w1 = sin((p.x * 2.6 + r.x * 3.1 - travel) * 2.0);
-    float w2 = sin((p.y * 1.7 + r.y * 2.4 + travel * 0.72) * 1.7);
-    float interference = (w1 * w2) * 0.5 + 0.5;
+    // OCEAN SWELL, not isotropic noise.
+    //
+    // The previous version was mostly fbm, which is why it read as random
+    // smoke: noise has no direction, so nothing travelled. This is a set of
+    // parallel wavefronts moving along one axis, which is what gives it a
+    // consistent direction of travel and lets it read as swell.
+    //
+    // Three trains at related wavelengths, the way real swell superposes: a
+    // long dominant one, a shorter one, and a small chop. The noise is demoted
+    // to a domain warp on the phase, so it undulates the crests rather than
+    // replacing them. Direction survives, softness is kept.
+    vec2 dir = normalize(vec2(0.86, 0.38));
+    float phase = dot(p, dir) * 3.1;
+    float warp = (fbm(p * 0.85 + vec2(0.0, t * 0.9)) - 0.5) * 2.6;
 
-    float field = fbm(p * 1.6 + r * 1.8 + vec2(0.0, t * 0.8));
-    float mixed = mix(field, interference, 0.42);
+    // Gentle breathing in speed and wavelength, the way real swell arrives in
+    // sets. Both terms are slow and shallow: the sets take about 40 and 60
+    // seconds and vary by well under a quarter, so it reads as alive rather
+    // than as something speeding up.
+    float sets  = 1.0 + sin(t * 0.42) * 0.16 + sin(t * 0.27 + 1.7) * 0.09;
+    float pitch = 1.0 + sin(t * 0.31 + 0.6) * 0.11;
+
+    float travel = t * 2.4 * sets;
+    float swell =
+        sin(phase * 1.00 * pitch + warp * 1.45 - travel * 1.00) * 0.54
+      + sin(phase * 1.87 * pitch + warp * 1.00 - travel * 1.43) * 0.30
+      + sin(phase * 3.31 * pitch + warp * 0.62 - travel * 2.05) * 0.16;
+
+    // A slow cross swell, much weaker, so crests are never perfectly parallel.
+    float cross = sin(dot(p, normalize(vec2(-0.32, 0.95))) * 2.1 - travel * 0.55) * 0.16;
+
+    float mixed = (swell + cross) * 0.5 + 0.5;
+    // A trace of fbm keeps the smoke feel in the troughs without adding chaos.
+    mixed = mix(mixed, fbm(p * 1.3 + r * 0.8), 0.16);
 
     // Broad soft bands. smoothstep rather than a hard step so there is never a
     // visible edge; this has to sit behind text without competing.
-    float band = smoothstep(0.30, 0.86, mixed);
-    float rim  = smoothstep(0.52, 0.72, mixed) * (1.0 - smoothstep(0.72, 0.94, mixed));
+    float band = smoothstep(0.18, 0.94, mixed);
+    float rim  = smoothstep(0.50, 0.70, mixed) * (1.0 - smoothstep(0.74, 0.98, mixed));
 
     vec3 col = uBase;
     col = mix(col, uInk,  band * 1.0);
-    col = mix(col, uCool, rim  * 0.85);
+    col = mix(col, uCool, rim  * 0.55);
 
     // Vignette toward the page colour at the edges, so the field has no frame
     // and simply dissolves into the surface.
     float d = length((uv - vec2(0.62, 0.46)) * vec2(1.15, 1.0));
-    float falloff = 1.0 - smoothstep(0.22, 0.86, d);
+    float falloff = 1.0 - smoothstep(0.16, 0.95, d);
 
     // Keep the left column clear for the headline. The copy always wins.
-    float clearLeft = smoothstep(0.06, 0.44, uv.x);
+    float clearLeft = smoothstep(0.02, 0.48, uv.x);
 
     float a = falloff * clearLeft * uStrength;
-    gl_FragColor = vec4(mix(uBase, col, a), a * 0.92);
+    gl_FragColor = vec4(mix(uBase, col, a), a);
   }
 `;
 
-function Field({ scroll }: { scroll: number }) {
+function Field() {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const [tone, setTone] = useState<"light" | "dark">("light");
 
@@ -138,9 +167,7 @@ function Field({ scroll }: { scroll: number }) {
     () => ({
       uTime: { value: 0 },
       uRes: { value: new THREE.Vector2(1, 1) },
-      uScroll: { value: 0 },
       uStrength: { value: 0.5 },
-      uCalm: { value: 0 },
       uBase: { value: new THREE.Color("#FBF9F4") },
       uInk: { value: new THREE.Color("#F8F7ED") },
       uCool: { value: new THREE.Color("#DBDEF6") },
@@ -157,11 +184,12 @@ function Field({ scroll }: { scroll: number }) {
       // using them as a field is exactly what they are for. At 20% they are a
       // whisper rather than a wash, which is the point: calm, not decorated.
       u.uBase.value.set("#FBF9F4");
-      u.uInk.value.set("#F8F7ED");  // Dust 20%, the warm body
-      u.uCool.value.set("#DBDEF6"); // Bloom 20%, the cool wave
-      // These tints sit very close to the canvas, so the field needs more
-      // strength than a saturated palette would to register at all.
-      u.uStrength.value = 0.9;
+      // Dust and Bloom at 40%. The 20% tints sat so close to the canvas that
+      // the field barely registered; 40% gives it presence while both remain
+      // background tints that never carry type.
+      u.uInk.value.set("#F1EFDB");  // Dust 40%, the warm body
+      u.uCool.value.set("#B6BDEE"); // Bloom 40%, the cool wave
+      u.uStrength.value = 1.0;
     } else {
       u.uBase.value.set("#12100D");
       u.uInk.value.set("#2A3320");
@@ -174,9 +202,6 @@ function Field({ scroll }: { scroll: number }) {
     const u = mat.current?.uniforms;
     if (!u) return;
     u.uTime.value += Math.min(delta, 0.05);
-    u.uScroll.value = scroll;
-    // The field quietens as the page settles, so the booking CTA sits in calm.
-    u.uCalm.value = Math.max(0, (scroll - 0.7) / 0.3);
     u.uRes.value.set(state.size.width, state.size.height);
   });
 
@@ -196,7 +221,7 @@ function Field({ scroll }: { scroll: number }) {
   );
 }
 
-export default function WaveField({ scroll }: { scroll: number }) {
+export default function WaveField() {
   return (
     <Canvas
       aria-hidden
@@ -206,7 +231,7 @@ export default function WaveField({ scroll }: { scroll: number }) {
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance", depth: false, stencil: false }}
       style={{ position: "absolute", inset: 0 }}
     >
-      <Field scroll={scroll} />
+      <Field />
     </Canvas>
   );
 }

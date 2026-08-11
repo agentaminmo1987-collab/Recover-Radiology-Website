@@ -1,25 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, IBM_Plex_Mono } from "next/font/google";
+import { Figtree } from "next/font/google";
 import { clinic } from "@/lib/clinic";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import "./globals.css";
 
 /**
- * Figtree carries everything. IBM Plex Mono is the instrumentation layer and is
- * used only for measured values: durations, turnaround, phone, hours, address.
- * Restricting it to real numbers is what keeps that meaning honest.
+ * Figtree carries everything, including numerals. Tabular figures keep
+ * measured values aligned without switching face.
  */
 const figtree = Figtree({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-figtree",
-});
-
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-  variable: "--font-plex-mono",
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://recoverradiology.com.au";
@@ -115,7 +107,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU" className={`${figtree.variable} ${plexMono.variable}`}>
+    <html lang="en-AU" className={figtree.variable}>
       <body>
         <a
           href="#main"
