@@ -1,11 +1,39 @@
-import { clinic } from "@/lib/clinic";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { BookingBar } from "@/components/booking-bar";
+import { Hero } from "@/components/sections/hero";
+import { TrustBand } from "@/components/sections/trust-band";
+import { Services } from "@/components/sections/services";
+import { HowItWorks } from "@/components/sections/how-it-works";
+import { Billing } from "@/components/sections/billing";
+import { Credibility } from "@/components/sections/credibility";
+import { Referrers } from "@/components/sections/referrers";
+import { LocationBook } from "@/components/sections/location-book";
 
+/**
+ * The landing page, §6 items 1 to 9 in order.
+ *
+ * Entirely server rendered. The 3D canvas mounts behind this in Phase D as a
+ * single persistent fixed layer driven by one scroll progress value; it is
+ * decorative, aria-hidden, and never the sole carrier of information. Remove it
+ * and this page still reads correctly, which is the test.
+ */
 export default function Home() {
   return (
-    <main id="main" className="mx-auto max-w-[1180px] px-6 py-24">
-      <h1 className="text-5xl font-semibold tracking-tight">{clinic.name}</h1>
-      <p className="mt-4 text-text-muted">{clinic.tagline}</p>
-      <p className="tabular mt-8 text-accent">{clinic.phone.display}</p>
-    </main>
+    <>
+      <SiteHeader />
+      <main id="main" className="pb-[88px] sm:pb-0">
+        <Hero />
+        <TrustBand />
+        <Services />
+        <HowItWorks />
+        <Billing />
+        <Credibility />
+        <Referrers />
+        <LocationBook />
+      </main>
+      <SiteFooter />
+      <BookingBar />
+    </>
   );
 }

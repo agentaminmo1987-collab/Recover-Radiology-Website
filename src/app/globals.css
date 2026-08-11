@@ -82,9 +82,9 @@
   --surface-raised:     #141B17;
   --surface-sunken:     #080C0A;
 
-  --text:               var(--rr-white);
-  --text-muted:         var(--rr-blue-200);
-  --text-subtle:        var(--rr-blue-600);
+  --fg:               var(--rr-white);
+  --fg-muted:         var(--rr-blue-200);
+  --fg-subtle:        var(--rr-blue-600);
 
   /* Dark mode is blue led */
   --accent:             var(--rr-blue-500);
@@ -102,14 +102,14 @@
 }
 
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
+  html:not([data-theme="dark"]) {
     --surface:          var(--rr-canvas-light);
     --surface-raised:   var(--rr-white);
     --surface-sunken:   var(--rr-green-50);
 
-    --text:             var(--rr-ink);
-    --text-muted:       var(--rr-blue-800);
-    --text-subtle:      var(--rr-blue-700);
+    --fg:             var(--rr-ink);
+    --fg-muted:       var(--rr-blue-800);
+    --fg-subtle:      var(--rr-blue-800);  /* 6.44 AA. blue-700 is 4.15 and fails at small sizes */
 
     /* Light mode is green led */
     --accent:           var(--rr-green-500);
@@ -127,14 +127,36 @@
   }
 }
 
-/* Explicit override wins over the media query, for a manual toggle */
-:root[data-theme="light"] {
+/* Manual overrides. Both directions are stated in full rather than relying on
+   fallthrough to :root, so a toggle can never leave a half-applied theme where
+   the surface flips but the accent does not. `html[...]` (0,1,1) also outranks
+   plain `:root` (0,1,0), which matters because the minifier rewrites
+   `:root[data-theme=x]` down to `[data-theme=x]` and collapses its specificity. */
+html[data-theme="dark"] {
+  --surface:          var(--rr-canvas-dark);
+  --surface-raised:   #141B17;
+  --surface-sunken:   #080C0A;
+  --fg:               var(--rr-white);
+  --fg-muted:         var(--rr-blue-200);
+  --fg-subtle:        var(--rr-blue-600);
+  --accent:           var(--rr-blue-500);
+  --accent-hover:     var(--rr-blue-400);
+  --accent-contrast:  var(--rr-canvas-dark);
+  --accent-quiet:     var(--rr-green-400);
+  --border:           #2A3630;
+  --border-strong:    var(--rr-blue-700);
+  --focus-ring:       var(--rr-blue-400);
+  --danger:           var(--rr-danger-dark);
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
   --surface:          var(--rr-canvas-light);
   --surface-raised:   var(--rr-white);
   --surface-sunken:   var(--rr-green-50);
-  --text:             var(--rr-ink);
-  --text-muted:       var(--rr-blue-800);
-  --text-subtle:      var(--rr-blue-700);
+  --fg:             var(--rr-ink);
+  --fg-muted:       var(--rr-blue-800);
+  --fg-subtle:      var(--rr-blue-800);  /* 6.44 AA. blue-700 is 4.15 and fails at small sizes */
   --accent:           var(--rr-green-500);
   --accent-hover:     var(--rr-green-600);
   --accent-contrast:  var(--rr-white);
@@ -155,7 +177,7 @@
   --btn-primary-text:    var(--accent-contrast);
   --btn-primary-bg-hover: var(--accent-hover);
 
-  --btn-ghost-text:      var(--text);
+  --btn-ghost-text:      var(--fg);
   --btn-ghost-border:    var(--border-strong);
 
   --card-bg:             var(--surface-raised);
@@ -163,8 +185,8 @@
 
   --field-bg:            var(--surface-sunken);
   --field-border:        var(--border-strong);
-  --field-text:          var(--text);
-  --field-placeholder:   var(--text-subtle);
+  --field-text:          var(--fg);
+  --field-placeholder:   var(--fg-subtle);
   --field-invalid:       var(--danger);
 
   --nav-bg:              color-mix(in srgb, var(--surface) 82%, transparent);
@@ -175,6 +197,38 @@
 }
 
 /* ---------------------------------------------------------------------------
+   LOGO PER MODE
+   The wordmark is brand green, which fails on the dark canvas, so the white
+   lockup is required there. Done as a background-image rather than two <img>
+   tags so the browser only ever fetches the one the winning rule applies.
+   --------------------------------------------------------------------------- */
+.brand-lockup {
+  background-image: url("/brand/logo-h-white.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+}
+@media (prefers-color-scheme: light) {
+  html:not([data-theme="dark"]) .brand-lockup {
+    background-image: url("/brand/logo-h-colour.png");
+  }
+}
+html[data-theme="light"] .brand-lockup {
+  background-image: url("/brand/logo-h-colour.png");
+}
+
+/* ---------------------------------------------------------------------------
+   LIGHT VARIANT
+   Dark is the base, so components opt into light-mode overrides with `light:`.
+   --------------------------------------------------------------------------- */
+@custom-variant light {
+  @media (prefers-color-scheme: light) {
+    &:where(html:not([data-theme="dark"]) *) { @slot; }
+  }
+  &:where(html[data-theme="light"] *) { @slot; }
+}
+
+/* ---------------------------------------------------------------------------
    TAILWIND BRIDGE
    Exposes semantic tokens as utilities: bg-surface, text-muted, border-strong.
    --------------------------------------------------------------------------- */
@@ -182,9 +236,9 @@
   --color-surface:        var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-sunken: var(--surface-sunken);
-  --color-text:           var(--text);
-  --color-text-muted:     var(--text-muted);
-  --color-text-subtle:    var(--text-subtle);
+  --color-fg:           var(--fg);
+  --color-fg-muted:     var(--fg-muted);
+  --color-fg-subtle:    var(--fg-subtle);
   --color-accent:         var(--accent);
   --color-accent-hover:   var(--accent-hover);
   --color-accent-contrast: var(--accent-contrast);
@@ -218,7 +272,7 @@ html {
 
 body {
   background: var(--surface);
-  color: var(--text);
+  color: var(--fg);
   font-family: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   /* §4.4 requires a 17px minimum body size on mobile */
   font-size: 1.0625rem;

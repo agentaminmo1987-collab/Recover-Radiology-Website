@@ -63,7 +63,72 @@ happens.
 
 ---
 
-## 4. Higgsfield is not available
+## 4. The four photographs are AI generated, and that is an AHPRA risk
+
+`public/img/_raw/photography/` holds four generated interior shots: reception,
+scan room, clinician hands, waiting area. They are **not photographs of Recover
+Radiology.**
+
+This matters more than it would on an ordinary site. Presenting a generated
+reception as this practice's reception is misleading advertising, and misleading
+advertising by a regulated health service is an AHPRA problem, not a taste
+problem. It sits under the same part of the National Law as the testimonial ban.
+
+**Default applied:** they are treated strictly as layout placeholders. They give
+the build correctly sized, correctly toned images to compose against. They are
+**not** used anywhere that implies "this is our clinic", and `scan-room-3x2` in
+particular is kept away from CT copy, since a generated machine that does not
+resemble the real one implies capability the practice may not offer.
+
+**Need from you:** a real photographer before launch. Half a day covering the
+actual reception, scan rooms and team. Given that testimonials are unavailable,
+real photography is the highest value trust spend on this project, and it
+replaces four placeholders at once.
+
+If any generated image does ship, it stays clearly non specific and the filename
+keeps the marker so nobody later mistakes it for documentary.
+
+The abstract plates (hero, sections, textures) have none of this problem. They
+are brand art rather than a depiction of the premises, and ship as is.
+
+---
+
+## 5. The generated plates run cooler than the brand blue
+
+The hero and section plates were generated against the logo, but they land on a
+cyan or teal cast rather than the measured brand blue `#8AC2E0`. Left alone the
+site would carry two competing blues.
+
+**Default applied:** plates are graded toward the brand token at the point of
+use rather than re-generated, so there is one blue on the page.
+
+**Need from you:** nothing. Noted so the drift is not mistaken for a palette
+change later.
+
+---
+
+## 6. The manual theme override is not finished
+
+Both automatic paths are verified clean: with `prefers-color-scheme: dark` and
+with `prefers-color-scheme: light`, an in-browser audit of all 167 rendered text
+nodes returns **zero** contrast failures against WCAG AA.
+
+The manual `data-theme` attribute override is a different story. Forcing
+`data-theme="dark"` while the system is light flips the surface correctly but
+leaves `--accent` on its light value, so the theme half applies. Explicit blocks
+for both directions and raised selector specificity did not resolve it.
+
+**Default applied:** no theme toggle is exposed in the UI, so this is not a path
+any visitor can reach. §4.4 asks the site to respect `prefers-color-scheme`, and
+it does, fully.
+
+**Need from you:** a decision on whether a manual toggle is wanted at all. If it
+is, the override needs finishing first. If not, the override CSS should be
+deleted rather than left as a trap for the next person.
+
+---
+
+## 7. Higgsfield is not available
 
 §5 and §7 step 15 call for Higgsfield to generate HDRIs, matcaps, gradient ramps,
 background plates and the OG image. No Higgsfield tool is available in this
@@ -110,7 +175,7 @@ the same visual block, not in a footnote. No asterisks.
 
 ---
 
-## 7. Logo is shipping as PNG, not SVG
+## 8. Logo is shipping as PNG, not SVG
 
 The brand kit ships vector EPS, which is the right master. Converting EPS to SVG
 needs ImageMagick, Inkscape or Ghostscript, and none is installed. The `convert`
@@ -128,7 +193,7 @@ for the build.
 
 ---
 
-## 8. Content gaps against the brief's page list
+## 9. Content gaps against the brief's page list
 
 §6 asks for a Blog index and post template. There is no existing blog content and
 none was supplied.

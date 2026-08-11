@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Image masters. 110MB of 2K PNGs, never committed and never served.
+# Regenerate the shipped AVIF/WebP with: node scripts/optimise-images.mjs
+public/img/_raw/
