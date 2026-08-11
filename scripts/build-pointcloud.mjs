@@ -38,13 +38,13 @@ const SOURCES = [
  * so the sampler must stay unbiased across the whole array for a prefix to
  * still cover the whole form.
  */
-const COUNT = 65_536;
+const COUNT = 150_000;
 /** Positions are quantised into this half-range. */
 const RANGE = 2;
 /** Sampling resolution. Higher finds finer structure, at build cost only. */
-const GRID = 900;
+const GRID = 1700;
 /** Ignore near-black pixels: they are background, not anatomy. */
-const FLOOR = 0.06;
+const FLOOR = 0.035;
 
 await mkdir("public/data", { recursive: true });
 

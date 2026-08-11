@@ -24,7 +24,22 @@ export function Hero() {
         }}
       />
 
-      <div className="mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
+      {/* Scrim. The last line of defence for legibility: a wash of the page
+          surface from the left, sitting above the fixed canvas and below the
+          copy. The canvas mask already keeps the cloud out of this column, but
+          points drift and the camera traverses, so the text gets a floor it
+          does not have to share. Fades out by 62% so the resolved form on the
+          right is untouched. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            "linear-gradient(to right, var(--surface) 0%, var(--surface) 26%, color-mix(in srgb, var(--surface) 55%, transparent) 45%, transparent 62%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
         <p className="tabular text-[0.75rem] uppercase tracking-[0.2em] text-accent">
           {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed
         </p>

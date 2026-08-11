@@ -105,13 +105,24 @@ export function CanvasStage() {
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10"
-        // Fades the cloud into the page background at the edges so it reads as
-        // depth behind the content rather than a rectangle stuck to the page.
+        // Two masks, multiplied.
+        //
+        // The radial fades the cloud into the page background at the edges so
+        // it reads as depth rather than a rectangle stuck to the page.
+        //
+        // The linear is a hard guarantee for the text column: the left 34% of
+        // the viewport is fully masked out and only reaches full strength past
+        // 62%. Points drift, so the composition cannot be trusted to keep
+        // itself clear of the headline. This makes it structural.
         style={{
           maskImage:
-            "radial-gradient(120% 100% at 60% 45%, #000 35%, transparent 88%)",
+            "radial-gradient(120% 100% at 66% 45%, #000 30%, transparent 86%), " +
+            "linear-gradient(to right, transparent 0%, transparent 34%, #000 62%, #000 100%)",
           WebkitMaskImage:
-            "radial-gradient(120% 100% at 60% 45%, #000 35%, transparent 88%)",
+            "radial-gradient(120% 100% at 66% 45%, #000 30%, transparent 86%), " +
+            "linear-gradient(to right, transparent 0%, transparent 34%, #000 62%, #000 100%)",
+          maskComposite: "intersect",
+          WebkitMaskComposite: "source-in",
         }}
       >
         <Reconstruction tier={tier as 1 | 2 | 3} />

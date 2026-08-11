@@ -63,6 +63,7 @@ const vertex = /* glsl */ `
   uniform float uTime;
   uniform float uSize;
   uniform float uPixelRatio;
+  uniform float uCalm;        // 1 in the settle phase: all residual motion stops
 
   attribute vec3 aTarget;
   attribute vec3 aScatter;
@@ -71,6 +72,8 @@ const vertex = /* glsl */ `
 
   varying float vBright;
   varying float vFade;
+  varying float vDepth;
+  varying float vSeed;
 
   void main() {
     // Per-point stagger. Points resolve over a window rather than in lockstep,
@@ -83,7 +86,7 @@ const vertex = /* glsl */ `
 
     // Residual drift so the resolved state still breathes. Amplitude falls to
     // near zero as it forms, so the final frame is calm.
-    float drift = (1.0 - e) * 0.35 + 0.012;
+    float drift = ((1.0 - e) * 0.35 + 0.012) * (1.0 - uCalm * 0.92);
     pos.x += sin(uTime * 0.25 + aSeed * 22.0) * drift * 0.35;
     pos.y += cos(uTime * 0.21 + aSeed * 17.0) * drift * 0.35;
 
@@ -130,21 +133,30 @@ const vertex = /* glsl */ `
     float dof = 1.0 - smoothstep(0.15, 1.5, abs(mv.z + 2.6));
 
     vBright = aBright;
-    vFade = fade * mix(0.35, 1.0, dof) * (0.25 + e * 0.75);
+    vDepth = clamp(pos.z * 1.8 + 0.5, 0.0, 1.0);
+    vSeed = aSeed;
+    vFade = fade * mix(0.45, 1.0, dof) * (0.25 + e * 0.75);
 
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * uPixelRatio * (0.45 + aBright * 0.85) * (1.0 / -mv.z);
+    // Small points. The previous size overlapped them into a wash that read as
+    // low resolution and blew out to white; detail comes from many small points,
+    // not few large ones. Slight per-point variance stops a uniform stipple.
+    float variance = 0.72 + aSeed * 0.7;
+    gl_PointSize = uSize * uPixelRatio * (0.5 + aBright * 0.7) * variance * (1.0 / -mv.z);
   }
 `;
 
 const fragment = /* glsl */ `
   precision mediump float;
 
-  uniform vec3 uColor;
-  uniform vec3 uHot;
+  uniform vec3 uDeep;   // brand green, lightened. Back of the volume.
+  uniform vec3 uMid;    // brand blue. The body of the cloud.
+  uniform vec3 uHot;    // near white. Bright structure at the front.
 
   varying float vBright;
   varying float vFade;
+  varying float vDepth;
+  varying float vSeed;
 
   void main() {
     // Round, soft-edged point. Discarding outside the disc keeps the cloud from
@@ -152,10 +164,26 @@ const fragment = /* glsl */ `
     vec2 c = gl_PointCoord - 0.5;
     float d = dot(c, c);
     if (d > 0.25) discard;
-    float alpha = smoothstep(0.25, 0.02, d);
+    float alpha = smoothstep(0.25, 0.03, d);
 
-    vec3 col = mix(uColor, uHot, pow(vBright, 2.2));
-    gl_FragColor = vec4(col, alpha * vFade * 0.85);
+    // Three-stop ramp across BOTH brand colours rather than one blue fading to
+    // white. Depth places a point on the green-to-blue leg, brightness lifts it
+    // toward the hot stop, and a per-point offset keeps the ramp from banding
+    // into visible bands.
+    // Depth drives the ramp, brightness only nudges it. The earlier weighting
+    // put nearly every point above 0.5, so the green leg never rendered and the
+    // cloud read as a single blue washing to white.
+    float t = clamp(vDepth * 0.92 + (vBright - 0.55) * 0.30 + (vSeed - 0.5) * 0.22, 0.0, 1.0);
+    vec3 col = t < 0.5
+      ? mix(uDeep, uMid, smoothstep(0.0, 0.5, t))
+      : mix(uMid, uHot, smoothstep(0.5, 1.0, t) * smoothstep(0.55, 1.0, vBright));
+
+    // Additive blending sums R, G and B independently, so overlapping points
+    // converge on white no matter what colour each one is. Hue only survives if
+    // each point contributes very little, so the per-point alpha is low and the
+    // colour separation has to be carried by many faint points rather than few
+    // strong ones.
+    gl_FragColor = vec4(col, alpha * vFade * 0.17);
   }
 `;
 
@@ -199,12 +227,15 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
       target[i * 3 + 1] = y;
       target[i * 3 + 2] = z;
 
-      // Scattered start: a loose shell around the form, biased left so the
-      // unresolved cloud sits where the plate's noise field is.
+      // Scattered start: a loose shell around where the form will RESOLVE, on
+      // the right. The earlier version biased this left, which put the
+      // unresolved cloud directly behind the headline column and dropped the
+      // lead paragraph to 2.31 contrast. The text column is the one place the
+      // cloud must never occupy.
       const a = (i / n) * Math.PI * 2 * 7.3;
       const r = 1.1 + ((i * 2654435761) % 1000) / 1000;
-      scatter[i * 3] = x * 0.25 - 0.9 + Math.cos(a) * r * 0.55;
-      scatter[i * 3 + 1] = y * 0.25 + Math.sin(a) * r * 0.5;
+      scatter[i * 3] = x * 0.6 + 0.75 + Math.cos(a) * r * 0.5;
+      scatter[i * 3 + 1] = y * 0.5 + Math.sin(a) * r * 0.5;
       scatter[i * 3 + 2] = z + (((i * 40503) % 1000) / 1000 - 0.5) * 1.4;
 
       bright[i] = data.bs[j] / 255;
@@ -228,16 +259,19 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
       uMode: { value: 0 },
       uModeMix: { value: 0 },
       uTime: { value: 0 },
-      uSize: { value: 62 },
+      uSize: { value: 15 },
       uPixelRatio: { value: 1 },
-      // Brand blue, and a near-white hot point for bright structure. Reading the
-      // token here is what stops the plate's cooler cyan becoming a second blue.
-      uColor: { value: new THREE.Color("#8AC2E0") },
-      uHot: { value: new THREE.Color("#EFF6FB") },
+      uCalm: { value: 0 },
+      // All three stops come from the measured brand ramps in BRAND.md, so the
+      // cloud varies in hue without introducing a colour the brand does not own.
+      uDeep: { value: new THREE.Color("#7E9E3C") },  // brand green, chroma preserved
+      uMid: { value: new THREE.Color("#8AC2E0") },   // brand blue
+      uHot: { value: new THREE.Color("#EFF6FB") },   // rr-blue-100
     }),
     [],
   );
 
+  const group = useRef<THREE.Group>(null);
   const modeMix = useRef(0);
   const modeCur = useRef(0);
 
@@ -265,17 +299,47 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
     u.uModeMix.value = modeMix.current;
 
     u.uPixelRatio.value = state.gl.getPixelRatio();
-    u.uSize.value = size.width < 768 ? 46 : 62;
+    u.uSize.value = size.width < 768 ? 12 : 15;
 
-    // Camera drives through the volume: a literal traverse, not a pan.
-    state.camera.position.z = 3.1 - progress * 1.5;
-    state.camera.position.x = Math.sin(progress * Math.PI) * 0.22;
+    // Camera, in three phases. A single monotonic dolly reads as "zooming in"
+    // for the whole page and has nowhere to land; §5 asks for the form to be
+    // resolved, still and calm by the booking section, so the last phase pulls
+    // back out and settles instead of pushing further in.
+    const p = progress;
+    const smooth = (a: number, b: number, t: number) => {
+      const x = Math.min(1, Math.max(0, (t - a) / (b - a)));
+      return x * x * (3 - 2 * x);
+    };
+
+    // 0.00-0.30  RESOLVE   hold wide while the cloud assembles
+    // 0.30-0.68  TRAVERSE  drive through the volume, drifting laterally
+    // 0.68-1.00  SETTLE    ease back out to a composed, still framing
+    const resolve = smooth(0.0, 0.3, p);
+    const traverse = smooth(0.3, 0.68, p);
+    const settle = smooth(0.68, 1.0, p);
+
+    const z = 3.35 - resolve * 0.55 - traverse * 1.35 + settle * 1.5;
+    const x = traverse * 0.34 - settle * 0.34;
+    const y = Math.sin(traverse * Math.PI) * 0.16 * (1 - settle);
+
+    state.camera.position.set(x, y, z);
     state.camera.lookAt(0, 0, 0);
+
+    // Slow yaw through the traverse so it reads as moving THROUGH a volume
+    // rather than toward a picture, unwinding to square by the time it settles.
+    if (group.current) {
+      group.current.rotation.y = traverse * 0.26 * (1 - settle);
+      group.current.rotation.z = traverse * 0.05 * (1 - settle);
+    }
+
+    // Motion decays to nothing in the settle phase: the CTA sits in stillness.
+    u.uCalm.value = settle;
   });
 
   if (!geometry) return null;
 
   return (
+    <group ref={group}>
     <points geometry={geometry} frustumCulled={false}>
       <shaderMaterial
         ref={mat}
@@ -287,6 +351,7 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
         blending={THREE.AdditiveBlending}
       />
     </points>
+    </group>
   );
 }
 
