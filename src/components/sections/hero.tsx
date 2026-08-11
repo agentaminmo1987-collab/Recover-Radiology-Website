@@ -1,6 +1,6 @@
 import { clinic, REPORT_TURNAROUND } from "@/lib/clinic";
 import { ButtonLink } from "@/components/ui";
-import { ScrollLogo } from "@/components/scroll-logo";
+import { HeroLogo } from "@/components/hero-logo";
 import { HeroVideo } from "@/components/hero-video";
 
 /**
@@ -48,7 +48,7 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
         <div className="max-w-[36rem]">
-          <ScrollLogo />
+          <HeroLogo />
 
           <p className="mt-9 text-[0.95rem] font-medium tracking-[0.01em] text-accent">
             {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed

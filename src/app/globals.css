@@ -217,17 +217,6 @@ html[data-theme="light"] {
   background-size: contain;
 }
 
-/* The two "r" forms interlock on a diagonal; the split sits at 53%, where the
-   gap between them naturally falls. Both halves show the SAME cropped mark,
-   each clipped to its side, so they can move independently. */
-.brand-r {
-  background-image: url("/brand/mark-colour.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
-.brand-r-left  { clip-path: inset(0 47% 0 0); }
-.brand-r-right { clip-path: inset(0 0 0 53%); }
 
 /* Vertical lockup, used once, in the hero. */
 .brand-lockup-v {
