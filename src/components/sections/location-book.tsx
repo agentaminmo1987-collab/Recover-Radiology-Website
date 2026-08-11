@@ -65,7 +65,7 @@ export function LocationBook() {
             <div className="flex justify-between gap-6">
               <dt className="text-[0.95rem] text-fg-subtle">Phone</dt>
               <dd className="tabular text-right text-[0.95rem]">
-                <a href={clinic.phone.href} className="text-accent hover:underline">
+                <a href={clinic.phone.href} className="inline-flex min-h-[44px] items-center text-accent hover:underline">
                   {clinic.phone.display}
                 </a>
               </dd>

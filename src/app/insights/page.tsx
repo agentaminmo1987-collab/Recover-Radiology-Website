@@ -8,7 +8,8 @@ import { Section, SectionLabel } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Insights",
-  description: "Articles from Recover Radiology.",
+  description:
+    "Articles and updates from Recover Radiology, the bulk billed diagnostic imaging practice in Morphett Vale, South Australia. Nothing is published here yet.",
   alternates: { canonical: "/insights" },
   // Nothing publishable yet, so this stays out of the index.
   robots: { index: false, follow: true },
