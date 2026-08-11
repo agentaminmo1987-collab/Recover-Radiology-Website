@@ -23,7 +23,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-[72px] w-full max-w-[1180px] items-center gap-6 px-6 md:px-10">
         <Link
           href="/"
-          className="brand-lockup h-[38px] w-[172px] shrink-0"
+          className="brand-lockup flex h-[44px] w-[172px] shrink-0"
           aria-label={`${clinic.name}, home`}
         />
 

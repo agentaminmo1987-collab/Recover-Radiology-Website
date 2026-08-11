@@ -44,7 +44,7 @@ export function SiteFooter() {
           <div>
             <Link
               href="/"
-              className="brand-lockup block h-[38px] w-[172px]"
+              className="brand-lockup flex h-[44px] w-[172px]"
               aria-label={`${clinic.name}, home`}
             />
             <p className="mt-4 max-w-[30ch] text-[0.95rem] text-fg-muted">
@@ -89,14 +89,14 @@ export function SiteFooter() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex min-h-[40px] items-center text-[0.95rem] text-fg-muted hover:text-fg"
+                        className="inline-flex min-h-[44px] items-center text-[0.95rem] text-fg-muted hover:text-fg"
                       >
                         {link.label}
                       </a>
                     ) : (
                       <Link
                         href={link.href}
-                        className="inline-flex min-h-[40px] items-center text-[0.95rem] text-fg-muted hover:text-fg"
+                        className="inline-flex min-h-[44px] items-center text-[0.95rem] text-fg-muted hover:text-fg"
                       >
                         {link.label}
                       </Link>

@@ -206,7 +206,9 @@ html[data-theme="light"] {
   background-image: url("/brand/logo-h-white.png");
   background-repeat: no-repeat;
   background-position: left center;
-  background-size: contain;
+  /* The mark draws at 38px inside a 44px box, so the hit area clears the 44px
+     minimum without the logo growing to fill it. */
+  background-size: auto 38px;
 }
 @media (prefers-color-scheme: light) {
   html:not([data-theme="dark"]) .brand-lockup {
