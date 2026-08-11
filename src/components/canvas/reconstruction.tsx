@@ -64,6 +64,7 @@ const vertex = /* glsl */ `
   uniform float uSize;
   uniform float uPixelRatio;
   uniform float uCalm;        // 1 in the settle phase: all residual motion stops
+  uniform float uVolume;      // 0 flat plate, 1 fully extruded volume
 
   attribute vec3 aTarget;
   attribute vec3 aScatter;
@@ -74,6 +75,7 @@ const vertex = /* glsl */ `
   varying float vFade;
   varying float vDepth;
   varying float vSeed;
+  varying float vDist;
 
   void main() {
     // Per-point stagger. Points resolve over a window rather than in lockstep,
@@ -89,6 +91,21 @@ const vertex = /* glsl */ `
     float drift = ((1.0 - e) * 0.35 + 0.012) * (1.0 - uCalm * 0.92);
     pos.x += sin(uTime * 0.25 + aSeed * 22.0) * drift * 0.35;
     pos.y += cos(uTime * 0.21 + aSeed * 17.0) * drift * 0.35;
+
+    // EXTRUDE THE PLATE INTO A VOLUME.
+    //
+    // The sampled cloud is a picture with a shallow z offset. Dollying toward a
+    // flat thing can only ever read as zooming, which is exactly how it felt.
+    // Here each point is pushed along z by a dome profile: central points get a
+    // thick shell, edge points stay thin, so the cross-section gains the rounded
+    // depth an actual CT slab has instead of becoming a uniform slab of fog.
+    float rad = length(pos.xy * vec2(0.60, 1.0));
+    float shell = sqrt(max(0.0, 1.0 - rad * rad * 0.68));
+    float thickness = shell * (0.45 + aBright * 0.75);
+    // aSeed spreads points THROUGH the shell rather than onto its surface, so
+    // the interior is populated and it reads as solid volume, not a hollow husk.
+    pos.z = pos.z * mix(1.0, 3.2, uVolume)
+          + (aSeed - 0.5) * thickness * uVolume * 3.1;
 
     float fade = 1.0;
 
@@ -130,12 +147,21 @@ const vertex = /* glsl */ `
 
     // Depth of field, approximated by attenuating points away from the focal
     // plane. Cheaper than a postprocessing pass and enough at this scale.
-    float dof = 1.0 - smoothstep(0.15, 1.5, abs(mv.z + 2.6));
+    // Tighter than before so there is a genuine plane of focus with real
+    // falloff either side, rather than a uniformly sharp cloud.
+    float dof = 1.0 - smoothstep(0.10, 1.05, abs(mv.z + 2.6));
+
+    // Atmospheric depth. Distance in VIEW space, so it responds to the orbit
+    // rather than to the model's own z. This is the cue that reads as real
+    // depth: far points sit back into the deep stop and dim, near points come
+    // forward bright. Without it the volume looks like a flat sheet of confetti
+    // no matter how far it is extruded.
+    vDist = clamp((-mv.z - 1.15) / 3.1, 0.0, 1.0);
 
     vBright = aBright;
-    vDepth = clamp(pos.z * 1.8 + 0.5, 0.0, 1.0);
+    vDepth = clamp(pos.z / mix(0.65, 2.1, uVolume) * 0.5 + 0.5, 0.0, 1.0);
     vSeed = aSeed;
-    vFade = fade * mix(0.45, 1.0, dof) * (0.25 + e * 0.75);
+    vFade = fade * mix(0.45, 1.0, dof) * (0.25 + e * 0.75) * mix(1.0, 0.62, vDist);
 
     gl_Position = projectionMatrix * mv;
     // Small points. The previous size overlapped them into a wash that read as
@@ -149,7 +175,7 @@ const vertex = /* glsl */ `
 const fragment = /* glsl */ `
   precision mediump float;
 
-  uniform vec3 uDeep;   // brand green, lightened. Back of the volume.
+  uniform vec3 uDeep;   // brand green, lightened. Body of the volume.
   uniform vec3 uMid;    // brand blue. The body of the cloud.
   uniform vec3 uHot;    // near white. Bright structure at the front.
 
@@ -157,6 +183,7 @@ const fragment = /* glsl */ `
   varying float vFade;
   varying float vDepth;
   varying float vSeed;
+  varying float vDist;
 
   void main() {
     // Round, soft-edged point. Discarding outside the disc keeps the cloud from
@@ -262,6 +289,7 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
       uSize: { value: 15 },
       uPixelRatio: { value: 1 },
       uCalm: { value: 0 },
+      uVolume: { value: 0 },
       // All three stops come from the measured brand ramps in BRAND.md, so the
       // cloud varies in hue without introducing a colour the brand does not own.
       uDeep: { value: new THREE.Color("#7E9E3C") },  // brand green, chroma preserved
@@ -328,9 +356,17 @@ function Points({ tier }: { tier: 1 | 2 | 3 }) {
     // Slow yaw through the traverse so it reads as moving THROUGH a volume
     // rather than toward a picture, unwinding to square by the time it settles.
     if (group.current) {
-      group.current.rotation.y = traverse * 0.26 * (1 - settle);
-      group.current.rotation.z = traverse * 0.05 * (1 - settle);
+      // ~48 degrees. Far enough that a flat plate would collapse toward a line
+      // and a volume visibly does not, which is what sells the depth.
+      group.current.rotation.y = traverse * 0.84 * (1 - settle * 0.9);
+      group.current.rotation.x = traverse * 0.16 * (1 - settle);
+      group.current.rotation.z = traverse * 0.06 * (1 - settle);
     }
+
+    // The volume exists only through the middle of the scroll: flat plate at
+    // the top, extruded through the traverse, then relaxed back as it settles
+    // so the closing frame is the composed image again rather than a fog bank.
+    u.uVolume.value = traverse * (1 - settle * 0.55);
 
     // Motion decays to nothing in the settle phase: the CTA sits in stillness.
     u.uCalm.value = settle;

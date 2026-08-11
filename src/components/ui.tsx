@@ -126,8 +126,8 @@ export function Section({
 }) {
   const tones = {
     base: "",
-    raised: "bg-surface-raised",
-    sunken: "bg-surface-sunken",
+    raised: "bg-band-raised backdrop-blur-[2px]",
+    sunken: "bg-band-sunken backdrop-blur-[2px]",
   } as const;
   return (
     <section

@@ -190,6 +190,13 @@ html[data-theme="light"] {
   --field-invalid:       var(--danger);
 
   --nav-bg:              color-mix(in srgb, var(--surface) 82%, transparent);
+
+  /* Section bands are translucent so the reconstruction stays visible through
+     the whole page rather than disappearing behind every second section. The
+     canvas mask already keeps the cloud right of the text column, so the copy
+     still sits on a near-solid field where it matters. */
+  --band-raised:         color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  --band-sunken:         color-mix(in srgb, var(--surface-sunken) 86%, transparent);
   --nav-border:          var(--border);
 
   /* The 3D canvas sits behind everything and never carries information */
@@ -238,6 +245,8 @@ html[data-theme="light"] .brand-lockup {
   --color-surface:        var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-sunken: var(--surface-sunken);
+  --color-band-raised:    var(--band-raised);
+  --color-band-sunken:    var(--band-sunken);
   --color-fg:           var(--fg);
   --color-fg-muted:     var(--fg-muted);
   --color-fg-subtle:    var(--fg-subtle);
