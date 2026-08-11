@@ -1,3 +1,4 @@
+import { CanvasStage } from "@/components/canvas/stage";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
@@ -21,6 +22,7 @@ import { LocationBook } from "@/components/sections/location-book";
 export default function Home() {
   return (
     <>
+      <CanvasStage />
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
         <Hero />
