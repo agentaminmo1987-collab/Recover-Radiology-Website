@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Recover Radiology
 
-## Getting Started
+Public website for Recover Radiology, a bulk billed diagnostic imaging practice
+in Morphett Vale, South Australia.
 
-First, run the development server:
+**Live:** https://recover-radiology-web.vercel.app
+
+Not to be confused with `recover-radiology/` in this workspace, which is the
+internal marketing dashboard and referral CRM. Different product, different repo.
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3270
+npm run build && npx next start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Test it
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx playwright test  # 36 tests + screenshots at 4 widths, against a prod build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tests run against a production build, never the dev server: dev serves different
+CSS and different chunking, so a pass there says nothing about what ships.
 
-## Learn More
+## Regenerate assets
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+node scripts/optimise-images.mjs   # masters in public/img/_raw -> AVIF + WebP
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Masters are gitignored. 237 MB in, 7.2 MB shipped.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Read these before changing anything
 
-## Deploy on Vercel
+| File | Why |
+|---|---|
+| `BRAND.md` | The measured palette and the rule that governs it |
+| `VOICE.md` | How this practice is allowed to sound, and the banned-phrase table |
+| `DESIGN-DECISIONS.md` | What was rejected and why |
+| `SECURITY.md` | The secure-data-access checklist result |
+| `PERF.md` | Lighthouse, budgets, and where the headroom is thin |
+| `QUESTIONS.md` | Everything parked for the client, each with a default applied |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Three constraints that are not preferences
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**AHPRA section 133.** This is a regulated health service. No testimonials, no
+ratings, no reviews, no superlatives, no before-and-after imagery. A Playwright
+test guards the one claim most likely to drift: the bulk billing headline must
+never ship without its exception beside it.
+
+**`lib/clinic.ts` is a closed fact set.** Every clinical claim, preparation
+instruction, duration and billing rule lives there and came from the practice.
+If a component needs a fact that is not in it, that gets a marked placeholder and
+a line in `QUESTIONS.md`, never an invention. An assistant confidently repeating
+a wrong fasting time is a clinical problem, not a marketing one.
+
+**The palette is inverted.** Forest and Bloom are the only brand colours that may
+carry type; Sky, Moss, Rain and Dust are backgrounds only. That is the brand's own
+rule from the style guide, and measurement agrees with it on every line.
+
+## Stack
+
+Next.js 16 App Router, TypeScript strict, Tailwind v4 with a three-layer token
+system, zod, Playwright, Vercel. Almost everything is a Server Component: the
+only client components are the enquiry form, the scroll logo and the video mount.
