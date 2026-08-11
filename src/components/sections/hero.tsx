@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { clinic, REPORT_TURNAROUND } from "@/lib/clinic";
 import { ButtonLink } from "@/components/ui";
 import { ScrollLogo } from "@/components/scroll-logo";
@@ -13,17 +14,21 @@ import { ScrollLogo } from "@/components/scroll-logo";
 export function Hero() {
   return (
     <section className="relative flex min-h-[min(100svh,54rem)] items-center overflow-hidden">
-      {/* Fallback field. Replaced by the canvas in Phase D, and this is also
-          exactly what reduced-motion and low-power devices keep. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 68% 22%, color-mix(in srgb, var(--accent) 7%, transparent) 0%, transparent 62%), " +
-            "radial-gradient(90% 70% at 22% 78%, color-mix(in srgb, var(--accent-quiet) 5%, transparent) 0%, transparent 58%)",
-        }}
-      />
+      {/* The hero image. These renders are the approved direction: warm gold
+          particles resolving into an anatomical form, in the practice's own
+          material world of pale timber, cove light and polished concrete.
+          Decorative, so it carries an empty alt and the copy never depends on
+          it. Priority because it IS the LCP element. */}
+      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+        <Image
+          src="/img/ref/wave-ref-1-2560.avif"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-right"
+        />
+      </div>
 
       {/* Scrim. The last line of defence for legibility: a wash of the page
           surface from the left, sitting above the fixed canvas and below the
@@ -36,11 +41,12 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            "linear-gradient(to right, var(--surface) 0%, var(--surface) 26%, color-mix(in srgb, var(--surface) 55%, transparent) 45%, transparent 62%)",
+            "linear-gradient(to right, var(--surface) 0%, var(--surface) 46%, color-mix(in srgb, var(--surface) 92%, transparent) 56%, color-mix(in srgb, var(--surface) 55%, transparent) 68%, transparent 84%)",
         }}
       />
 
       <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
+        <div className="max-w-[34rem] lg:max-w-[38rem]">
         {/* Travels up into the header as the page scrolls. See ScrollLogo. */}
         <ScrollLogo />
 
@@ -48,11 +54,11 @@ export function Hero() {
           {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed
         </p>
 
-        <h1 className="mt-6 max-w-[19ch] text-balance text-[clamp(2.6rem,7vw,5.25rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
+        <h1 className="mt-6 text-balance text-[clamp(2.6rem,7vw,5.25rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
           Forming your road to recovery
         </h1>
 
-        <p className="mt-7 max-w-[54ch] text-pretty text-[1.15rem] leading-[1.55] text-fg-muted md:text-[1.3rem]">
+        <p className="mt-7 text-pretty text-[1.15rem] leading-[1.55] text-fg-muted md:text-[1.3rem]">
           Ultrasound, CT, X-ray and image guided procedures in{" "}
           {clinic.address.suburb}. Most services are bulk billed, and your
           report reaches your doctor within {REPORT_TURNAROUND}.
@@ -77,6 +83,7 @@ export function Hero() {
           </a>
           , {clinic.hours.display.toLowerCase()}
         </p>
+        </div>
       </div>
     </section>
   );

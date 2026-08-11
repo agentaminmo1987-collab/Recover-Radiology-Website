@@ -8,7 +8,6 @@ import { Services } from "@/components/sections/services";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { Billing } from "@/components/sections/billing";
 import { Credibility } from "@/components/sections/credibility";
-import { Referrers } from "@/components/sections/referrers";
 import { LocationBook } from "@/components/sections/location-book";
 
 /**
@@ -31,7 +30,6 @@ export default function Home() {
         <HowItWorks />
         <Billing />
         <Credibility />
-        <Referrers />
         <LocationBook />
       </main>
       <SiteFooter />

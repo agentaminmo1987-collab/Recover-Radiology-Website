@@ -24,6 +24,7 @@ const WIDTHS = {
   photography: [640, 1024, 1600],
   social: [1200],
   textures: [512, 1024],
+  ref: [640, 1024, 1600, 2560],
 };
 
 // Textures are sampled by the GPU and must stay lossless-ish and square-safe.

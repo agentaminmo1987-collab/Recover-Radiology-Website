@@ -61,6 +61,14 @@ const fragment = /* glsl */ `
     return v * 0.78;
   }
 
+  // Turns a continuous sine into a distinct travelling pulse: a narrow crest
+  // with clear space either side. A plain sine has no gaps, which is why the
+  // field read as one continuous swell rather than as separate wavefronts.
+  float pulse(float x, float sharp) {
+    float s = sin(x) * 0.5 + 0.5;
+    return pow(s, sharp);
+  }
+
   void main() {
     vec2 uv = vUv;
     // Correct for aspect so the field never stretches on wide screens.
@@ -71,7 +79,7 @@ const fragment = /* glsl */ `
     // Time only. Scroll deliberately does NOT feed into this: the field is a
     // steady ambient loop and must look identical at the top and the bottom of
     // the page. Anything that ties it to scroll makes it appear to accelerate.
-    float t = uTime * 0.055;
+    float t = uTime * 0.105;
 
     // Domain warp. Displacing the sample point by noise is what turns straight
     // wavefronts into flowing, organic fields rather than a striped pattern.
@@ -103,22 +111,28 @@ const fragment = /* glsl */ `
     float pitch = 1.0 + sin(t * 0.31 + 0.6) * 0.11;
 
     float travel = t * 2.4 * sets;
-    float swell =
-        sin(phase * 1.00 * pitch + warp * 1.45 - travel * 1.00) * 0.54
-      + sin(phase * 1.87 * pitch + warp * 1.00 - travel * 1.43) * 0.30
-      + sin(phase * 3.31 * pitch + warp * 0.62 - travel * 2.05) * 0.16;
+
+    // DISTINCT PULSES. Three trains, each a narrow crest with real space after
+    // it, travelling along the same axis at slightly different speeds so they
+    // pass through one another the way pulse-echo returns do. The sharpness is
+    // what separates them: a low exponent smears back into continuous swell.
+    float p1 = pulse(phase * 1.00 * pitch + warp * 1.35 - travel * 1.00, 5.0) * 0.62;
+    float p2 = pulse(phase * 1.63 * pitch + warp * 0.95 - travel * 1.38, 7.0) * 0.34;
+    float p3 = pulse(phase * 2.71 * pitch + warp * 0.60 - travel * 1.95, 9.0) * 0.20;
+
+    float swell = p1 + p2 + p3;
 
     // A slow cross swell, much weaker, so crests are never perfectly parallel.
-    float cross = sin(dot(p, normalize(vec2(-0.32, 0.95))) * 2.1 - travel * 0.55) * 0.16;
+    float cross = pulse(dot(p, normalize(vec2(-0.32, 0.95))) * 2.1 - travel * 0.55, 6.0) * 0.16;
 
-    float mixed = (swell + cross) * 0.5 + 0.5;
+    float mixed = clamp(swell + cross, 0.0, 1.0);
     // A trace of fbm keeps the smoke feel in the troughs without adding chaos.
-    mixed = mix(mixed, fbm(p * 1.3 + r * 0.8), 0.16);
+    mixed = mix(mixed, fbm(p * 1.3 + r * 0.8), 0.10);
 
     // Broad soft bands. smoothstep rather than a hard step so there is never a
     // visible edge; this has to sit behind text without competing.
-    float band = smoothstep(0.18, 0.94, mixed);
-    float rim  = smoothstep(0.50, 0.70, mixed) * (1.0 - smoothstep(0.74, 0.98, mixed));
+    float band = smoothstep(0.02, 0.46, mixed);
+    float rim  = smoothstep(0.30, 0.58, mixed) * (1.0 - smoothstep(0.66, 0.95, mixed));
 
     vec3 col = uBase;
     col = mix(col, uInk,  band * 1.0);
@@ -132,7 +146,7 @@ const fragment = /* glsl */ `
     // Keep the left column clear for the headline. The copy always wins.
     float clearLeft = smoothstep(0.02, 0.48, uv.x);
 
-    float a = falloff * clearLeft * uStrength;
+    float a = falloff * clearLeft * uStrength * (0.06 + band * 0.94);
     gl_FragColor = vec4(mix(uBase, col, a), a);
   }
 `;
@@ -187,7 +201,7 @@ function Field() {
       // Dust and Bloom at 40%. The 20% tints sat so close to the canvas that
       // the field barely registered; 40% gives it presence while both remain
       // background tints that never carry type.
-      u.uInk.value.set("#F1EFDB");  // Dust 40%, the warm body
+      u.uInk.value.set("#E7E3C7");  // Dust 60%, the warm crest
       u.uCool.value.set("#B6BDEE"); // Bloom 40%, the cool wave
       u.uStrength.value = 1.0;
     } else {
