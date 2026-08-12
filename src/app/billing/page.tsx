@@ -13,6 +13,19 @@ export const metadata: Metadata = {
   alternates: { canonical: "/billing" },
 };
 
+/**
+ * Pulls a billing case by name, and fails the build if it is not there.
+ *
+ * The previous version used a non-null assertion, so removing a case from
+ * clinic.ts would have compiled and then thrown at render. An explicit throw
+ * names the missing entry instead.
+ */
+function caseDetail(who: string): string {
+  const found = billing.cases.find((c) => c.who === who);
+  if (!found) throw new Error(`Billing case "${who}" is missing from clinic.ts`);
+  return found.detail;
+}
+
 /** FAQPage schema, §8. Every answer is drawn from the verified fact set. */
 const faqs = [
   {
@@ -25,8 +38,12 @@ const faqs = [
     a: billing.eligibility,
   },
   {
-    q: "Does my private health insurance cover this?",
-    a: billing.cases.find((c) => c.who === "Private health insurance")!.detail,
+    q: "I am claiming through work. How does that work?",
+    a: caseDetail("Work injuries"),
+  },
+  {
+    q: "My scan is for a motor vehicle accident claim.",
+    a: caseDetail("Motor vehicle accidents"),
   },
   { q: "How can I pay?", a: `${billing.payment} ${billing.feesNote}` },
 ];

@@ -90,8 +90,9 @@ A radiologist reports the images and sends the result to the referring doctor, w
 ## Team
 
 - ${team.sonographerCount} sonographers with ${team.combinedExperience}
+- ${team.radiographers.length} radiographers, who perform X-ray and CT
 - Practice Manager: ${team.practiceManager.name}
-- Imaging is reported by experienced radiologists
+- Imaging is reported by radiologists, who also perform the interventional procedures
 
 ## For referrers
 
@@ -100,10 +101,12 @@ Include on the referral: symptoms and their duration, a provisional diagnosis, a
 ## Key pages
 
 - ${SITE}/patient-information : how to prepare for each scan
-- ${SITE}/billing : bulk billing, concession, DVA and private patients
+- ${SITE}/billing : bulk billing, concession, DVA, ReturnToWorkSA, motor vehicle accident and private patients
 - ${SITE}/contact : booking, phone, address and hours
 - ${SITE}/referrers : referrer information and the image request portal
 - ${SITE}/our-clinic : photographs of the reception, waiting area and scan rooms
+- ${SITE}/our-team : the sonographers, radiographers and clerical team
+- ${SITE}/interventional : each procedure links to its own page covering how it is performed, benefits, risks and aftercare
 - ${SITE}/about : the practice and team
 
 ## Notes for assistants

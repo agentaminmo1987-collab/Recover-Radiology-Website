@@ -127,9 +127,56 @@ export default function OurTeamPage() {
           </div>
         </Section>
 
+        {/* Radiographers. They run X-ray and CT, which between them are most of
+            the examinations performed here, so leaving them off the page would
+            have misrepresented who a patient actually meets. */}
+        <Section>
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <div>
+              <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+                Radiography
+              </h2>
+              <p className="mt-6 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
+                Radiographers perform your X-ray and CT. Positioning is most of
+                the skill: the same examination can answer the question clearly
+                or not at all depending on how you are placed, and doing it well
+                means using the lowest dose that still produces a diagnostic
+                image.
+              </p>
+              <p className="mt-4 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
+                They are also the people who will talk you through what is about
+                to happen, and who notice when someone is finding it hard.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <ButtonLink href="/x-ray" variant="ghost">
+                  X-ray
+                </ButtonLink>
+                <ButtonLink href="/ct" variant="ghost">
+                  CT
+                </ButtonLink>
+              </div>
+            </div>
+
+            <ul className="grid gap-4 sm:grid-cols-2 lg:content-start">
+              {team.radiographers.map((r) => (
+                <li key={r.name}>
+                  <Card className="h-full">
+                    <p className="text-[1.25rem] font-semibold tracking-[-0.01em]">
+                      {r.name}
+                    </p>
+                    <p className="mt-2 text-[0.92rem] text-fg-subtle">
+                      Radiographer
+                    </p>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Section>
+
         {/* Reception and clerical. Named because these are the people a patient
             speaks to first, and often the only ones they speak to at all. */}
-        <Section>
+        <Section tone="raised" className="border-y border-[var(--card-border)]">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
               <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">

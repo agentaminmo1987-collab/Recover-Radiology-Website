@@ -194,11 +194,17 @@ export const modalities: Modality[] = [
     bulkBilledNote: "Some interventional procedures are not bulk billed.",
     types: [
       { name: "Cortisone Injection", detail: "" },
-      { name: "Euflexxa Injection", detail: "" },
+      // Named by what it treats, not by brand. Confirmed by the practice
+      // 2026-08-12: the previous "Euflexxa" entry was a product name, and a
+      // patient searching for help with an arthritic knee does not search for
+      // it.
+      { name: "Osteoarthritis Injection", detail: "" },
+      { name: "Hydrodilatation", detail: "" },
       { name: "Facet Joint Injection", detail: "" },
       { name: "Nerve Root Block", detail: "" },
       { name: "Epidural Injection", detail: "" },
       { name: "Medial Branch Block", detail: "" },
+      { name: "Fine Needle Aspiration and Core Biopsy", detail: "" },
     ],
     preparation: [
       {
@@ -252,9 +258,14 @@ export const billing = {
         "Full payment is due at the time of your examination. Our staff lodge the Medicare rebate electronically and it is paid into your nominated account.",
     },
     {
-      who: "Private health insurance",
+      who: "Work injuries",
       detail:
-        "Only covers imaging performed as an admitted hospital patient, so it does not apply to scans here.",
+        "We bill ReturnToWorkSA directly for accepted claims. Bring your claim number and your employer's details.",
+    },
+    {
+      who: "Motor vehicle accidents",
+      detail:
+        "Imaging related to a motor vehicle accident claim is billed to the claim. Bring your claim number.",
     },
   ],
   payment: "We accept EFTPOS and credit card. We do not accept AMEX.",
@@ -276,6 +287,12 @@ export const team = {
   clericalLead: { name: "Ashleigh", role: "Clerical Lead" },
   clerical: [{ name: "Chilali" }, { name: "Melanie" }],
   sonographers: [{ name: "Matt" }, { name: "David" }, { name: "Laura" }],
+  /** Confirmed by the practice, 2026-08-12. They run X-ray and CT. */
+  radiographers: [{ name: "Marlon" }, { name: "Yasna" }],
+  /**
+   * Applies to the sonographers specifically, which is the only group it was
+   * ever supplied for. It must not drift into meaning the whole team.
+   */
   combinedExperience: "25 years of combined experience",
   sonographerCount: 3,
 } as const;

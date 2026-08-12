@@ -217,9 +217,14 @@ how you actually do it. Then flip `signedOff` to `true` for that procedure, one
 word each. A Playwright test asserts unsigned pages stay out of search, so this
 cannot be forgotten silently.
 
-Two specific things to check: whether Euflexxa is offered for joints other than
-the knee, and whether your medial branch blocks are used diagnostically before
-radiofrequency ablation, as the page states.
+**Resolved 2026-08-12:** the Euflexxa question. The brand name is gone; the
+procedure is now "Osteoarthritis Injection", used in knee, hip, shoulder and
+smaller synovial joints where indicated, as a series of three injections two to
+four weeks apart. Hydrodilatation and fine needle aspiration / core biopsy were
+added at the same time. Those pages still need reading, like the rest.
+
+**Still to check:** whether your medial branch blocks are used diagnostically
+before radiofrequency ablation, as that page states.
 
 ---
 

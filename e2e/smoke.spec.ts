@@ -464,3 +464,63 @@ test("nav menus open on keyboard focus, not hover alone", async ({ page }) => {
     "focus-within must open the menu, or keyboard users cannot reach it",
   ).toBe("visible");
 });
+
+test("procedures are named by what they treat, not by product brand", async ({
+  page,
+}) => {
+  // Dropped 2026-08-12 at the practice's direction. A brand name is not what a
+  // patient with an arthritic knee searches for, and advertising a therapeutic
+  // product by brand is its own regulatory problem.
+  for (const path of ["/interventional", "/interventional/osteoarthritis-injection"]) {
+    await page.goto(path);
+    const body = (await page.locator("main").innerText()).toLowerCase();
+    expect(body, `${path} still names the brand`).not.toContain("euflexxa");
+  }
+});
+
+test("the interventional page covers every procedure the practice performs", async ({
+  page,
+}) => {
+  await page.goto("/interventional");
+  const body = await page.locator("main").innerText();
+  for (const name of [
+    "Cortisone Injection",
+    "Osteoarthritis Injection",
+    "Hydrodilatation",
+    "Facet Joint Injection",
+    "Nerve Root Block",
+    "Epidural Injection",
+    "Medial Branch Block",
+    "Fine Needle Aspiration and Core Biopsy",
+  ]) {
+    expect(body, `missing ${name}`).toContain(name);
+  }
+});
+
+test("billing covers work and motor vehicle claims, not private health", async ({
+  page,
+}) => {
+  await page.goto("/billing");
+  const body = (await page.locator("main").innerText()).toLowerCase();
+  expect(body).toContain("returntoworksa");
+  expect(body).toContain("motor vehicle");
+  // Removed at the practice's direction 2026-08-12.
+  expect(body).not.toContain("private health insurance");
+});
+
+test("the team page names radiographers as well as sonographers", async ({
+  page,
+}) => {
+  await page.goto("/our-team");
+  const body = await page.locator("main").innerText();
+  for (const name of ["Matt", "David", "Laura", "Marlon", "Yasna"]) {
+    expect(body, `missing ${name}`).toContain(name);
+  }
+  expect(body).toContain("Radiography");
+
+  // AHPRA s133: no superlatives about a regulated health service.
+  const lower = body.toLowerCase();
+  for (const word of ["highly talented", "best ", "leading ", "expert", "world class"]) {
+    expect(lower, `superlative "${word.trim()}" must not ship`).not.toContain(word);
+  }
+});

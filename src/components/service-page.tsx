@@ -44,6 +44,10 @@ const HERO_VIDEO: Partial<Record<ModalitySlug, { src: string; poster: string }>>
     src: "/video/ultrasound.mp4",
     poster: "/img/poster/ultrasound-1600.avif",
   },
+  interventional: {
+    src: "/video/interventional.mp4",
+    poster: "/img/poster/interventional-1600.avif",
+  },
 };
 
 /** Abstract brand art, not a depiction of the premises. Safe under AHPRA. */

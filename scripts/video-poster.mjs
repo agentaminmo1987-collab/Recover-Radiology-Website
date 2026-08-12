@@ -17,7 +17,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 
-const VIDEOS = ["ct-forming", "ct-scan", "ultrasound"];
+const VIDEOS = ["ct-forming", "ct-scan", "ultrasound", "interventional"];
 const PORT = 4599;
 
 const types = { ".mp4": "video/mp4", ".html": "text/html" };

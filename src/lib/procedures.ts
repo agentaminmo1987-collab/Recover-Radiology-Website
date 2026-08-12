@@ -99,29 +99,35 @@ export const procedures: Procedure[] = [
     signedOff: false,
   },
   {
-    slug: "euflexxa-injection",
-    name: "Euflexxa Injection",
-    alsoCalled: "Hyaluronic acid, or viscosupplementation",
+    slug: "osteoarthritis-injection",
+    name: "Osteoarthritis Injection",
+    alsoCalled: "Hyaluronic acid injection, or viscosupplementation",
     summary:
-      "An injection of a gel-like fluid into an arthritic joint to improve lubrication and cushioning.",
+      "A course of three injections that supplement the natural lubricating fluid in an arthritic joint.",
     whatItIs:
-      "Euflexxa is a preparation of hyaluronic acid, a substance that occurs naturally in the fluid inside your joints and gives it its thickness and slipperiness. In an arthritic joint that fluid becomes thinner and less protective. Injecting hyaluronic acid supplements what is already there. It is not a steroid and it does not work by reducing inflammation.",
+      "Hyaluronic acid occurs naturally in the fluid inside your joints and gives it its thickness and slipperiness. In an arthritic joint that fluid becomes thinner and less protective. Injecting hyaluronic acid supplements what is already there. It is not a steroid, and it does not work by reducing inflammation, so it suits people for whom a steroid injection is unsuitable or has not helped enough.",
+    // Sites and course confirmed by the practice, 2026-08-12.
     whatItTreats: [
       "Osteoarthritis of the knee",
+      "Osteoarthritis of the hip",
+      "Osteoarthritis of the shoulder",
+      "Smaller synovial joints, where indicated",
       "Joint pain where anti-inflammatory treatment has not given enough relief, or is unsuitable",
     ],
     howItIsPerformed: [
       "The joint is scanned so the radiologist can identify the joint space.",
       "The skin is cleaned with antiseptic and numbed with local anaesthetic.",
-      "The needle is guided into the joint space under imaging.",
+      "The needle is guided into the joint space under imaging, which matters most in the hip and shoulder where the joint cannot be reached reliably by feel.",
       "The hyaluronic acid is injected.",
-      "It is commonly given as a course of injections rather than a single one. Your referring doctor will tell you how many.",
+      "This is given as a series of three injections, generally two to four weeks apart. All three are part of one course of treatment.",
     ],
-    duration: "Usually 15 to 20 minutes per injection.",
+    duration:
+      "Usually 15 to 20 minutes per injection, across three visits two to four weeks apart.",
     benefits: [
       "Improves lubrication and shock absorption inside the joint.",
-      "Relief tends to build gradually and can last for months.",
+      "Relief tends to build gradually across the course and can last for months.",
       "Contains no corticosteroid, so it avoids the effects steroids can have on blood sugar and on nearby tissue.",
+      "Can be used in joints other than the knee, including the hip and shoulder.",
     ],
     risks: [
       "Pain, warmth or swelling in the joint for a short period after the injection.",
@@ -131,8 +137,93 @@ export const procedures: Procedure[] = [
     ],
     aftercare: [
       "Avoid strenuous activity and prolonged weight bearing for the rest of the day.",
-      "The effect builds over following weeks rather than arriving immediately.",
+      "The effect builds across the course rather than arriving after the first injection, so it is worth completing all three.",
+      "Book the next injection in the series before you leave.",
       "Tell your referring doctor if the joint becomes hot, very swollen or increasingly painful.",
+    ],
+    signedOff: false,
+  },
+  {
+    slug: "hydrodilatation",
+    name: "Hydrodilatation",
+    alsoCalled: "Hydrodilation, or capsular distension",
+    summary:
+      "An injection of fluid into the shoulder joint to stretch a capsule that has tightened, used for frozen shoulder.",
+    whatItIs:
+      "In frozen shoulder the capsule surrounding the joint becomes thickened and contracted, which is what limits the movement and causes the pain. Hydrodilatation injects a volume of fluid, usually saline with local anaesthetic and a steroid, into the joint under pressure. The volume itself stretches the capsule from the inside, while the steroid settles the inflammation. It treats the mechanical problem and the inflammation at once.",
+    whatItTreats: [
+      "Frozen shoulder, also called adhesive capsulitis",
+      "Shoulder stiffness and pain where the capsule has tightened",
+      "Restricted shoulder movement that has not responded to physiotherapy alone",
+    ],
+    howItIsPerformed: [
+      "The shoulder is scanned so the radiologist can identify the joint.",
+      "The skin is cleaned with antiseptic and numbed with local anaesthetic.",
+      "A needle is guided into the joint under imaging.",
+      "Fluid is injected steadily. You will feel increasing pressure and tightness in the shoulder as the capsule stretches, which is the procedure working rather than a sign of a problem.",
+      "The injection stops when the capsule has taken as much volume as it will accept.",
+    ],
+    duration: "Usually 20 to 30 minutes.",
+    benefits: [
+      "Stretches the capsule directly, which physiotherapy alone can struggle to achieve while the shoulder is painful.",
+      "Combines a mechanical stretch with an anti-inflammatory in a single procedure.",
+      "Often creates a window in which physiotherapy becomes effective, so the gain in movement can be built on.",
+    ],
+    risks: [
+      "A feeling of pressure and tightness during the injection, and aching for a day or two afterwards.",
+      "A temporary increase in shoulder pain before it improves.",
+      "The effects steroids can have, including a temporary rise in blood sugar and facial flushing.",
+      "The capsule can tighten again, and more than one treatment is sometimes needed.",
+      PROCEDURE_UNIVERSAL_RISK,
+    ],
+    aftercare: [
+      "Arrange transport home. The shoulder will be sore and the arm may feel heavy.",
+      "Start moving the shoulder gently as advised rather than resting it completely. The stretch is most useful if it is built on.",
+      "Follow up with your physiotherapist. The window this creates is the point of the procedure.",
+      "Tell your referring doctor if the shoulder becomes hot, very swollen or increasingly painful.",
+    ],
+    signedOff: false,
+  },
+  {
+    slug: "fine-needle-aspiration-and-core-biopsy",
+    name: "Fine Needle Aspiration and Core Biopsy",
+    alsoCalled: "FNA, or image guided biopsy",
+    summary:
+      "A sample of cells or tissue taken with a needle under image guidance, so a diagnosis can be made from the tissue itself.",
+    whatItIs:
+      "Imaging can show that something is there and describe it, but some questions can only be answered by looking at the tissue under a microscope. These two procedures take that sample with a needle rather than with surgery. A fine needle aspiration uses a very thin needle to draw out cells or fluid. A core biopsy uses a slightly larger needle to take a small cylinder of tissue, which keeps the tissue's structure intact and so answers more. Which one is used depends on what is being sampled and what the question is. Ultrasound or CT guides the needle throughout, so the sample comes from the right place.",
+    whatItTreats: [
+      "Establishing what a lump or a mass actually is",
+      "Sampling an abnormal lymph node",
+      "Sampling a thyroid nodule",
+      "Draining and testing a collection of fluid",
+    ],
+    howItIsPerformed: [
+      "The area is scanned so the radiologist can see the target and plan a path to it.",
+      "The skin is cleaned with antiseptic and numbed with local anaesthetic.",
+      "The needle is advanced under live image guidance, so its tip is watched the whole way in.",
+      "For a fine needle aspiration, cells are drawn back through the needle. For a core biopsy, a spring loaded device takes a small core of tissue, which makes a sharp click you will hear.",
+      "More than one sample is usually taken, to give the laboratory enough to work with.",
+      "The samples go to a pathologist, and the result goes to the doctor who referred you.",
+    ],
+    duration: "Usually 20 to 30 minutes, including preparation and a short rest afterwards.",
+    benefits: [
+      "Gives a tissue diagnosis without an operation, a general anaesthetic or a hospital admission.",
+      "Image guidance means the sample comes from the part that matters, including targets too small or too deep to feel.",
+      "A definite answer often prevents further scans, and sometimes prevents surgery.",
+    ],
+    risks: [
+      "Bruising, and soreness at the site for a few days.",
+      "Bleeding, which is why we need to know in advance about blood thinning medication.",
+      "An inconclusive sample, which means there was not enough material to answer the question and the procedure may need repeating.",
+      "Injury to a structure near the target, which depends on where the sample is being taken from.",
+      PROCEDURE_UNIVERSAL_RISK,
+    ],
+    aftercare: [
+      "Arrange transport home, and plan a quiet rest of the day.",
+      "Keep the site clean and dry, and avoid strenuous activity or heavy lifting for the rest of the day.",
+      "Results go to your referring doctor rather than to you directly, because the conversation about what they mean belongs with the doctor who knows your history. Ask them how long the laboratory usually takes.",
+      "Seek medical attention for bleeding that does not settle with pressure, increasing swelling, fever, or increasing pain.",
     ],
     signedOff: false,
   },
