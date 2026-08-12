@@ -46,7 +46,7 @@ export function SiteFooter() {
           <div>
             <Link
               href="/"
-              className="brand-lockup flex h-[44px] w-[172px]"
+              className="brand-lockup flex h-[52px] w-[108px]"
               aria-label={`${clinic.name}, home`}
             />
             <p className="mt-4 max-w-[30ch] text-[0.95rem] text-fg-muted">

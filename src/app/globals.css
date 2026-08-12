@@ -190,12 +190,17 @@ html[data-theme="light"] {
    tags so the browser only ever fetches the one the winning rule applies.
    --------------------------------------------------------------------------- */
 .brand-lockup {
-  background-image: url("/brand/logo-h-colour.png");
+  /* The TIGHT file, not the master.
+     The supplied master is 1597x969 with the artwork occupying only x194-1406,
+     y192-776 of it: roughly 24% transparent padding across and 40% down. Sized
+     by its outer box, a 38px-tall background drew about 23px of actual logo,
+     which is why it read as small in a 72px bar while appearing correctly
+     sized in the markup. The tight file is that master with the transparency
+     trimmed (scripts/trim-brand.mjs), so box height now equals ink height. */
+  background-image: url("/brand/logo-h-colour-tight.png");
   background-repeat: no-repeat;
   background-position: left center;
-  /* The mark draws at 38px inside a 44px box, so the hit area clears the 44px
-     minimum without the logo growing to fill it. */
-  background-size: auto 38px;
+  background-size: contain;
 }
 
 

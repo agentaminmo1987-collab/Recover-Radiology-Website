@@ -23,20 +23,20 @@ export function Services() {
       </Lead>
 
       <ul className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] md:grid-cols-2">
-        {modalities.map((m, i) => (
+        {modalities.map((m) => (
           <li key={m.slug} className="bg-[var(--card-bg)]">
             <Link
               href={`/${m.slug}`}
               className="group flex h-full flex-col p-8 transition-colors duration-[var(--rr-dur-base)] ease-[var(--rr-ease)] hover:bg-surface-sunken md:p-10"
             >
-              <div className="flex items-baseline gap-4">
-                <span className="tabular text-[0.8rem] text-fg-subtle">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-[1.5rem] font-semibold tracking-[-0.01em] md:text-[1.75rem]">
-                  {m.name}
-                </h3>
-              </div>
+              {/* No index numbers. They implied an order these four do not
+                  have: nobody works through ultrasound to X-ray in sequence,
+                  they arrive needing one. Removing them also lets the heading
+                  sit flush with the copy and the figures below it, so each card
+                  reads down a single left edge. */}
+              <h3 className="text-[1.5rem] font-semibold tracking-[-0.01em] md:text-[1.75rem]">
+                {m.name}
+              </h3>
 
               <p className="mt-4 max-w-[46ch] text-pretty leading-[1.55] text-fg-muted">
                 {m.summary}

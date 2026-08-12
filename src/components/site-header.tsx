@@ -82,10 +82,12 @@ const triggerClass =
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--nav-border)] bg-[var(--nav-bg)] backdrop-blur-md">
-      <div className="mx-auto flex h-[72px] w-full max-w-[1180px] items-center gap-6 px-6 md:px-10">
+      <div className="mx-auto flex h-[76px] w-full max-w-[1180px] items-center gap-6 px-6 md:h-[84px] md:px-10">
         <Link
           href="/"
-          className="brand-lockup flex h-[44px] w-[172px] shrink-0"
+          // Box matches the trimmed artwork's 2.074 aspect, so `contain`
+          // fills it exactly rather than letterboxing inside a wider box.
+          className="brand-lockup flex h-[46px] w-[95px] shrink-0 md:h-[54px] md:w-[112px]"
           aria-label={`${clinic.name}, home`}
         />
 
