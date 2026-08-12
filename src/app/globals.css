@@ -396,6 +396,130 @@ summary {
 }
 
 /* ---------------------------------------------------------------------------
+   TRUST BAND, SCROLL-LINKED HIGHLIGHT
+
+   Each fact lights up as it comes up the screen, one after another across the
+   row. Three decisions worth recording:
+
+   1. SCROLL-LINKED, NOT TIMED. The progress is driven by `view()`, so it is
+      tied to the scroll position rather than to a clock. Scroll back up and it
+      un-highlights; stop halfway and it stays halfway. A timed reveal fired
+      once on intersection and then lied about where you were.
+
+   2. THE TEXT NEVER FADES. It would be easy to animate opacity from 0, and the
+      result would be a band of unreadable text for anyone who stops mid-scroll
+      or scrolls slowly. The value's COLOUR travels from ink to accent and a
+      rule wipes in beneath it; both endpoints are legible, so there is no
+      moment where the content is unreadable.
+
+   3. THE RESTING STATE IS THE FINAL STATE. Everything below sits inside
+      @supports, so a browser without scroll-driven animation renders the
+      highlighted state as plain CSS and loses nothing but the motion.
+
+   The stagger comes from --i on each item: every item's range starts 13% later
+   than the previous one, so the highlight travels across the row rather than
+   flashing all at once. The spacing was widened from 7% after measuring: at 7%
+   the whole row had finished before the band reached the middle of the screen,
+   which meant the travel happened where nobody was looking.
+   --------------------------------------------------------------------------- */
+
+.trust-item__value {
+  color: var(--accent);
+}
+.trust-item__rule {
+  background: var(--accent);
+  transform-origin: left center;
+}
+
+/* The "what is covered" affordance.
+   Written here rather than as a Tailwind arbitrary variant. The obvious
+   `[@media(hover:hover)and(pointer:fine)]:opacity-0` compiled to ZERO rules,
+   silently, and the class looked correct in the markup the whole time: the
+   same failure mode as the `[--var]` bug recorded in DESIGN-DECISIONS.md.
+   Verified by grepping the built stylesheet, not by reading the JSX.
+
+   Visible by default so touch devices get an affordance at all, since they
+   never fire hover. Hidden until hover only where a real pointer exists. */
+.trust-item__more {
+  opacity: 1;
+  transition: opacity var(--rr-dur-base) var(--rr-ease);
+}
+.trust-item__more > span {
+  transition: transform var(--rr-dur-base) var(--rr-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trust-item__more {
+    opacity: 0;
+  }
+  .trust-item:hover .trust-item__more,
+  .trust-item:focus-within .trust-item__more {
+    opacity: 1;
+  }
+  .trust-item:hover .trust-item__more > span {
+    transform: translateX(4px);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .trust-item__value {
+    color: var(--fg-muted);
+    animation: rr-trust-value linear both;
+    animation-timeline: view();
+    animation-range: entry calc(15% + var(--i, 0) * 13%) cover calc(42% + var(--i, 0) * 13%);
+  }
+
+  .trust-item__rule {
+    animation: rr-trust-rule linear both;
+    animation-timeline: view();
+    animation-range: entry calc(15% + var(--i, 0) * 13%) cover calc(42% + var(--i, 0) * 13%);
+  }
+
+  /* Reduced motion keeps the colour change, which carries the meaning, and
+     drops the wipe, which is decoration. Explicitly opted out rather than left
+     to the global duration override: how a UA resolves an authored duration
+     against a progress-based timeline is not something to rely on. */
+  @media (prefers-reduced-motion: reduce) {
+    .trust-item__value {
+      animation-name: rr-trust-value-plain;
+    }
+    .trust-item__rule {
+      animation: none;
+      transform: none;
+    }
+  }
+}
+
+@keyframes rr-trust-value {
+  from {
+    color: var(--fg-muted);
+    transform: translateY(6px);
+  }
+  to {
+    color: var(--accent);
+    transform: translateY(0);
+  }
+}
+
+@keyframes rr-trust-value-plain {
+  from {
+    color: var(--fg-muted);
+  }
+  to {
+    color: var(--accent);
+  }
+}
+
+@keyframes rr-trust-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------------------------------------------------------------------------
    REDUCED MOTION
    A first-class path, not an afterthought (§4.4). Everything that moves is
    disabled here; the 3D canvas is never mounted at all (handled in JS).

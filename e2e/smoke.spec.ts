@@ -680,3 +680,140 @@ test("the menu still opens with JavaScript disabled", async ({ browser }) => {
   await expect(page.locator('#mobile-menu a[href="/ultrasound"]')).toBeVisible();
   await ctx.close();
 });
+
+/* --------------------------------------------------------------- trust band */
+
+test("each trust fact links to the page that substantiates it", async ({ page }) => {
+  await page.goto("/");
+  const hrefs = await page
+    .locator(".trust-item a")
+    .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+  expect(hrefs).toEqual(["/billing", "/ultrasound", "/x-ray", "/contact"]);
+
+  // The visible affordance is aria-hidden, so the accessible name has to carry
+  // the destination itself or the link reads as a bare fact to a screen reader.
+  const names = await page
+    .locator(".trust-item a")
+    .evaluateAll((els) => els.map((e) => (e.textContent ?? "").trim()));
+  expect(names[0]).toContain("What is covered");
+  expect(names[2]).toContain("About X-ray");
+});
+
+test("the trust highlight is driven by scroll position, not a timer", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.waitForTimeout(800);
+
+  const supported = await page.evaluate(() =>
+    CSS.supports("animation-timeline: view()"),
+  );
+  test.skip(!supported, "no scroll-driven animation support in this browser");
+
+  const read = () =>
+    page.evaluate(() =>
+      [...document.querySelectorAll(".trust-item")].map((it) => {
+        const rule = it.querySelector(".trust-item__rule")!;
+        return new DOMMatrixReadOnly(getComputedStyle(rule).transform).a;
+      }),
+    );
+
+  const bandTop = await page.evaluate(() => {
+    const s = document.querySelector(".trust-item")!.closest("section")!;
+    return s.getBoundingClientRect().top + window.scrollY;
+  });
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(400);
+  const before = await read();
+  expect(Math.max(...before), "nothing highlighted before the band arrives").toBeLessThan(0.1);
+
+  // Partway: the point of the stagger is that the items are NOT in step.
+  await page.evaluate((y) => window.scrollTo(0, y), bandTop - 520);
+  await page.waitForTimeout(500);
+  const mid = await read();
+  expect(mid[0], "first item leads").toBeGreaterThan(mid[3]);
+
+  await page.evaluate((y) => window.scrollTo(0, y), bandTop);
+  await page.waitForTimeout(500);
+  const after = await read();
+  expect(Math.min(...after), "all highlighted once the band is up").toBeGreaterThan(0.9);
+
+  // Scroll-linked, not fire-once: going back up must un-highlight.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(500);
+  expect(Math.max(...(await read())), "must reverse on scroll up").toBeLessThan(0.1);
+});
+
+test("trust band text is never mid-fade unreadable, and reduced motion keeps meaning", async ({
+  browser,
+}) => {
+  // Deliberately no opacity fade on the text: the colour travels between two
+  // legible endpoints instead, so stopping mid-scroll never leaves it washed out.
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: "reduce",
+  });
+  const page = await ctx.newPage();
+  await page.goto("/");
+  await page.waitForTimeout(800);
+
+  const bandTop = await page.evaluate(() => {
+    const s = document.querySelector(".trust-item")!.closest("section")!;
+    return s.getBoundingClientRect().top + window.scrollY;
+  });
+  await page.evaluate((y) => window.scrollTo(0, y - 300), bandTop);
+  await page.waitForTimeout(500);
+
+  const state = await page.evaluate(() =>
+    [...document.querySelectorAll(".trust-item")].map((it) => {
+      const v = it.querySelector(".trust-item__value")!;
+      const r = it.querySelector(".trust-item__rule")!;
+      return {
+        opacity: getComputedStyle(v).opacity,
+        scaleX: new DOMMatrixReadOnly(getComputedStyle(r).transform).a,
+      };
+    }),
+  );
+
+  for (const s of state) {
+    expect(s.opacity, "value text must never be faded out").toBe("1");
+    // The wipe is decoration and is dropped; the colour change carries meaning
+    // and is kept.
+    expect(s.scaleX, "rule must not animate under reduced motion").toBe(1);
+  }
+  await ctx.close();
+});
+
+test("the trust link affordance is visible on touch, where hover never fires", async ({
+  browser,
+}) => {
+  // An opacity-0-until-hover affordance is invisible forever on a phone. This
+  // also guards the Tailwind arbitrary-variant trap: the media-query variant
+  // compiled to zero rules and the markup looked correct the whole time.
+  const touch = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  const p1 = await touch.newPage();
+  await p1.goto("/");
+  await p1.waitForTimeout(600);
+  const onTouch = await p1
+    .locator(".trust-item__more")
+    .evaluateAll((els) => els.map((e) => getComputedStyle(e).opacity));
+  expect(onTouch.every((o) => o === "1"), JSON.stringify(onTouch)).toBe(true);
+  await touch.close();
+
+  const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const p2 = await desktop.newPage();
+  await p2.goto("/");
+  const link = p2.locator('.trust-item a[href="/billing"]');
+  await link.scrollIntoViewIfNeeded();
+  const more = p2.locator('.trust-item a[href="/billing"] .trust-item__more');
+  expect(await more.evaluate((e) => getComputedStyle(e).opacity)).toBe("0");
+  await link.hover();
+  await p2.waitForTimeout(400);
+  expect(await more.evaluate((e) => getComputedStyle(e).opacity)).toBe("1");
+  await desktop.close();
+});
