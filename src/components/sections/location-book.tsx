@@ -13,7 +13,9 @@ import { Section, SectionLabel, H2, ButtonLink, Card , CallButton} from "@/compo
  * roughly 900KB of third-party JS, sets cookies before consent, and would blow
  * the §4.5 budget for a feature most people use once.
  */
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${clinic.geo.lat},${clinic.geo.lng}`;
+// The practice's own Google Business Profile, not a pin at coordinates.
+// Single source in clinic.ts so the two call sites cannot drift apart.
+const mapHref = clinic.mapsUrl;
 
 export function LocationBook() {
   return (

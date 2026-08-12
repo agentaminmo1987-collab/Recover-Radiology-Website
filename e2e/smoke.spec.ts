@@ -544,3 +544,31 @@ test("no procedure page points at a service the practice does not offer", async 
     }
   }
 });
+
+test("map links point at the practice's own listing, and no rating is quoted", async ({
+  page,
+}) => {
+  for (const path of ["/", "/contact"]) {
+    await page.goto(path);
+    const hrefs = await page
+      .locator('main a[href*="maps"], main a[href*="google"]')
+      .evaluateAll((els) => els.map((e) => e.getAttribute("href") ?? ""));
+    expect(hrefs.length, `${path} should link to Maps`).toBeGreaterThan(0);
+    for (const href of hrefs) {
+      // cid resolves to the Business Profile, which carries the hours, photos
+      // and directions. A lat/lng search just drops an anonymous pin.
+      expect(href, `${path}: ${href}`).toContain("cid=");
+    }
+  }
+
+  // AHPRA s133 prohibits using ratings or testimonials to advertise a regulated
+  // health service. The Google listing has a score; it must never appear here.
+  for (const path of ["/", "/contact", "/about", "/our-team"]) {
+    await page.goto(path);
+    const body = await page.locator("body").innerText();
+    expect(body, `${path} quotes a star rating`).not.toMatch(
+      /\b[1-5]\.\d\s*(stars?|\/\s*5|out of 5)/i,
+    );
+    expect(body.toLowerCase()).not.toContain("google review");
+  }
+});

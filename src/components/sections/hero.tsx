@@ -23,16 +23,40 @@ export function Hero() {
         className="-z-10"
       />
 
-      {/* Scrim across the copy column, releasing before the centre so the
-          animation is never veiled where it actually reads.
-          Dialled back 20% at every stop so more of the loop shows through.
+      {/* Two scrims, because the copy column changes shape at the breakpoint.
           Text contrast over it is measured, not assumed: see PERF.md. */}
+
+      {/* NARROW, below 1280. The copy column is capped at 36rem but the viewport
+          is narrower than that plus the release, so the text runs to the edge of
+          the measure. The old gradient had dropped to 32% by two thirds across,
+          which put the last third of every line over bare video: measured 1.17
+          against a 4.5 requirement at 390px. It held on desktop only because
+          there the column ends long before the release begins.
+
+          This one stays up across the whole measure and lets go at the very
+          edge, where there is no text.
+
+          The boundary is 1280, not 1024. At exactly 1024 the column still runs
+          to 59% of the viewport, which is past where the wide scrim starts
+          releasing: measured 3.82 there. */}
       <div
         aria-hidden
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 xl:hidden"
         style={{
           background:
-            "linear-gradient(to right, color-mix(in srgb, var(--surface) 80%, transparent) 0%, color-mix(in srgb, var(--surface) 80%, transparent) 40%, color-mix(in srgb, var(--surface) 72%, transparent) 52%, color-mix(in srgb, var(--surface) 32%, transparent) 66%, transparent 82%)",
+            "linear-gradient(to right, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, var(--surface) 90%, transparent) 70%, color-mix(in srgb, var(--surface) 78%, transparent) 88%, color-mix(in srgb, var(--surface) 46%, transparent) 100%)",
+        }}
+      />
+
+      {/* WIDE, 1280 and up. Releases before the centre so the animation is never
+          veiled where it actually reads, which is the whole point of the video.
+          The column stops at 36rem here, so the release happens in empty space. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-0 hidden xl:block"
+        style={{
+          background:
+            "linear-gradient(to right, color-mix(in srgb, var(--surface) 84%, transparent) 0%, color-mix(in srgb, var(--surface) 82%, transparent) 42%, color-mix(in srgb, var(--surface) 72%, transparent) 54%, color-mix(in srgb, var(--surface) 32%, transparent) 66%, transparent 82%)",
         }}
       />
       {/* Soft lift at the base so the section hands over to the trust band
@@ -71,7 +95,11 @@ export function Hero() {
             <CallButton variant="ghost" />
           </div>
 
-          <p className="tabular mt-6 text-[0.95rem] text-fg-subtle">
+          {/* fg-muted, not fg-subtle. This line sits over the video like the
+              rest, and the subtle token is the lightest on the ramp: it was
+              measuring 4.13 against a 4.5 requirement even at 1440, where
+              everything else passed comfortably. */}
+          <p className="tabular mt-6 text-[0.95rem] text-fg-muted">
             Or call{" "}
             <a
               href={clinic.phone.href}

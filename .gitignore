@@ -17,6 +17,7 @@
 /.next/
 # Alternate build dir, used when OneDrive holds a lock on .next
 /.next-build/
+/.next-build-stale-*/
 /out/
 
 # production

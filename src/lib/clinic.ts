@@ -21,7 +21,29 @@ export const clinic = {
     full: "Suite 1-3, 1-7 Doctors Road, Morphett Vale SA 5162",
   },
 
-  geo: { lat: -35.136102, lng: 138.525344 },
+  /**
+   * Taken from the practice's own Google Business Profile on 2026-08-12, not
+   * from geocoding the address string. The previous pair was about 59 metres
+   * north of the real pin, which on a road of medical suites is the difference
+   * between arriving and driving past.
+   */
+  geo: { lat: -35.1366346, lng: 138.5252586 },
+
+  /**
+   * Links to the Google Business Profile itself rather than dropping a pin at
+   * coordinates. The listing carries the hours, the photos and the directions
+   * button, and it is the record Google already trusts.
+   *
+   * `cid` is the listing's own identifier, so this survives the practice moving
+   * suite or Google adjusting the pin. Verified 2026-08-12 as resolving to
+   * "Recover Radiology, Suite 1-3 1/7 Doctors Rd, Morphett Vale SA 5162".
+   *
+   * NOTE: the listing carries a star rating. Nothing from it may be reproduced
+   * on this site. AHPRA section 133 prohibits using testimonials or ratings to
+   * advertise a regulated health service, and quoting your own Google score is
+   * exactly that.
+   */
+  mapsUrl: "https://maps.google.com/?cid=10215540237414592139",
 
   phone: { display: "08 7081 3078", href: "tel:+61870813078" },
   fax: { display: "08 7093 7169" },

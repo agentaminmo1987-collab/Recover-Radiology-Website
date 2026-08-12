@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${clinic.geo.lat},${clinic.geo.lng}`;
+// The practice's own Google Business Profile, not a pin at coordinates.
+// Single source in clinic.ts so the two call sites cannot drift apart.
+const mapHref = clinic.mapsUrl;
 
 export default function ContactPage() {
   return (
