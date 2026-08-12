@@ -572,3 +572,111 @@ test("map links point at the practice's own listing, and no rating is quoted", a
     expect(body.toLowerCase()).not.toContain("google review");
   }
 });
+
+/* -------------------------------------------------------------- mobile hero */
+
+test("the booking CTA is on screen without scrolling, on a phone", async ({
+  browser,
+}) => {
+  // It rendered fine and clicked fine; it was simply below the fold at load, so
+  // a phone user landed on the home page with no visible booking button. The
+  // fixed bottom bar covers the last ~73px, which the hero did not account for.
+  const sizes: [number, number, string][] = [
+    [320, 568, "small phone"],
+    [390, 664, "iPhone"],
+    [412, 839, "large android"],
+  ];
+  for (const [width, height, label] of sizes) {
+    const ctx = await browser.newContext({
+      viewport: { width, height },
+      hasTouch: true,
+      isMobile: true,
+    });
+    const page = await ctx.newPage();
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(600);
+
+    const r = await page.evaluate(() => {
+      const el = document.querySelector('main a[href="/contact"]')!;
+      const rect = el.getBoundingClientRect();
+      const bar = document.querySelector(".fixed.inset-x-0.bottom-0");
+      const barTop = bar ? bar.getBoundingClientRect().top : window.innerHeight;
+      return { top: rect.top, bottom: rect.bottom, barTop };
+    });
+
+    expect(r.top, `${label}: CTA above the viewport`).toBeGreaterThanOrEqual(0);
+    expect(
+      r.bottom,
+      `${label}: CTA bottom ${Math.round(r.bottom)} is under the booking bar at ${Math.round(r.barTop)}`,
+    ).toBeLessThanOrEqual(r.barTop);
+    await ctx.close();
+  }
+});
+
+test("the mobile menu closes itself when left alone", async ({ browser }) => {
+  const ctx = await browser.newContext({
+    viewport: { width: 390, height: 664 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  const page = await ctx.newPage();
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(600);
+
+  const open = () =>
+    page.evaluate(() => {
+      const el = document.getElementById("mobile-menu");
+      return el instanceof HTMLDetailsElement ? el.open : null;
+    });
+  const tapSummary = async () => {
+    await page.locator("#mobile-menu > summary").tap();
+    await page.waitForTimeout(200);
+  };
+
+  await tapSummary();
+  expect(await open(), "menu should open").toBe(true);
+
+  // Still open partway through: the timer measures idle time, so it must not
+  // close in the face of someone still reading it.
+  await page.waitForTimeout(3000);
+  expect(await open(), "must not close early").toBe(true);
+
+  await page.waitForTimeout(2800);
+  expect(await open(), "should close once idle").toBe(false);
+
+  // Escape and outside tap, neither of which a bare <details> gives you.
+  await tapSummary();
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  expect(await open(), "Escape should close it").toBe(false);
+
+  await tapSummary();
+  await page.touchscreen.tap(30, 400);
+  await page.waitForTimeout(300);
+  expect(await open(), "tapping outside should close it").toBe(false);
+
+  await ctx.close();
+});
+
+test("the menu still opens with JavaScript disabled", async ({ browser }) => {
+  // The auto-close is an enhancement. The menu itself is a native <details> and
+  // must keep working without it.
+  const ctx = await browser.newContext({
+    viewport: { width: 390, height: 664 },
+    javaScriptEnabled: false,
+  });
+  const page = await ctx.newPage();
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  // Two disclosures deep by design: the sheet, then the group. That is what
+  // keeps it to four rows instead of eleven, and both levels are native
+  // <details>, so both work without a line of script.
+  await page.locator("#mobile-menu > summary").click();
+  await expect(
+    page.locator("#mobile-menu summary", { hasText: "Services" }),
+  ).toBeVisible();
+
+  await page.locator("#mobile-menu summary", { hasText: "Services" }).click();
+  await expect(page.locator('#mobile-menu a[href="/ultrasound"]')).toBeVisible();
+  await ctx.close();
+});

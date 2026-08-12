@@ -20,13 +20,19 @@ export function HeroLogo() {
     <div
       role="img"
       aria-label={`${clinic.name} logo`}
-      className="flex items-center gap-5 md:gap-7"
+      className="flex items-center gap-4 sm:gap-5 md:gap-7"
     >
+      {/* Smaller on phones only. At 132px the mark alone was a fifth of an
+          iPhone viewport, which pushed the booking CTA off the first screen.
+          Desktop is unchanged. */}
       <div
         aria-hidden
-        className="brand-mark h-[132px] w-[118px] shrink-0 md:h-[176px] md:w-[158px]"
+        className="brand-mark h-[72px] w-[64px] shrink-0 [@media(max-height:620px)]:h-[56px] [@media(max-height:620px)]:w-[50px] min-[380px]:h-[96px] min-[380px]:w-[86px] sm:h-[132px] sm:w-[118px] md:h-[176px] md:w-[158px]"
       />
-      <div aria-hidden className="brand-word h-[56px] w-[125px] md:h-[74px] md:w-[165px]" />
+      <div
+        aria-hidden
+        className="brand-word h-[32px] w-[72px] [@media(max-height:620px)]:h-[25px] [@media(max-height:620px)]:w-[56px] min-[380px]:h-[42px] min-[380px]:w-[94px] sm:h-[56px] sm:w-[125px] md:h-[74px] md:w-[165px]"
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { clinic } from "@/lib/clinic";
 import { ButtonLink } from "@/components/ui";
+import { MenuAutoClose } from "@/components/menu-auto-close";
 
 /**
  * Server component. No client JS.
@@ -166,7 +167,7 @@ export function SiteHeader() {
 
           {/* Mobile menu, no JS. Groups become nested disclosures so the sheet
               opens to four rows rather than eleven. */}
-          <details className="group relative lg:hidden">
+          <details id="mobile-menu" className="group relative lg:hidden">
             <summary
               className="flex h-[44px] w-[44px] list-none items-center justify-center rounded-[var(--radius-sm)] border border-[var(--btn-ghost-border)] [&::-webkit-details-marker]:hidden"
               aria-label="Open menu"
@@ -226,6 +227,9 @@ export function SiteHeader() {
               </ul>
             </nav>
           </details>
+          {/* Closes the menu after five seconds of no interaction, plus on
+              outside tap and Escape. The menu itself needs no JavaScript. */}
+          <MenuAutoClose targetId="mobile-menu" />
         </div>
       </div>
     </header>

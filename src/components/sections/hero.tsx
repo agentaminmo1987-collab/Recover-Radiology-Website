@@ -16,7 +16,10 @@ import { HeroVideo } from "@/components/hero-video";
  */
 export function Hero() {
   return (
-    <section className="relative flex min-h-[min(100svh,54rem)] items-center overflow-hidden">
+    // min-height subtracts the fixed booking bar on mobile. Without that the
+    // hero claims the full viewport, the bar then covers its last 73px, and the
+    // primary CTA is pushed past the fold on a phone.
+    <section className="relative flex min-h-[calc(min(100svh,54rem)-73px)] items-center overflow-hidden sm:min-h-[min(100svh,54rem)]">
       <HeroVideo
         src="/video/ct-forming.mp4"
         poster="/img/poster/ct-forming-1600.avif"
@@ -44,7 +47,7 @@ export function Hero() {
         className="absolute inset-0 z-0 xl:hidden"
         style={{
           background:
-            "linear-gradient(to right, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, var(--surface) 90%, transparent) 70%, color-mix(in srgb, var(--surface) 78%, transparent) 88%, color-mix(in srgb, var(--surface) 46%, transparent) 100%)",
+            "linear-gradient(to right, color-mix(in srgb, var(--surface) 93%, transparent) 0%, color-mix(in srgb, var(--surface) 92%, transparent) 70%, color-mix(in srgb, var(--surface) 84%, transparent) 88%, color-mix(in srgb, var(--surface) 58%, transparent) 100%)",
         }}
       />
 
@@ -70,25 +73,25 @@ export function Hero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10">
+      <div className="relative z-10 mx-auto w-full max-w-[1180px] px-6 py-7 [@media(max-height:620px)]:py-4 sm:py-10 md:px-10 md:py-[var(--rr-space-2xl)]">
         <div className="max-w-[36rem]">
           <HeroLogo />
 
-          <p className="mt-9 text-[0.95rem] font-medium tracking-[0.01em] text-accent">
+          <p className="mt-6 text-[0.95rem] font-medium tracking-[0.01em] text-accent [@media(max-height:620px)]:mt-4 md:mt-9">
             {clinic.address.suburb} {clinic.address.state} &middot; Bulk billed
           </p>
 
-          <h1 className="mt-5 text-balance text-[clamp(2.5rem,6.2vw,4.6rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
+          <h1 className="mt-4 text-balance md:mt-5 text-[clamp(2rem,7.4vw,4.6rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
             {clinic.tagline}
           </h1>
 
-          <p className="mt-7 text-pretty text-[1.15rem] leading-[1.55] text-fg-muted md:text-[1.3rem]">
+          <p className="mt-5 text-pretty text-[1.02rem] leading-[1.45] text-fg-muted sm:text-[1.08rem] sm:leading-[1.5] md:mt-7 md:text-[1.3rem]">
             Ultrasound, CT, X-ray and image guided procedures in{" "}
             {clinic.address.suburb}. Most services are bulk billed, and your
             report reaches your doctor within {REPORT_TURNAROUND}.
           </p>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-7 flex flex-col gap-3 [@media(max-height:620px)]:mt-5 sm:flex-row sm:items-center md:mt-10">
             <ButtonLink href="/contact" size="lg" echo>
               Book a scan
             </ButtonLink>
@@ -99,7 +102,7 @@ export function Hero() {
               rest, and the subtle token is the lightest on the ramp: it was
               measuring 4.13 against a 4.5 requirement even at 1440, where
               everything else passed comfortably. */}
-          <p className="tabular mt-6 text-[0.95rem] text-fg-muted">
+          <p className="tabular mt-5 text-[0.95rem] text-fg-muted md:mt-6">
             Or call{" "}
             <a
               href={clinic.phone.href}
