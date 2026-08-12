@@ -36,6 +36,14 @@ export interface Procedure {
   /** One line. Answers "what is this" before anything else. */
   summary: string;
   whatItIs: string;
+  /**
+   * Which imaging guides the needle, where the practice has told us.
+   *
+   * Only set when confirmed. Left undefined elsewhere rather than guessed:
+   * saying "ultrasound guided" about a procedure done under CT is wrong in a
+   * way a patient cannot catch.
+   */
+  guidance?: string;
   whatItTreats: string[];
   howItIsPerformed: string[];
   duration: string;
@@ -106,6 +114,9 @@ export const procedures: Procedure[] = [
       "A course of three injections that supplement the natural lubricating fluid in an arthritic joint.",
     whatItIs:
       "Hyaluronic acid occurs naturally in the fluid inside your joints and gives it its thickness and slipperiness. In an arthritic joint that fluid becomes thinner and less protective. Injecting hyaluronic acid supplements what is already there. It is not a steroid, and it does not work by reducing inflammation, so it suits people for whom a steroid injection is unsuitable or has not helped enough.",
+    // Confirmed by the practice 2026-08-12: performed under CT.
+    guidance:
+      "We perform this under CT guidance. CT shows the needle tip against the bone and the joint space directly, so the medication goes inside the joint rather than into the tissue around it. In an arthritic joint the space is narrowed, and in the hip and shoulder it is deep enough that it cannot be found reliably by feel.",
     // Sites and course confirmed by the practice, 2026-08-12.
     whatItTreats: [
       "Osteoarthritis of the knee",
@@ -115,9 +126,9 @@ export const procedures: Procedure[] = [
       "Joint pain where anti-inflammatory treatment has not given enough relief, or is unsuitable",
     ],
     howItIsPerformed: [
-      "The joint is scanned so the radiologist can identify the joint space.",
+      "You are positioned on the CT scanner and the joint is scanned so the radiologist can plan the path into the joint space.",
       "The skin is cleaned with antiseptic and numbed with local anaesthetic.",
-      "The needle is guided into the joint space under imaging, which matters most in the hip and shoulder where the joint cannot be reached reliably by feel.",
+      "The needle is advanced into the joint space, with its position checked on CT as it goes.",
       "The hyaluronic acid is injected.",
       "This is given as a series of three injections, generally two to four weeks apart. All three are part of one course of treatment.",
     ],
@@ -151,15 +162,18 @@ export const procedures: Procedure[] = [
       "An injection of fluid into the shoulder joint to stretch a capsule that has tightened, used for frozen shoulder.",
     whatItIs:
       "In frozen shoulder the capsule surrounding the joint becomes thickened and contracted, which is what limits the movement and causes the pain. Hydrodilatation injects a volume of fluid, usually saline with local anaesthetic and a steroid, into the joint under pressure. The volume itself stretches the capsule from the inside, while the steroid settles the inflammation. It treats the mechanical problem and the inflammation at once.",
+    // Confirmed by the practice 2026-08-12: performed under CT, not ultrasound.
+    guidance:
+      "We perform this under CT guidance. CT shows the needle tip against the bone and the joint space directly, which confirms the fluid is going inside the capsule rather than around it. That matters here more than in most injections, because the whole effect depends on pressurising the capsule itself.",
     whatItTreats: [
       "Frozen shoulder, also called adhesive capsulitis",
       "Shoulder stiffness and pain where the capsule has tightened",
       "Restricted shoulder movement that has not responded to physiotherapy alone",
     ],
     howItIsPerformed: [
-      "The shoulder is scanned so the radiologist can identify the joint.",
+      "You are positioned on the CT scanner and the shoulder is scanned so the radiologist can plan the path to the joint.",
       "The skin is cleaned with antiseptic and numbed with local anaesthetic.",
-      "A needle is guided into the joint under imaging.",
+      "A needle is advanced towards the joint, with its position checked on CT as it goes.",
       "Fluid is injected steadily. You will feel increasing pressure and tightness in the shoulder as the capsule stretches, which is the procedure working rather than a sign of a problem.",
       "The injection stops when the capsule has taken as much volume as it will accept.",
     ],
@@ -234,7 +248,7 @@ export const procedures: Procedure[] = [
     summary:
       "An injection into one of the small joints at the back of the spine, guided by imaging.",
     whatItIs:
-      "Facet joints are the small paired joints that link each vertebra to the one above and below, and they are a common source of back and neck pain. A mixture of local anaesthetic and a small amount of steroid is placed into the joint itself. These joints are close to important structures and cannot be reliably found by feel, so the needle is guided by CT or fluoroscopy.",
+      "Facet joints are the small paired joints that link each vertebra to the one above and below, and they are a common source of back and neck pain. A mixture of local anaesthetic and a small amount of steroid is placed into the joint itself. These joints are close to important structures and cannot be reliably found by feel, so the needle is guided by imaging throughout.",
     whatItTreats: [
       "Back or neck pain arising from the facet joints",
       "Pain that is worse with extension, twisting or standing",
@@ -356,11 +370,16 @@ export const procedures: Procedure[] = [
     name: "Medial Branch Block",
     summary:
       "A diagnostic injection onto the small nerves that carry pain from the facet joints.",
+    // No onward treatment is described here. The practice confirmed on
+    // 2026-08-12 that it does not perform radiofrequency ablation, and a page
+    // that gestures at a next step we do not offer sets up a conversation the
+    // referring doctor then has to unwind.
     whatItIs:
-      "Each facet joint gets its sensation from small nerves called medial branches. Placing local anaesthetic onto those nerves temporarily interrupts the pain signal from that joint. This procedure is primarily a test rather than a treatment: if numbing those specific nerves takes your pain away, it establishes that the joint they supply is the source, and that a longer lasting treatment aimed at those nerves is likely to help.",
+      "Each facet joint gets its sensation from small nerves called medial branches. Placing local anaesthetic onto those nerves temporarily interrupts the pain signal from that joint. This procedure is a test rather than a treatment: if numbing those specific nerves takes your pain away, it establishes that the joint they supply is the source of it. That answer goes back to your referring doctor, who decides what to do with it.",
     whatItTreats: [
       "Confirming that back or neck pain is coming from the facet joints",
-      "Identifying which levels are involved before a longer lasting treatment is considered",
+      "Identifying which levels are involved, where imaging shows changes at more than one",
+      "Answering the question when other treatment has not helped and the source of the pain is still uncertain",
     ],
     howItIsPerformed: [
       "You lie face down and the target points are identified on imaging.",
@@ -372,7 +391,7 @@ export const procedures: Procedure[] = [
     duration: "Usually 20 to 30 minutes.",
     benefits: [
       "Gives a clear answer about whether the facet joints are the source of the pain.",
-      "Guides whether a longer lasting treatment of the same nerves is worth doing, which avoids putting people through a procedure unlikely to help them.",
+      "Narrows down the source of pain that imaging alone cannot settle, which stops further treatment being aimed at the wrong place.",
       "Uses a very small amount of medication.",
     ],
     risks: [

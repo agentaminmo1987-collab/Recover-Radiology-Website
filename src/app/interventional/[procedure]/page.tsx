@@ -200,6 +200,19 @@ export default async function ProcedurePage({
             </p>
           </div>
 
+          {/* Which imaging guides the needle, where the practice has confirmed
+              it. Sits beside "what it is" rather than buried in the steps,
+              because for some procedures the guidance is the reason the
+              procedure works at all. */}
+          {p.guidance ? (
+            <p
+              className="mt-8 max-w-[68ch] rounded-[var(--radius-md)] border-l-4 border-accent bg-surface-sunken p-6 text-pretty text-[1.05rem] leading-[1.55] text-fg"
+              role="note"
+            >
+              {p.guidance}
+            </p>
+          ) : null}
+
           <div className="mt-14">
             <List heading="What it is used for" items={p.whatItTreats} />
           </div>

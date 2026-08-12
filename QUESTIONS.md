@@ -223,8 +223,11 @@ smaller synovial joints where indicated, as a series of three injections two to
 four weeks apart. Hydrodilatation and fine needle aspiration / core biopsy were
 added at the same time. Those pages still need reading, like the rest.
 
-**Still to check:** whether your medial branch blocks are used diagnostically
-before radiofrequency ablation, as that page states.
+**Resolved 2026-08-12:** the medial branch block question. The practice does not
+perform radiofrequency ablation, so every reference to an onward "longer lasting
+treatment" was removed from that page. It now reads as a diagnostic test whose
+result goes back to the referring doctor, which is what it is. A test asserts no
+procedure page names a service we do not offer.
 
 ---
 
@@ -282,3 +285,34 @@ supplied.
 Note the standing risk: every name on this page is wrong the moment that person
 leaves. The counts and the combined-experience figure survive turnover; the names
 do not.
+
+
+---
+
+## 15. Which imaging guides the other six procedures
+
+You confirmed on 2026-08-12 that the osteoarthritis injection and hydrodilatation
+are both performed under CT. Those two pages now say so, in a highlighted note,
+and describe the steps as a CT procedure rather than a generic one.
+
+**The other six do not say.** Their pages describe the needle as "guided by
+imaging", which is true but vague, and the two that named a modality generically
+were softened: the facet joint page previously said "CT or fluoroscopy", which
+asserted equipment nobody had told me you have.
+
+**Need from you:** the guidance modality for each of cortisone injection, facet
+joint injection, nerve root block, epidural injection, medial branch block, and
+fine needle aspiration / core biopsy. One word each is enough. It is a
+`guidance:` line per procedure in `src/lib/procedures.ts` and it renders as a
+highlighted note on the page.
+
+Worth being exact about: saying "ultrasound guided" about something you do under
+CT is wrong in a way a patient has no way to catch, and it is the kind of detail
+a referring GP will notice immediately.
+
+**A note on wording.** You described CT as giving "the best accuracy" and "more
+accurate placement". Those pages do not use that phrasing, because a comparative
+claim about a regulated health service runs at AHPRA section 133. They say what
+CT actually does instead: it shows the needle tip against the bone and the joint
+space directly, so the medication goes inside the joint rather than around it.
+That is the same point, and it is checkable rather than an assertion.

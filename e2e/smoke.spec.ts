@@ -524,3 +524,23 @@ test("the team page names radiographers as well as sonographers", async ({
     expect(lower, `superlative "${word.trim()}" must not ship`).not.toContain(word);
   }
 });
+
+test("no procedure page points at a service the practice does not offer", async ({
+  page,
+}) => {
+  // The practice confirmed 2026-08-12 that it does not perform radiofrequency
+  // ablation. A page that gestures at a next step we do not provide sets up a
+  // conversation the referring doctor then has to unwind.
+  const absent = ["radiofrequency", "ablation", "longer lasting treatment"];
+  for (const slug of [
+    "medial-branch-block",
+    "facet-joint-injection",
+    "nerve-root-block",
+  ]) {
+    await page.goto(`/interventional/${slug}`);
+    const body = (await page.locator("main").innerText()).toLowerCase();
+    for (const term of absent) {
+      expect(body, `${slug} mentions "${term}"`).not.toContain(term);
+    }
+  }
+});
