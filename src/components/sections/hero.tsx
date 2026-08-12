@@ -1,5 +1,5 @@
 import { clinic, REPORT_TURNAROUND } from "@/lib/clinic";
-import { ButtonLink } from "@/components/ui";
+import { ButtonLink , CallButton} from "@/components/ui";
 import { HeroLogo } from "@/components/hero-logo";
 import { HeroVideo } from "@/components/hero-video";
 
@@ -68,9 +68,7 @@ export function Hero() {
             <ButtonLink href="/contact" size="lg" echo>
               Book a scan
             </ButtonLink>
-            <ButtonLink href="/x-ray" size="lg" variant="ghost">
-              Walk in for an X-ray today
-            </ButtonLink>
+            <CallButton variant="ghost" />
           </div>
 
           <p className="tabular mt-6 text-[0.95rem] text-fg-subtle">

@@ -190,3 +190,90 @@ content.
 **Need from you:** whether the blog ships at launch or stays unlinked until there
 is something to put in it. Recommend unlinked, since an empty blog reads worse
 than no blog.
+
+---
+
+## 12. Interventional procedure pages need a radiologist to read them
+
+Six new pages describe each procedure: what it is, what it is used for, how it is
+performed, benefits, risks and aftercare. `/interventional/cortisone-injection`
+and the five beside it.
+
+**This is the only clinical content on the site that did not come from you.**
+Everything else traces back to `src/lib/clinic.ts`. These pages were written from
+the standard, generic description of each procedure, under three self-imposed
+rules: no numbers of any kind (no complication rates, no percentages), nothing
+specific to how this practice performs them, and risks named without being ranked
+or dismissed.
+
+**Default applied:** every procedure carries `signedOff: false` in
+`src/lib/procedures.ts`. While that is false the page renders and is linked from
+`/interventional`, so it can be reviewed in place, but it carries `noindex` and
+stays out of the sitemap. Unreviewed clinical content should not be accumulating
+search impressions.
+
+**Need from you:** a radiologist reads each page and confirms it is accurate for
+how you actually do it. Then flip `signedOff` to `true` for that procedure, one
+word each. A Playwright test asserts unsigned pages stay out of search, so this
+cannot be forgotten silently.
+
+Two specific things to check: whether Euflexxa is offered for joints other than
+the knee, and whether your medial branch blocks are used diagnostically before
+radiofrequency ablation, as the page states.
+
+---
+
+## 13. Referral upload changes what this website holds
+
+The enquiry form now accepts referral uploads, so the site receives health
+information. It previously told people not to send anything clinical.
+
+**Default applied:** PDF/JPG/PNG/WebP/HEIC only, verified against the file's
+actual bytes rather than its extension or `Content-Type`; 10MB per file, 3 files;
+random UUID storage key; the display filename rebuilt from an allowlist rather
+than sanitised; never overwrites an existing object. The privacy notice was
+rewritten to match. Locally, files land outside the repo; on Supabase they go to
+a `referrals` bucket which **must be created private**.
+
+**Need from you:**
+
+1. **How long do you keep an uploaded referral once it is in the patient
+   record?** The privacy notice currently says the website copy "is no longer
+   needed" and that enquiries are "not kept indefinitely", deliberately without a
+   number. A specific retention period would be a commitment invented on your
+   behalf. Give me the number of days and I will state it.
+2. **Your clinical privacy policy**, to link from `/legal/privacy`. Still
+   outstanding from item 5.
+3. **Supabase.** Still not authenticated, so the local file driver is active and
+   uploads are not going anywhere durable in production. This is the last thing
+   blocking the form from being genuinely usable.
+
+---
+
+## 14. Team page: no photographs, no qualifications
+
+`/our-team` is built from the roster in `clinic.ts`: three sonographers by first
+name, the practice manager, the clerical lead and two clerical staff, plus "25
+years of combined experience".
+
+You asked to highlight the sonographers as highly talented. That exact framing
+cannot ship: AHPRA section 133 bans superlatives about a regulated health
+service. The page instead carries what is checkable, which is a stronger claim
+anyway: how many sonographers, the combined experience figure, what they scan,
+and the report turnaround.
+
+**Default applied:** first names and roles only. No photographs of staff, because
+the only staffed frames we hold show people who have since left. No
+qualifications, ASAR registration or radiologist names, because none were
+supplied.
+
+**Need from you, all optional and all would improve the page:**
+
+- Qualifications for each sonographer, and ASAR accreditation if they hold it.
+- Subspecialty interests, so "musculoskeletal" can be attributed to a person.
+- A fresh staff photograph, taken now, of people currently employed.
+- Whether the radiologists may be named.
+
+Note the standing risk: every name on this page is wrong the moment that person
+leaves. The counts and the combined-experience figure survive turnover; the names
+do not.

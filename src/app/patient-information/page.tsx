@@ -41,7 +41,7 @@ export default function PatientInformationPage() {
     },
     {
       q: "Do I need an appointment?",
-      a: "Ultrasound, CT and interventional procedures need to be booked. For X-ray you can walk in during business hours, no appointment needed.",
+      a: "Ultrasound, CT and interventional procedures need to be booked. X-ray is best booked too, because it gives you the shortest wait, though we do accept walk-ins during business hours.",
     },
   ];
 

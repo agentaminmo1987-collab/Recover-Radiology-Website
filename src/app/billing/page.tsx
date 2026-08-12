@@ -4,7 +4,7 @@ import { clinic, billing, modalities } from "@/lib/clinic";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Section, SectionLabel, Card, ButtonLink } from "@/components/ui";
+import { Section, SectionLabel, Card, ButtonLink , CallButton} from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Billing and bulk billing",
@@ -153,9 +153,7 @@ export default function BillingPage() {
             come in. Ask them.
           </p>
           <div className="mt-8">
-            <ButtonLink href={clinic.phone.href} size="lg" className="tabular">
-              Call {clinic.phone.display}
-            </ButtonLink>
+            <CallButton />
           </div>
         </Section>
       </main>

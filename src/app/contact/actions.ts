@@ -7,6 +7,7 @@ import {
   rateLimited,
   MIN_SUBMIT_MS,
 } from "@/lib/enquiry";
+import { validateUpload, MAX_FILES, type StoredFile } from "@/lib/upload";
 
 export interface EnquiryState {
   ok?: boolean;
@@ -45,6 +46,8 @@ export async function submitEnquiry(
     phone: formData.get("phone"),
     email: formData.get("email") ?? "",
     service: formData.get("service") ?? "not-sure",
+    preferredDate: formData.get("preferredDate") ?? "",
+    preferredTime: formData.get("preferredTime") ?? "",
     message: formData.get("message") ?? "",
     website: formData.get("website") ?? "",
     startedAt: formData.get("startedAt") ?? 0,
@@ -67,13 +70,46 @@ export async function submitEnquiry(
     return { ok: true };
   }
 
+  // Referrals. Validated and stored before the enquiry row is written, so a
+  // rejected file stops the submission with a message the visitor can act on
+  // rather than leaving a row that claims an attachment nobody can open.
+  const submitted = formData
+    .getAll("referral")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (submitted.length > MAX_FILES) {
+    return {
+      error: `Please attach at most ${MAX_FILES} files.`,
+      fieldErrors: { referral: `At most ${MAX_FILES} files.` },
+    };
+  }
+
+  const accepted: StoredFile[] = [];
+  const driver = enquiryDriver();
+
   try {
-    await enquiryDriver().save({
+    for (const file of submitted) {
+      const result = await validateUpload(file);
+      if (!result.ok) {
+        return { error: result.reason, fieldErrors: { referral: result.reason } };
+      }
+      await driver.saveFile(
+        result.file.key,
+        new Uint8Array(await file.arrayBuffer()),
+        result.file.mime,
+      );
+      accepted.push(result.file);
+    }
+
+    await driver.save({
       name: data.name,
       phone: data.phone,
       email: data.email || null,
       service: data.service,
+      preferredDate: data.preferredDate || null,
+      preferredTime: data.preferredTime || null,
       message: data.message || null,
+      attachments: accepted,
       receivedAt: new Date().toISOString(),
     });
   } catch (err) {

@@ -23,6 +23,7 @@ const columns = [
       { href: "/patient-information", label: "Preparing for your scan" },
       { href: "/billing", label: "Billing and bulk billing" },
       { href: "/our-clinic", label: "Our clinic" },
+      { href: "/our-team", label: "Our team" },
       { href: "/contact", label: "Contact and location" },
       { href: "/about", label: "About us" },
     ],

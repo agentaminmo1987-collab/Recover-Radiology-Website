@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: `%s | ${clinic.name}`,
   },
   description:
-    "Bulk billed ultrasound, CT, X-ray and interventional procedures in Morphett Vale, serving Adelaide's southern suburbs. Walk in X-ray during business hours. Reports to your doctor within 24 to 48 hours.",
+    "Bulk billed ultrasound, CT, X-ray and interventional procedures in Morphett Vale, serving Adelaide's southern suburbs. Book online or by phone, with X-ray walk-ins accepted during business hours. Reports to your doctor within 24 to 48 hours.",
   applicationName: clinic.name,
   alternates: { canonical: "/" },
   openGraph: {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: clinic.name,
     title: `${clinic.name}, bulk billed imaging in Morphett Vale`,
     description:
-      "Bulk billed ultrasound, CT, X-ray and interventional procedures. Walk in X-ray during business hours.",
+      "Bulk billed ultrasound, CT, X-ray and interventional procedures. Book by phone or online.",
     url: "/",
   },
   twitter: { card: "summary_large_image" },

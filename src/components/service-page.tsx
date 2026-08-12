@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { clinic, modalities, type ModalitySlug } from "@/lib/clinic";
+import { procedures } from "@/lib/procedures";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Section, SectionLabel, ButtonLink, Card } from "@/components/ui";
+import { Section, SectionLabel, ButtonLink, Card, CallButton } from "@/components/ui";
 import { HeroVideo } from "@/components/hero-video";
 
 /**
@@ -54,6 +55,19 @@ const PLATE_ALT: Record<ModalitySlug, string> = {
   interventional:
     "Abstract illustration of a guide line converging on a target point",
 };
+
+/**
+ * Looks up the procedure page for a `types[]` entry, matched on name.
+ *
+ * Matching on the visible name rather than storing a slug in clinic.ts keeps
+ * the closed fact set free of routing concerns. If a procedure is renamed in
+ * one file and not the other the link simply does not render, which is the
+ * right failure: a missing link, never a link to the wrong procedure.
+ */
+function procedureFor(slug: ModalitySlug, typeName: string) {
+  if (slug !== "interventional") return undefined;
+  return procedures.find((p) => p.name === typeName);
+}
 
 export function getModality(slug: ModalitySlug) {
   const m = modalities.find((x) => x.slug === slug);
@@ -173,19 +187,15 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
                 </div>
               </dl>
 
+              {/* The primary CTA names the scan, so a visitor who arrived on
+                  this page from a search never has to translate "book a scan"
+                  into the thing they came for. The phone button stays secondary
+                  and always carries the number. */}
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                {slug === "x-ray" ? (
-                  <ButtonLink href="/contact" size="lg">
-                    Walk in during business hours
-                  </ButtonLink>
-                ) : (
-                  <ButtonLink href={clinic.phone.href} size="lg" className="tabular">
-                    Call {clinic.phone.display}
-                  </ButtonLink>
-                )}
-                <ButtonLink href="/contact" size="lg" variant="ghost">
-                  Send an enquiry
+                <ButtonLink href="/contact" size="lg" echo>
+                  {m.bookLabel}
                 </ButtonLink>
+                <CallButton variant="ghost" />
               </div>
             </div>
 
@@ -212,17 +222,54 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
           <h2 className="mt-4 text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
             {m.name} covers
           </h2>
+          {/* Interventional entries link to their own page. The other three
+              modalities describe categories of scan, which need a sentence; a
+              procedure is a thing that will be done to you, which needs a page.
+              `procedureFor` returns undefined for everything else, so those
+              lists render exactly as before. */}
           <ul className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] sm:grid-cols-2">
-            {m.types.map((t) => (
-              <li key={t.name} className="bg-[var(--card-bg)] p-6 md:p-8">
-                <h3 className="text-[1.1rem] font-semibold">{t.name}</h3>
-                {t.detail ? (
-                  <p className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
-                    {t.detail}
-                  </p>
-                ) : null}
-              </li>
-            ))}
+            {m.types.map((t) => {
+              const proc = procedureFor(slug, t.name);
+              const body = (
+                <>
+                  <h3 className="text-[1.1rem] font-semibold">
+                    {t.name}
+                    {proc ? (
+                      <span
+                        aria-hidden
+                        className="ml-2 inline-block text-accent transition-transform group-hover:translate-x-1"
+                      >
+                        &rarr;
+                      </span>
+                    ) : null}
+                  </h3>
+                  {proc ? (
+                    <p className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
+                      {proc.summary}
+                    </p>
+                  ) : t.detail ? (
+                    <p className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
+                      {t.detail}
+                    </p>
+                  ) : null}
+                </>
+              );
+
+              return (
+                <li key={t.name} className="bg-[var(--card-bg)]">
+                  {proc ? (
+                    <Link
+                      href={`/interventional/${proc.slug}`}
+                      className="group block h-full p-6 transition-colors hover:bg-surface-sunken md:p-8"
+                    >
+                      {body}
+                    </Link>
+                  ) : (
+                    <div className="p-6 md:p-8">{body}</div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </Section>
 

@@ -61,7 +61,7 @@ export default function AboutPage() {
               label={`Across our ${team.sonographerCount} sonographers.`}
             />
             <Fact value={REPORT_TURNAROUND} label="Ultrasound reports to your doctor." />
-            <Fact value="Walk in" label="X-ray during business hours, usually same day." />
+            <Fact value="Same day X-ray" label="Booked, or walk in during business hours." />
           </div>
         </Section>
 

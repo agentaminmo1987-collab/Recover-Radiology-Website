@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { submitEnquiry, type EnquiryState } from "@/app/contact/actions";
 import { clinic } from "@/lib/clinic";
+import { ACCEPT_ATTR } from "@/lib/upload-constants";
 
 /**
  * The only interactive client component on the site.
@@ -19,6 +20,23 @@ const services = [
   { value: "x-ray", label: "X-ray" },
   { value: "interventional", label: "Interventional procedure" },
 ];
+
+/**
+ * Parts of the day, not clock times. The clinic books against real availability
+ * by phone, so offering "10:15am" would read as a slot the visitor had secured.
+ */
+const times = [
+  { value: "", label: "No preference" },
+  { value: "morning", label: "Morning" },
+  { value: "midday", label: "Around midday" },
+  { value: "afternoon", label: "Afternoon" },
+  { value: "any", label: "Whatever is soonest" },
+];
+
+const isoDay = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
 
 const fieldBase =
   "w-full rounded-[var(--radius-md)] border bg-[var(--field-bg)] px-4 py-3 text-[1.05rem] " +
@@ -71,9 +89,25 @@ export function EnquiryForm() {
     {},
   );
   const [startedAt, setStartedAt] = useState(0);
+  const [picked, setPicked] = useState(0);
+  /**
+   * Date bounds are set after mount rather than at render.
+   *
+   * "Today" depends on the visitor's timezone, so computing it during SSR gives
+   * the server one answer and the browser another, which is a hydration
+   * mismatch. Until the effect runs the input simply has no bounds, and the
+   * server revalidates the same window regardless.
+   */
+  const [bounds, setBounds] = useState({ min: "", max: "" });
   const successRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => setStartedAt(Date.now()), []);
+  useEffect(() => {
+    setStartedAt(Date.now());
+    const now = new Date();
+    const limit = new Date(now);
+    limit.setMonth(limit.getMonth() + 6);
+    setBounds({ min: isoDay(now), max: isoDay(limit) });
+  }, []);
   useEffect(() => {
     if (state.ok) successRef.current?.focus();
   }, [state.ok]);
@@ -105,7 +139,14 @@ export function EnquiryForm() {
   }
 
   return (
-    <form action={formAction} noValidate className="space-y-6">
+    // encType is explicit so the form still carries files when the action falls
+    // back to a plain browser POST with JavaScript unavailable.
+    <form
+      action={formAction}
+      encType="multipart/form-data"
+      noValidate
+      className="space-y-6"
+    >
       {state.error ? (
         <p
           role="alert"
@@ -170,10 +211,86 @@ export function EnquiryForm() {
         </select>
       </Field>
 
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field
+          id="preferredDate"
+          label="Preferred date"
+          hint="Optional. We will confirm by phone."
+          error={err.preferredDate}
+        >
+          <input
+            id="preferredDate"
+            name="preferredDate"
+            type="date"
+            min={bounds.min || undefined}
+            max={bounds.max || undefined}
+            aria-describedby={
+              err.preferredDate ? "preferredDate-error" : "preferredDate-hint"
+            }
+            className={`${fieldBase} ${border("preferredDate")}`}
+          />
+        </Field>
+
+        <Field
+          id="preferredTime"
+          label="Preferred time"
+          hint="Optional."
+          error={err.preferredTime}
+        >
+          <select
+            id="preferredTime"
+            name="preferredTime"
+            defaultValue=""
+            aria-describedby={
+              err.preferredTime ? "preferredTime-error" : "preferredTime-hint"
+            }
+            className={`${fieldBase} ${border("preferredTime")}`}
+          >
+            {times.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+
+      <Field
+        id="referral"
+        label="Your referral"
+        hint="Optional. A photo of the paper form is fine. PDF, JPG, PNG or HEIC, up to 3 files, 10MB each."
+        error={err.referral}
+      >
+        <input
+          id="referral"
+          name="referral"
+          type="file"
+          multiple
+          accept={ACCEPT_ATTR}
+          onChange={(e) => setPicked(Array.from(e.target.files ?? []).length)}
+          aria-describedby={err.referral ? "referral-error" : "referral-hint"}
+          className={
+            "w-full rounded-[var(--radius-md)] border border-dashed px-4 py-3 text-[1.05rem] " +
+            "text-fg-muted min-h-[52px] " +
+            "file:mr-4 file:rounded-[var(--radius-sm)] file:border-0 " +
+            "file:bg-surface-sunken file:px-4 file:py-2 file:text-[0.95rem] " +
+            "file:font-semibold file:text-accent " +
+            (err.referral
+              ? "border-[var(--field-invalid)]"
+              : "border-[var(--field-border)]")
+          }
+        />
+        {picked > 0 ? (
+          <p role="status" className="mt-2 text-[0.9rem] text-fg-muted">
+            {picked === 1 ? "1 file ready to send." : `${picked} files ready to send.`}
+          </p>
+        ) : null}
+      </Field>
+
       <Field
         id="message"
         label="Anything else?"
-        hint="Optional. Please do not include detailed medical history here."
+        hint="Optional. Your referral tells us what we need, so there is no need to retype your medical history here."
         error={err.message}
       >
         <textarea
@@ -201,9 +318,14 @@ export function EnquiryForm() {
       </button>
 
       <p className="text-[0.88rem] leading-[1.55] text-fg-subtle">
-        We use these details only to respond to your enquiry. We do not share
-        them, and this form is not a way to send clinical information. For
-        anything urgent, call{" "}
+        We use these details, and anything you attach, only to book and carry out
+        your scan. Referrals are stored securely and are not shared outside the
+        practice and your referring doctor. See our{" "}
+        <a href="/legal/privacy" className="text-accent hover:underline">
+          privacy notice
+        </a>
+        . This form is not monitored outside business hours, so for anything
+        urgent please call{" "}
         <a href={clinic.phone.href} className="tabular text-accent hover:underline">
           {clinic.phone.display}
         </a>

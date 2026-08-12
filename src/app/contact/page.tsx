@@ -8,7 +8,7 @@ import { EnquiryForm } from "@/components/enquiry-form";
 
 export const metadata: Metadata = {
   title: "Contact and location",
-  description: `Book a scan at ${clinic.name}, ${clinic.address.full}. Call ${clinic.phone.display}, ${clinic.hours.display}. Walk in X-ray during business hours.`,
+  description: `Book a scan at ${clinic.name}, ${clinic.address.full}. Call ${clinic.phone.display}, ${clinic.hours.display}. X-ray walk-ins accepted during business hours.`,
   alternates: { canonical: "/contact" },
 };
 
@@ -87,11 +87,12 @@ export default function ContactPage() {
 
               <Card>
                 <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
-                  Walk in X-ray
+                  X-ray without an appointment
                 </h2>
                 <p className="mt-4 text-pretty leading-[1.55] text-fg-muted">
-                  No appointment needed during business hours, and usually
-                  completed the same day. Bring your referral.
+                  Booking gives you the shortest wait, but we do accept X-ray
+                  walk-ins during business hours, usually same day. Bring your
+                  referral.
                 </p>
               </Card>
             </div>

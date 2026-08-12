@@ -14,8 +14,8 @@ const steps = [
   },
   {
     n: "02",
-    title: "Book, or walk in",
-    body: "Call us to book ultrasound, CT or a procedure. For X-ray you can walk in during business hours, no appointment needed.",
+    title: "Book your scan",
+    body: "Call us to book. Booking is quickest for everyone, including X-ray, though we do accept X-ray walk-ins during business hours.",
   },
   {
     n: "03",

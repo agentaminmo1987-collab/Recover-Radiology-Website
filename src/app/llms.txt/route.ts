@@ -54,7 +54,7 @@ function body(): string {
 
 > ${clinic.tagline}
 
-${clinic.name} is a diagnostic imaging practice in ${clinic.address.suburb}, South Australia, serving ${clinic.serviceArea}. Most services are bulk billed. X-ray is walk in during business hours.
+${clinic.name} is a diagnostic imaging practice in ${clinic.address.suburb}, South Australia, serving ${clinic.serviceArea}. Most services are bulk billed. Booking is preferred for all scans including X-ray, and X-ray walk-ins are accepted during business hours.
 
 ## Contact and location
 

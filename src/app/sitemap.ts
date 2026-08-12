@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { modalities } from "@/lib/clinic";
 import { publishedPosts } from "@/lib/insights";
+import { indexableProcedures } from "@/lib/procedures";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://recoverradiology.com.au";
 
@@ -20,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/billing", priority: 0.9 },
     { path: "/contact", priority: 0.9 },
     { path: "/our-clinic", priority: 0.8 },
+    { path: "/our-team", priority: 0.7 },
     { path: "/referrers", priority: 0.7 },
     { path: "/about", priority: 0.6 },
     { path: "/legal/privacy", priority: 0.3 },
@@ -37,6 +39,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    // Only procedures a radiologist has signed off. The rest render and are
+    // linked so they can be reviewed, but stay out of search until then.
+    ...indexableProcedures().map((p) => ({
+      url: `${SITE}/interventional/${p.slug}`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
     })),
     ...publishedPosts().map((p) => ({
       url: `${SITE}/insights/${p.slug}`,

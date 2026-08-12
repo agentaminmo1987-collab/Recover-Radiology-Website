@@ -5,7 +5,7 @@ import { clinic } from "@/lib/clinic";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Section, SectionLabel, ButtonLink } from "@/components/ui";
+import { Section, SectionLabel, ButtonLink , CallButton} from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Our clinic",
@@ -55,7 +55,7 @@ const rooms = [
     src: "/img/clinic/xray-room",
     alt: "Digital X-ray room with the table, detector and control area",
     title: "X-ray",
-    body: "Walk in during business hours. No appointment needed, and usually completed the same day.",
+    body: "Book ahead for the shortest wait. We also accept walk-ins during business hours, usually same day.",
   },
   {
     src: "/img/clinic/ultrasound-room",
@@ -145,9 +145,7 @@ export default function OurClinicPage() {
                 {clinic.hours.display}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href={clinic.phone.href} size="lg" className="tabular">
-                  {clinic.phone.display}
-                </ButtonLink>
+                <CallButton />
                 <ButtonLink href="/contact" size="lg" variant="ghost">
                   Contact and map
                 </ButtonLink>

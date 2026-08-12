@@ -4,7 +4,7 @@ import { clinic, referrerGuidance, modalities, REPORT_TURNAROUND } from "@/lib/c
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Section, SectionLabel, ButtonLink, Card } from "@/components/ui";
+import { Section, SectionLabel, ButtonLink, Card , CallButton} from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "For referrers",
@@ -41,9 +41,7 @@ export default function ReferrersPage() {
             >
               Request images online
             </ButtonLink>
-            <ButtonLink href={clinic.phone.href} size="lg" variant="ghost" className="tabular">
-              {clinic.phone.display}
-            </ButtonLink>
+            <CallButton variant="ghost" />
           </div>
         </Section>
 
@@ -79,7 +77,7 @@ export default function ReferrersPage() {
                 </h3>
                 <p className="mt-4 text-pretty leading-[1.6] text-fg-muted">
                   Next day and same day access is available for many studies.
-                  X-ray is walk in during business hours.
+                  X-ray can be booked, and walk-ins are accepted during business hours.
                 </p>
               </Card>
               <Card>

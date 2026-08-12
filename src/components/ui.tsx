@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { clinic } from "@/lib/clinic";
 
 /**
  * Shared primitives. Every one of these consumes layer-3 component tokens, so
@@ -63,6 +64,41 @@ export function ButtonLink({
         className,
       )}
     />
+  );
+}
+
+/**
+ * The phone CTA, everywhere.
+ *
+ * There is exactly one component for this because there were previously three
+ * labels for the same button: "Call us", the bare number, and "Call" plus the
+ * number. A visitor who sees the number in the hero and "Call us" two sections
+ * down has to stop and work out whether those are the same thing.
+ *
+ * The number comes from `clinic.phone.display` and is never typed inline, so it
+ * cannot drift out of sync if the practice ever changes it.
+ */
+export function CallButton({
+  variant = "primary",
+  size = "lg",
+  className,
+  echo,
+}: {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+  echo?: boolean;
+}) {
+  return (
+    <ButtonLink
+      href={clinic.phone.href}
+      variant={variant}
+      size={size}
+      echo={echo}
+      className={cx("tabular", className)}
+    >
+      Call {clinic.phone.display}
+    </ButtonLink>
   );
 }
 

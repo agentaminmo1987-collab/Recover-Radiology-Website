@@ -12,7 +12,10 @@ const ROUTES = [
   "/ct",
   "/x-ray",
   "/interventional",
+  "/interventional/cortisone-injection",
+  "/interventional/nerve-root-block",
   "/our-clinic",
+  "/our-team",
   "/patient-information",
   "/billing",
   "/referrers",
@@ -215,7 +218,11 @@ test("button hover: lift, ghost fill, and an echo that leaves nothing behind", a
 }) => {
   await page.goto("/");
   const cta = page.locator('main a[href="/contact"]').first();
-  const ghost = page.locator('main a[href="/x-ray"]').first();
+  // Selected by the class under test, not by a route. An earlier version of
+  // this test named a[href="/x-ray"], which was the hero's ghost button until
+  // that CTA changed; the selector then quietly resolved to a plain service
+  // card and asserted the card's background instead of a button's.
+  const ghost = page.locator("main a.btn-ghost").first();
 
   // The echo must be invisible at rest. An earlier version used a transition,
   // which needed a visible resting state to travel from and left a permanent
@@ -262,4 +269,198 @@ test("reduced motion removes the lift and the echo, keeps the colour", async ({
   expect(s.echoDisplay, "no echo under reduced motion").toBe("none");
   expect(s.bg, "colour feedback is kept").not.toBe("rgba(0, 0, 0, 0)");
   await ctx.close();
+});
+
+/* ------------------------------------------------- booking form and uploads */
+
+test("the enquiry form asks for a preferred date and time", async ({ page }) => {
+  await page.goto("/contact");
+
+  const date = page.locator('input[name="preferredDate"]');
+  await expect(date).toHaveAttribute("type", "date");
+  // Bounds are applied after mount, so wait for the effect rather than racing it.
+  await expect(date).toHaveAttribute("min", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(date).toHaveAttribute("max", /^\d{4}-\d{2}-\d{2}$/);
+
+  // Time is a fixed set of options, never free text. A typed "10:15am" would
+  // read to the patient as a slot they had secured.
+  const time = page.locator('select[name="preferredTime"]');
+  await expect(time).toBeVisible();
+  expect(await time.locator("option").count()).toBeGreaterThan(3);
+});
+
+test("the referral upload accepts documents and photos, not scripts", async ({
+  page,
+}) => {
+  await page.goto("/contact");
+  const input = page.locator('input[name="referral"]');
+  await expect(input).toHaveAttribute("type", "file");
+  await expect(input).toHaveAttribute("multiple", "");
+
+  const accept = (await input.getAttribute("accept")) ?? "";
+  for (const ext of [".pdf", ".jpg", ".png", ".heic"]) {
+    expect(accept, `${ext} should be offered`).toContain(ext);
+  }
+  // SVG is script. It must never appear in the picker, and the server sniff
+  // rejects it regardless of what the picker allows.
+  expect(accept.toLowerCase()).not.toContain("svg");
+});
+
+test("every form control still has its own visible label", async ({ page }) => {
+  await page.goto("/contact");
+  const orphans = await page.evaluate(() => {
+    const out: string[] = [];
+    document
+      .querySelectorAll<HTMLElement>("form input, form select, form textarea")
+      .forEach((el) => {
+        const name = el.getAttribute("name") ?? "";
+        if (name === "website" || el.getAttribute("type") === "hidden") return;
+        if (!el.id || !document.querySelector(`label[for="${el.id}"]`)) out.push(name);
+      });
+    return out;
+  });
+  expect(orphans, JSON.stringify(orphans)).toHaveLength(0);
+});
+
+test("the privacy notice covers uploaded referrals", async ({ page }) => {
+  await page.goto("/legal/privacy");
+  const body = (await page.locator("main").innerText()).toLowerCase();
+
+  // The site now solicits health information, so the old "do not send clinical
+  // information" framing must not survive anywhere on this page.
+  expect(body).toContain("referral");
+  expect(body).not.toContain("not a secure channel");
+});
+
+/* ----------------------------------------------------------- call to action */
+
+test("every phone button carries the number, never just 'call us'", async ({
+  page,
+}) => {
+  for (const path of ["/", "/x-ray", "/ct", "/billing", "/our-team"]) {
+    await page.goto(path);
+    const labels = await page
+      .locator('a[href^="tel:"]')
+      .evaluateAll((els) => els.map((e) => (e.textContent ?? "").trim()));
+
+    expect(labels.length, `${path} should offer a phone link`).toBeGreaterThan(0);
+    for (const label of labels) {
+      // Anything that reads as a button must state the number. A bare "Call us"
+      // two sections below the number makes a visitor stop and reconcile them.
+      expect(label, `${path}: "${label}"`).toContain(PHONE);
+    }
+  }
+});
+
+test("service pages name the scan in their booking CTA", async ({ page }) => {
+  const expected: [string, string][] = [
+    ["/x-ray", "Book an X-ray"],
+    ["/ct", "Book a CT scan"],
+    ["/ultrasound", "Book an ultrasound"],
+    ["/interventional", "Book a procedure"],
+  ];
+  for (const [path, label] of expected) {
+    await page.goto(path);
+    await expect(
+      page.locator("main a", { hasText: label }).first(),
+      `${path} should say "${label}"`,
+    ).toBeVisible();
+  }
+});
+
+/* --------------------------------------------------- interventional details */
+
+test("each procedure links to a page that states risks and aftercare", async ({
+  page,
+}) => {
+  await page.goto("/interventional");
+  const links = page.locator('main a[href^="/interventional/"]');
+  expect(await links.count(), "every procedure should link out").toBeGreaterThan(4);
+
+  await page.goto("/interventional/cortisone-injection");
+  const body = await page.locator("main").innerText();
+  for (const heading of [
+    "What it is",
+    "How it is performed",
+    "Benefits",
+    "Risks",
+    "Afterwards",
+  ]) {
+    expect(body, `missing "${heading}"`).toContain(heading);
+  }
+});
+
+test("the blood thinner warning appears on every procedure page", async ({
+  page,
+}) => {
+  // The single most consequential thing a patient can fail to mention, and
+  // someone arriving from a search may never see /interventional itself.
+  for (const slug of ["", "/cortisone-injection", "/epidural-injection"]) {
+    await page.goto(`/interventional${slug}`);
+    const body = (await page.locator("main").innerText()).toLowerCase();
+    expect(body, `/interventional${slug}`).toContain("blood thinning");
+  }
+});
+
+test("unreviewed clinical pages stay out of search", async ({ page, request }) => {
+  // procedures.ts ships with signedOff false until a radiologist reads each
+  // page. Until then the page is linked and readable but must not be indexed.
+  await page.goto("/interventional/cortisone-injection");
+  const robots = await page
+    .locator('meta[name="robots"]')
+    .getAttribute("content");
+  expect(robots ?? "", "unsigned procedure should be noindex").toContain("noindex");
+
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  expect(sitemap).not.toContain("/interventional/cortisone-injection");
+});
+
+/* --------------------------------------------------------------- navigation */
+
+test("the main nav is grouped, not a flat list of everything", async ({ page }) => {
+  await page.goto("/");
+  const top = page.locator('nav[aria-label="Main"] > ul > li');
+  const count = await top.count();
+  // Past about seven, a nav stops being scannable and becomes a list you read.
+  expect(count, "top level nav should stay short").toBeLessThanOrEqual(6);
+
+  // Grouping must not cost reachability: every destination still has a link in
+  // the header markup, open or not.
+  const hrefs = await page
+    .locator('nav[aria-label="Main"] a')
+    .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+  for (const href of [
+    "/ultrasound",
+    "/ct",
+    "/x-ray",
+    "/interventional",
+    "/patient-information",
+    "/billing",
+    "/contact",
+    "/our-clinic",
+    "/our-team",
+    "/about",
+    "/referrers",
+  ]) {
+    expect(hrefs, `${href} should be reachable from the header`).toContain(href);
+  }
+});
+
+test("nav menus open on keyboard focus, not hover alone", async ({ page }) => {
+  await page.goto("/");
+  const panel = page
+    .locator('nav[aria-label="Main"] > ul > li')
+    .first()
+    .locator("div")
+    .first();
+
+  await page.mouse.move(0, 0);
+  expect(await panel.evaluate((e) => getComputedStyle(e).visibility)).toBe("hidden");
+
+  await page.locator('nav[aria-label="Main"] a').first().focus();
+  await page.waitForTimeout(120);
+  expect(
+    await panel.evaluate((e) => getComputedStyle(e).visibility),
+    "focus-within must open the menu, or keyboard users cannot reach it",
+  ).toBe("visible");
 });

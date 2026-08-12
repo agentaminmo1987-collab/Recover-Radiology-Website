@@ -28,8 +28,8 @@ const facts = [
     label: "Ultrasound reports to your referring doctor.",
   },
   {
-    value: "Walk in",
-    label: "X-ray during business hours, usually same day. No appointment needed.",
+    value: "Same day X-ray",
+    label: "Book ahead for the shortest wait. We also accept walk-ins during business hours.",
   },
   {
     value: clinic.serviceArea,

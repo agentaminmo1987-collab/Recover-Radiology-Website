@@ -46,6 +46,14 @@ export type ModalitySlug = "ultrasound" | "ct" | "x-ray" | "interventional";
 export interface Modality {
   slug: ModalitySlug;
   name: string;
+  /**
+   * The booking CTA label, written out per modality rather than composed.
+   *
+   * "Book a" plus the name gives "Book a X-ray" and "Book a Interventional
+   * procedures". The article and the number both change with the noun, so the
+   * whole phrase is authored.
+   */
+  bookLabel: string;
   /** One line, patient facing. Voice: answer the question first. */
   summary: string;
   duration: string;
@@ -61,6 +69,7 @@ export const modalities: Modality[] = [
   {
     slug: "ultrasound",
     name: "Ultrasound",
+    bookLabel: "Book an ultrasound",
     summary:
       "Sound waves build a live image. No radiation, and most appointments are finished inside 30 minutes.",
     duration: "Most appointments 30 minutes or less",
@@ -111,6 +120,7 @@ export const modalities: Modality[] = [
   {
     slug: "ct",
     name: "CT",
+    bookLabel: "Book a CT scan",
     summary:
       "A series of cross sections rebuilt into a detailed volume, at the lowest radiation dose consistent with image quality.",
     duration: "About 15 minutes, or 30 minutes with contrast",
@@ -135,19 +145,22 @@ export const modalities: Modality[] = [
           "A standard scan takes about 15 minutes. With contrast allow 30 minutes, which includes preparation and monitoring.",
       },
     ],
+    mustKnow:
+      "Tell our staff if you have had a reaction to contrast before, or if you have kidney problems, before a CT with contrast. This is the main limitation on CT.",
   },
   {
     slug: "x-ray",
     name: "X-ray",
+    bookLabel: "Book an X-ray",
     summary:
-      "Digital X-ray, walk in during business hours. No appointment needed and usually same day.",
+      "Digital X-ray, usually same day. Booking ahead gives you the shortest wait, and we accept walk-ins during business hours.",
     duration: "5 to 10 minutes, longer for multiple views",
     bulkBilled: "yes",
     types: [
       {
-        name: "Walk in",
+        name: "Booked or walk in",
         detail:
-          "No appointment needed during business hours, and usually completed the same day.",
+          "Booking ahead means the shortest wait. We also accept walk-ins during business hours, usually same day.",
       },
       {
         name: "Digital imaging",
@@ -173,6 +186,7 @@ export const modalities: Modality[] = [
   {
     slug: "interventional",
     name: "Interventional procedures",
+    bookLabel: "Book a procedure",
     summary:
       "Image guided injections and blocks, performed by experienced radiologists on dedicated procedure days each fortnight.",
     duration: "Varies by procedure. Some require a short observation period",
@@ -198,8 +212,15 @@ export const modalities: Modality[] = [
           "These are performed on dedicated procedure days each fortnight, so booking ahead is necessary.",
       },
     ],
+    mustKnow:
+      "Tell our staff if you are taking any blood thinning medication when you book. This is the main limitation on interventional procedures, and we need to know in advance rather than on the day.",
   },
 ];
+
+/** The safety line for a modality, so pages can repeat it without restating it. */
+export function getModalityMustKnow(slug: ModalitySlug): string | undefined {
+  return modalities.find((m) => m.slug === slug)?.mustKnow;
+}
 
 /**
  * Billing. This is the highest anxiety topic on the site and the most

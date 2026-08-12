@@ -1,5 +1,5 @@
 import { clinic } from "@/lib/clinic";
-import { Section, SectionLabel, H2, ButtonLink, Card } from "@/components/ui";
+import { Section, SectionLabel, H2, ButtonLink, Card , CallButton} from "@/components/ui";
 
 /**
  * Location and booking, the last two sections of the scroll (§6 items 8 and 9).
@@ -23,14 +23,12 @@ export function LocationBook() {
           <SectionLabel>Book</SectionLabel>
           <H2 className="mt-4 max-w-[14ch]">Ready when you are</H2>
           <p className="mt-6 max-w-[48ch] text-pretty text-[1.1rem] leading-[1.55] text-fg-muted">
-            Call to book ultrasound, CT or a procedure. For X-ray, walk in during
-            business hours.
+            Call to book any scan. Booking gives you the shortest wait, and we
+            accept X-ray walk-ins during business hours.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <ButtonLink href={clinic.phone.href} size="lg" className="tabular">
-              {clinic.phone.display}
-            </ButtonLink>
+            <CallButton />
             <ButtonLink href="/contact" size="lg" variant="ghost" echo>
               Send an enquiry
             </ButtonLink>
