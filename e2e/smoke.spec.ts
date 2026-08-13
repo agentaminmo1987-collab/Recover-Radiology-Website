@@ -55,6 +55,9 @@ test.describe("every route", () => {
 });
 
 test("heading order never skips a level", async ({ page }) => {
+  // Walks every route in one body, so it needs more than the default budget
+  // when the screenshot tests are saturating the machine alongside it.
+  test.setTimeout(120_000);
   for (const path of ROUTES) {
     await page.goto(path);
     const levels = await page
@@ -216,6 +219,8 @@ for (const path of ROUTES) {
 test("button hover: lift, ghost fill, and an echo that leaves nothing behind", async ({
   page,
 }) => {
+  // Samples an animation mid-flight, so it is sensitive to a loaded machine.
+  test.setTimeout(60_000);
   await page.goto("/");
   const cta = page.locator('main a[href="/contact"]').first();
   // Selected by the class under test, not by a route. An earlier version of
@@ -816,4 +821,81 @@ test("the trust link affordance is visible on touch, where hover never fires", a
   await p2.waitForTimeout(400);
   expect(await more.evaluate((e) => getComputedStyle(e).opacity)).toBe("1");
   await desktop.close();
+});
+
+test("the service cards and the cost list highlight on scroll too", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.waitForTimeout(800);
+  const supported = await page.evaluate(() =>
+    CSS.supports("animation-timeline: view()"),
+  );
+  test.skip(!supported, "no scroll-driven animation support in this browser");
+
+  for (const [label, sel] of [
+    ["service cards", "#services li"],
+    ["cost list", "#billing dl > div"],
+  ] as const) {
+    const top = await page.evaluate((s) => {
+      const el = document.querySelector(s)!;
+      return el.getBoundingClientRect().top + window.scrollY;
+    }, sel);
+
+    const read = async (y: number) => {
+      await page.evaluate((v) => window.scrollTo(0, v), y);
+      await page.waitForTimeout(450);
+      return page.evaluate(
+        (s) =>
+          [...document.querySelectorAll(s)].map((it) => {
+            const r = it.querySelector(".rr-hl__rule")!;
+            return new DOMMatrixReadOnly(getComputedStyle(r).transform).a;
+          }),
+        sel,
+      );
+    };
+
+    const before = await read(Math.max(0, top - 1400));
+    expect(Math.max(...before), `${label}: dark before it arrives`).toBeLessThan(0.1);
+
+    const mid = await read(top - 520);
+    expect(mid[0], `${label}: first leads`).toBeGreaterThan(mid[mid.length - 1]);
+
+    // Scroll-linked, so going back up must reverse it.
+    const again = await read(Math.max(0, top - 1400));
+    expect(Math.max(...again), `${label}: reverses`).toBeLessThan(0.1);
+  }
+});
+
+test("no ancestor of a scroll timeline creates a scroll container", async ({
+  page,
+}) => {
+  // overflow:hidden makes an element a scroll container, so view() on any
+  // descendant resolves against IT and the timeline freezes at a fixed value
+  // forever. It happened here: the service card list used overflow-hidden for
+  // its rounded corners, the animations stayed attached with a real
+  // ViewTimeline, and nothing in the markup or the keyframes looked wrong.
+  // clip-path masks the same way without creating a scroll container.
+  await page.goto("/");
+  await page.waitForTimeout(600);
+
+  const clipped = await page.evaluate(() => {
+    const bad: string[] = [];
+    document.querySelectorAll(".rr-hl__rule, .trust-item__rule").forEach((el) => {
+      let n = el.parentElement;
+      while (n && n !== document.documentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.overflow !== "visible" && cs.overflow !== "") {
+          bad.push(
+            `${n.tagName}.${String(n.className).slice(0, 40)} -> overflow:${cs.overflow}`,
+          );
+          break;
+        }
+        n = n.parentElement;
+      }
+    });
+    return [...new Set(bad)];
+  });
+
+  expect(clipped, JSON.stringify(clipped, null, 1)).toHaveLength(0);
 });

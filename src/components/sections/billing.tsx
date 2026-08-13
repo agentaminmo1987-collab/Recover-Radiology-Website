@@ -54,11 +54,24 @@ export function Billing() {
           <h3 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
             By situation
           </h3>
+          {/* Each situation highlights as it comes up the screen, staggered, in
+              the same language as the trust band and the service cards.
+
+              This list is the one place on the home page where a visitor is
+              looking for THEIR row rather than reading top to bottom, so
+              lighting them one at a time helps the eye step through them
+              instead of meeting five equal-weight lines at once. */}
           <dl className="mt-6 space-y-6">
-            {billing.cases.map((c) => (
-              <div key={c.who}>
-                <dt className="font-semibold text-fg">{c.who}</dt>
-                <dd className="mt-1.5 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
+            {billing.cases.map((c, i) => (
+              <div
+                key={c.who}
+                style={
+                  { "--i": i, "--hl-to": "var(--fg)" } as React.CSSProperties
+                }
+              >
+                <dt className="rr-hl__title font-semibold">{c.who}</dt>
+                <span aria-hidden className="rr-hl__rule mt-2 block h-px w-full" />
+                <dd className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
                   {c.detail}
                 </dd>
               </div>

@@ -22,9 +22,21 @@ export function Services() {
         </span>
       </Lead>
 
-      <ul className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] md:grid-cols-2">
-        {modalities.map((m) => (
-          <li key={m.slug} className="bg-[var(--card-bg)]">
+      {/* rr-clip-lg, not overflow-hidden. overflow-hidden here made this list a
+          scroll container, which froze the cards' view() timelines. See the
+          class in globals.css. */}
+      <ul className="rr-clip-lg mt-14 grid gap-px rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] md:grid-cols-2">
+        {modalities.map((m, i) => (
+          <li
+            key={m.slug}
+            // --i staggers the highlight across the four cards; --hl-to keeps
+            // the heading's resting colour as ink, so what travels is the
+            // sharpening from muted to full, not a recolour to green.
+            style={
+              { "--i": i, "--hl-to": "var(--fg)" } as React.CSSProperties
+            }
+            className="bg-[var(--card-bg)]"
+          >
             <Link
               href={`/${m.slug}`}
               className="group flex h-full flex-col p-8 transition-colors duration-[var(--rr-dur-base)] ease-[var(--rr-ease)] hover:bg-surface-sunken md:p-10"
@@ -34,9 +46,13 @@ export function Services() {
                   they arrive needing one. Removing them also lets the heading
                   sit flush with the copy and the figures below it, so each card
                   reads down a single left edge. */}
-              <h3 className="text-[1.5rem] font-semibold tracking-[-0.01em] md:text-[1.75rem]">
+              <h3 className="rr-hl__title text-[1.5rem] font-semibold tracking-[-0.01em] md:text-[1.75rem]">
                 {m.name}
               </h3>
+
+              {/* The highlight. Wipes in beneath the name as the card comes up
+                  the screen, matching the trust band above it. */}
+              <span aria-hidden className="rr-hl__rule mt-4 block h-px w-full" />
 
               <p className="mt-4 max-w-[46ch] text-pretty leading-[1.55] text-fg-muted">
                 {m.summary}
