@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { clinic } from "@/lib/clinic";
+import { clinic, SAME_DAY } from "@/lib/clinic";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
@@ -94,6 +94,30 @@ export default function ContactPage() {
                   Patients come to us from across {clinic.serviceArea}, including{" "}
                   {clinic.nearbySuburbs.slice(0, -1).join(", ")} and{" "}
                   {clinic.nearbySuburbs[clinic.nearbySuburbs.length - 1]}.
+                </p>
+              </Card>
+
+              {/* Placed above the walk-in card deliberately. Someone who needs
+                  to be seen today reads down until something says yes, and
+                  before this the first "yes" was X-ray only, so anyone needing
+                  an ultrasound or CT concluded they had to wait. */}
+              <Card>
+                <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
+                  Need to be seen today?
+                </h2>
+                <p className="mt-4 text-pretty leading-[1.55] text-fg-muted">
+                  {SAME_DAY.long}
+                </p>
+                <p className="mt-5">
+                  <a
+                    href={clinic.phone.href}
+                    className="tabular inline-flex min-h-[44px] items-center gap-2 text-[1.25rem] font-semibold text-accent hover:underline"
+                  >
+                    {clinic.phone.display}
+                  </a>
+                </p>
+                <p className="tabular mt-1 text-[0.9rem] text-fg-subtle">
+                  {clinic.hours.display}
                 </p>
               </Card>
 

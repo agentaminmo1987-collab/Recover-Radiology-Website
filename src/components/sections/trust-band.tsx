@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { REPORT_TURNAROUND, clinic } from "@/lib/clinic";
+import { REPORT_TURNAROUND, SAME_DAY, clinic } from "@/lib/clinic";
 
 /**
  * Trust band. Every item here is substantiable from the verified fact set.
@@ -37,10 +37,14 @@ const facts = [
     more: "About ultrasound",
   },
   {
-    value: "Same day X-ray",
-    href: "/x-ray",
-    label: "Book ahead for the shortest wait. We also accept walk-ins during business hours.",
-    more: "About X-ray",
+    // Was "Same day X-ray", which undersold it: same day applies across the
+    // services, not just X-ray. The walk-in stays in the label because it is
+    // the one case where you do not need to ring first.
+    value: SAME_DAY.claim,
+    href: "/contact",
+    label:
+      "Often available. Call to book one. X-ray also takes walk-ins during business hours.",
+    more: "Call or enquire",
   },
   {
     value: clinic.serviceArea,

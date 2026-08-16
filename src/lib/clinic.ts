@@ -94,6 +94,26 @@ export const clinic = {
 /** Report turnaround, stated on the existing site for ultrasound. */
 export const REPORT_TURNAROUND = "24 to 48 hours";
 
+/**
+ * Same day appointments. Confirmed by the practice 2026-08-17.
+ *
+ * A distinct fact from the X-ray walk-in, and a stronger one. Walk-in applies
+ * to X-ray only; this says an appointment for any service can often be had the
+ * same day. The two are stated together wherever both are relevant, because a
+ * patient reading "walk in" for X-ray reasonably assumes everything else is a
+ * wait.
+ *
+ * BY PHONE, DELIBERATELY. The enquiry form is answered by clerical staff during
+ * business hours, so promising same day through it would set up a failure the
+ * practice cannot control. Every mention of this points at the phone number.
+ */
+export const SAME_DAY = {
+  claim: "Same day appointments",
+  short: "Same day appointments are often available. Call us to book one.",
+  long:
+    "Same day appointments are often available across our services. They are booked over the phone rather than through the form, so call us and our clerical team will find you the earliest time.",
+} as const;
+
 export type ModalitySlug = "ultrasound" | "ct" | "x-ray" | "interventional";
 
 export interface Modality {

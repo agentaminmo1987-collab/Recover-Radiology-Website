@@ -693,7 +693,9 @@ test("each trust fact links to the page that substantiates it", async ({ page })
   const hrefs = await page
     .locator(".trust-item a")
     .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
-  expect(hrefs).toEqual(["/billing", "/ultrasound", "/x-ray", "/contact"]);
+  // The third item became "Same day appointments" and now points at /contact,
+  // because same day is booked by phone rather than being an X-ray-only fact.
+  expect(hrefs).toEqual(["/billing", "/ultrasound", "/contact", "/contact"]);
 
   // The visible affordance is aria-hidden, so the accessible name has to carry
   // the destination itself or the link reads as a bare fact to a screen reader.
@@ -701,7 +703,7 @@ test("each trust fact links to the page that substantiates it", async ({ page })
     .locator(".trust-item a")
     .evaluateAll((els) => els.map((e) => (e.textContent ?? "").trim()));
   expect(names[0]).toContain("What is covered");
-  expect(names[2]).toContain("About X-ray");
+  expect(names[2]).toContain("Call or enquire");
 });
 
 test("the trust highlight is driven by scroll position, not a timer", async ({
@@ -1008,4 +1010,36 @@ test("the team page shows the practice's own staff photography", async ({
     expect(a.length, `weak alt text: "${a}"`).toBeGreaterThan(12);
     expect(a).not.toMatch(/\.(avif|jpg|png|webp)/i);
   }
+});
+
+test("same day appointments are stated, and always point at the phone", async ({
+  page,
+}) => {
+  // High intent: someone searching "<scan> today" is ready to book now. The
+  // claim is worth nothing if the page then sends them to a form nobody reads
+  // in real time, so every mention has to sit beside the number.
+  await page.goto("/");
+  await expect(page.locator("main")).toContainText("Same day appointments");
+
+  await page.goto("/contact");
+  const card = page.locator("main", { hasText: "Need to be seen today?" });
+  await expect(card).toBeVisible();
+  await expect(card).toContainText(PHONE);
+  await expect(card).toContainText("over the phone");
+
+  // Answered on every service page, not just X-ray. Before this, the only
+  // same-day promise on the site was the X-ray walk-in, so a patient needing an
+  // ultrasound or CT concluded they had to wait.
+  for (const path of ["/ultrasound", "/ct", "/x-ray", "/interventional"]) {
+    await page.goto(path);
+    const body = await page.locator("main").innerText();
+    expect(body.toLowerCase(), `${path} never mentions same day`).toContain(
+      "appointment today",
+    );
+    expect(body, `${path}: same day claim without the number`).toContain(PHONE);
+  }
+
+  // Assistants answering "can I be seen today" read this file.
+  const llms = await (await page.request.get("/llms.txt")).text();
+  expect(llms).toContain("Same day appointments");
 });

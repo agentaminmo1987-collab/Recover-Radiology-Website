@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { clinic, modalities, REPORT_TURNAROUND, type ModalitySlug } from "@/lib/clinic";
+import { clinic, modalities, REPORT_TURNAROUND, SAME_DAY, type ModalitySlug } from "@/lib/clinic";
 import { procedures } from "@/lib/procedures";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SiteHeader } from "@/components/site-header";
@@ -133,6 +133,14 @@ function serviceFaqs(slug: ModalitySlug): { q: string; a: string }[] {
       a: `Both work. Booking ahead gives you the shortest wait, and we also accept walk-ins during business hours, usually same day. We are open ${clinic.hours.display.toLowerCase()}.`,
     });
   }
+
+  // High intent: someone searching "<scan> today" or "same day radiology" is
+  // ready to book now. Answered on every service page, and pointed at the phone
+  // rather than the form, because the form is not monitored in real time.
+  faqs.push({
+    q: `Can I get a ${m.name.toLowerCase()} appointment today?`,
+    a: `${SAME_DAY.long} Call ${clinic.phone.display} and ask, ${clinic.hours.display.toLowerCase()}.`,
+  });
 
   faqs.push({
     q: "What should I bring?",

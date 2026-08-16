@@ -1,4 +1,4 @@
-import { clinic, modalities, billing, team, REPORT_TURNAROUND } from "@/lib/clinic";
+import { clinic, modalities, billing, team, REPORT_TURNAROUND, SAME_DAY } from "@/lib/clinic";
 
 /**
  * llms.txt
@@ -93,6 +93,10 @@ A radiologist reports the images and sends the result to the referring doctor, w
 - ${team.radiographers.length} radiographers, who perform X-ray and CT
 - Practice Manager: ${team.practiceManager.name}
 - Imaging is reported by radiologists, who also perform the interventional procedures
+
+## Appointments
+
+${SAME_DAY.long} Phone ${clinic.phone.display}, ${clinic.hours.display}. X-ray also accepts walk-ins during business hours, usually same day.
 
 ## For referrers
 
