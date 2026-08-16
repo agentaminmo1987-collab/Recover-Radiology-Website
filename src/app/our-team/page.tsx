@@ -228,9 +228,10 @@ export default function OurTeamPage() {
               <p className="mt-4 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
                 Our {team.sonographerCount} sonographers cover musculoskeletal,
                 vascular, obstetric and general scanning between them, with{" "}
-                {team.combinedExperience.toLowerCase()}. Several are specialist
-                musculoskeletal sonographers, which is why injury and pain
-                referrals make up so much of what we do.
+                {team.combinedExperience.toLowerCase()}, and none of them are
+                junior. Several are specialist musculoskeletal sonographers,
+                which is why injury and pain referrals make up so much of what
+                we do.
               </p>
               <div className="mt-8">
                 <ButtonLink href="/ultrasound" variant="ghost">

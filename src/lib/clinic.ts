@@ -424,13 +424,19 @@ export const team = {
   clericalLead: { name: "Ashleigh", role: "Clerical Lead" },
   clerical: [{ name: "Chilali" }, { name: "Melanie" }],
   /**
-   * NAMES ARE INCOMPLETE, AND THE COUNT IS THE AUTHORITY.
+   * All five named and titled, completed 2026-08-17.
    *
-   * The practice confirmed five sonographers on 2026-08-17. Three names were
-   * supplied earlier; the other two have not been. `sonographerCount` is what
-   * the prose uses, so the page states five and is correct. The cards below
-   * show the named three, and the moment the other two names arrive they
-   * render with no other change. See QUESTIONS.md.
+   * A Chief Sonographer and four Senior Sonographers, confirmed directly by the
+   * practice rather than inferred. It was worth asking: "senior" was initially
+   * stated only alongside two of the names, and promoting the other two on a
+   * loose reading would have been inventing a colleague's title in public.
+   *
+   * This is a strong line on its own. Five sonographers, none of them junior,
+   * over fifty years between them, several MSK specialists, led by the Head
+   * Sonographer at the Royal Adelaide.
+   *
+   * Surnames are still missing for David and Laura, which reads as inconsistent
+   * beside three colleagues who have them. QUESTIONS.md.
    */
   sonographers: [
     // Confirmed 2026-08-17. The single strongest credibility fact the practice
@@ -462,14 +468,16 @@ export const team = {
         "Head Sonographer, Royal Adelaide Hospital",
       ],
     },
-    { name: "David", role: "Sonographer" },
-    { name: "Laura", role: "Sonographer" },
+    { name: "David", role: "Senior Sonographer" },
+    { name: "Laura", role: "Senior Sonographer" },
+    { name: "Danny Tran", role: "Senior Sonographer" },
+    { name: "Marko Krinic", role: "Senior Sonographer" },
   ],
   /** Confirmed by the practice, 2026-08-12. They run X-ray and CT. */
   radiographers: [
     // Chief Radiographer, confirmed 2026-08-17.
     { name: "Marlon Ledesma", role: "Chief Radiographer" },
-    { name: "Yasna", role: "Radiographer" },
+    { name: "Yasna", role: "Senior Radiographer" },
   ],
   /**
    * Re-confirmed by the practice 2026-08-17 as over 50 years across the five

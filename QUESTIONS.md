@@ -402,15 +402,24 @@ where "expert" or "leading" would not.
 
 ---
 
-## 20. Two sonographer names still missing
+## 20. Roster complete. Two surnames outstanding
 
-The practice confirmed **five** sonographers on 2026-08-17. Three names are
-known: Matt Le, David, Laura. The count drives the prose, so every page
-correctly says five, but only three cards render until the other two names
-arrive. They drop in with no other change.
+**Resolved 2026-08-17.** All five sonographers named and titled:
 
-Surnames for David, Laura and Yasna would also help. Matt Le and Marlon Ledesma
-now carry surnames and the others do not, which reads as inconsistent.
+- Matt Le, Chief Sonographer
+- David, Senior Sonographer
+- Laura, Senior Sonographer
+- Danny Tran, Senior Sonographer
+- Marko Krinic, Senior Sonographer
+
+Radiography: Marlon Ledesma, Chief Radiographer, and Yasna, Senior Radiographer.
+
+"Senior" was confirmed for David and Laura rather than inferred. It was
+initially stated only alongside Danny and Marko, and promoting the other two on
+a loose reading would have been inventing a colleague's title in public.
+
+**Still needed: surnames for David, Laura and Yasna.** Five colleagues now carry
+surnames and three do not, which reads as inconsistent on the page.
 
 ---
 
