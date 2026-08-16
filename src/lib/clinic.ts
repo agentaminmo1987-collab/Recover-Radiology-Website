@@ -435,8 +435,15 @@ export const team = {
    * over fifty years between them, several MSK specialists, led by the Head
    * Sonographer at the Royal Adelaide.
    *
-   * Surnames are still missing for David and Laura, which reads as inconsistent
-   * beside three colleagues who have them. QUESTIONS.md.
+   * NAMING RULE, set by the practice 2026-08-17: the two leads carry surnames,
+   * everyone else is a first name. Danny and Marko were briefly published with
+   * surnames and had them removed.
+   *
+   * This resolves the inconsistency the other way from the suggestion made
+   * earlier, and it is the better answer. Surnames on the leads mark the two
+   * roles a patient or a referrer might want to look up; first names everywhere
+   * else keeps the page warm rather than corporate, and gives the team less
+   * exposure than a full roster of searchable names.
    */
   sonographers: [
     // Confirmed 2026-08-17. The single strongest credibility fact the practice
@@ -470,8 +477,8 @@ export const team = {
     },
     { name: "David", role: "Senior Sonographer" },
     { name: "Laura", role: "Senior Sonographer" },
-    { name: "Danny Tran", role: "Senior Sonographer" },
-    { name: "Marko Krinic", role: "Senior Sonographer" },
+    { name: "Danny", role: "Senior Sonographer" },
+    { name: "Marko", role: "Senior Sonographer" },
   ],
   /** Confirmed by the practice, 2026-08-12. They run X-ray and CT. */
   radiographers: [

@@ -258,18 +258,32 @@ test("button hover: lift, ghost fill, and an echo that leaves nothing behind", a
   }
   expect(peakEcho, "echo should become visible after entry").toBeGreaterThan(0.1);
 
-  const mid = await cta.evaluate((e) => {
-    const s = getComputedStyle(e);
-    return { transform: s.transform, shadow: s.boxShadow };
-  });
-  expect(mid.transform, "button should lift").not.toBe("none");
-  expect(mid.shadow, "button should bloom").not.toBe("none");
+  // Lift and bloom are hover-state transitions, so they persist while hovered
+  // and can be polled rather than caught at an instant.
+  await expect
+    .poll(
+      () => cta.evaluate((e) => getComputedStyle(e).transform),
+      { message: "button should lift", timeout: 3000 },
+    )
+    .not.toBe("none");
+  await expect
+    .poll(
+      () => cta.evaluate((e) => getComputedStyle(e).boxShadow),
+      { message: "button should bloom", timeout: 3000 },
+    )
+    .not.toBe("none");
 
-  // Ghost fills rather than only recolouring its outline.
+  // Ghost fills rather than only recolouring its outline. Polled for the same
+  // reason as the rest of this test: a fixed wait asserts that the machine ran
+  // the transition on schedule, which is not what we care about and is not
+  // reliable while the screenshot tests are saturating it.
   await ghost.hover();
-  await page.waitForTimeout(120);
-  const bg = await ghost.evaluate((e) => getComputedStyle(e).backgroundColor);
-  expect(bg).toContain("245, 243, 228"); // Dust 30
+  await expect
+    .poll(
+      () => ghost.evaluate((e) => getComputedStyle(e).backgroundColor),
+      { message: "ghost should fill with Dust 30", timeout: 3000 },
+    )
+    .toContain("245, 243, 228");
 });
 
 test("reduced motion removes the lift and the echo, keeps the colour", async ({

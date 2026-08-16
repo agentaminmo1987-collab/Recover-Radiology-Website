@@ -418,8 +418,14 @@ Radiography: Marlon Ledesma, Chief Radiographer, and Yasna, Senior Radiographer.
 initially stated only alongside Danny and Marko, and promoting the other two on
 a loose reading would have been inventing a colleague's title in public.
 
-**Still needed: surnames for David, Laura and Yasna.** Five colleagues now carry
-surnames and three do not, which reads as inconsistent on the page.
+**Resolved, in the other direction.** The practice set the rule on 2026-08-17:
+the two leads carry surnames, everyone else is a first name. Danny and Marko
+were briefly published with surnames and had them removed.
+
+That is the better answer. Surnames on Matt Le and Marlon Ledesma mark the two
+roles a patient or referrer might want to look up; first names everywhere else
+keeps the page warm rather than corporate, and gives the team less exposure than
+a full roster of searchable names.
 
 ---
 
