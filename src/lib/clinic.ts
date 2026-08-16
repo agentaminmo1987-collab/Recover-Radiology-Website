@@ -107,6 +107,30 @@ export const REPORT_TURNAROUND = "24 to 48 hours";
  * business hours, so promising same day through it would set up a failure the
  * practice cannot control. Every mention of this points at the phone number.
  */
+/**
+ * Musculoskeletal specialisation. Confirmed by the practice 2026-08-17.
+ *
+ * STRATEGICALLY THE MOST IMPORTANT FACT ON THIS PAGE. The competitor at
+ * Morphett Vale is a general bulk billed imaging network with five sites, more
+ * pages and seven named radiologists. Fighting them on "bulk billed imaging
+ * near me" is a fight on their ground.
+ *
+ * This is different ground, and it is ground the practice already owns: the
+ * name is Recover, the tagline is about recovery, the interventional list is a
+ * pain management suite, the billing already covers ReturnToWorkSA and motor
+ * vehicle claims, and the sonographers and a radiologist are MSK specialists.
+ * Nobody else in the suburb can say that sentence.
+ *
+ * NOT A SUPERLATIVE. "Specialist" here describes a field of practice, which is
+ * a statement of fact, not a claim of superiority. It stays that way: no "best",
+ * no "leading", no comparison to anyone.
+ */
+export const MSK = {
+  sonographers: "Specialist musculoskeletal sonographers",
+  radiologist: "A musculoskeletal specialist radiologist",
+  short: "Specialist musculoskeletal sonographers and an MSK specialist radiologist.",
+} as const;
+
 export const SAME_DAY = {
   claim: "Same day appointments",
   short: "Same day appointments are often available. Call us to book one.",
@@ -359,15 +383,70 @@ export const team = {
   practiceManager: { name: "Emily", role: "Practice Manager" },
   clericalLead: { name: "Ashleigh", role: "Clerical Lead" },
   clerical: [{ name: "Chilali" }, { name: "Melanie" }],
-  sonographers: [{ name: "Matt" }, { name: "David" }, { name: "Laura" }],
-  /** Confirmed by the practice, 2026-08-12. They run X-ray and CT. */
-  radiographers: [{ name: "Marlon" }, { name: "Yasna" }],
   /**
-   * Applies to the sonographers specifically, which is the only group it was
-   * ever supplied for. It must not drift into meaning the whole team.
+   * NAMES ARE INCOMPLETE, AND THE COUNT IS THE AUTHORITY.
+   *
+   * The practice confirmed five sonographers on 2026-08-17. Three names were
+   * supplied earlier; the other two have not been. `sonographerCount` is what
+   * the prose uses, so the page states five and is correct. The cards below
+   * show the named three, and the moment the other two names arrive they
+   * render with no other change. See QUESTIONS.md.
    */
-  combinedExperience: "25 years of combined experience",
-  sonographerCount: 3,
+  sonographers: [
+    // Confirmed 2026-08-17. The single strongest credibility fact the practice
+    // has, and it was not on the website at all.
+    //
+    // Head Sonographer at the Royal Adelaide Hospital, SA's tertiary referral
+    // hospital, and Chief Sonographer here. That is a statement of positions
+    // held, which is verifiable fact rather than a superlative, so it is safe
+    // under AHPRA section 133 in a way that "expert" or "leading" would not be.
+    //
+    // CONSENT REQUIRED BEFORE THIS PUBLISHES. Naming someone's other employer
+    // on a commercial site needs that person's agreement, and some hospitals
+    // have policies about staff using the affiliation commercially. Flagged in
+    // QUESTIONS.md; the field is here so it is ready, not so it ships unasked.
+    {
+      name: "Matt Le",
+      role: "Chief Sonographer",
+      // Stated quietly, as lines under a name. Not badges, not a callout.
+      // Each is a position held or an award received, which is verifiable fact
+      // rather than a superlative, so it sits inside AHPRA section 133 where
+      // "expert" or "leading" would not.
+      //
+      // ON THE AWARD: the ASA article supplied by the practice features
+      // Matthew Le among its 2025 award recipients but does not name which
+      // award, and it is not independently verifiable online. Published on the
+      // practice's statement. Worth keeping the ASA confirmation on file.
+      credentials: [
+        "ASA Sonographer of the Year, 2025",
+        "Head Sonographer, Royal Adelaide Hospital",
+      ],
+    },
+    { name: "David", role: "Sonographer" },
+    { name: "Laura", role: "Sonographer" },
+  ],
+  /** Confirmed by the practice, 2026-08-12. They run X-ray and CT. */
+  radiographers: [
+    // Chief Radiographer, confirmed 2026-08-17.
+    { name: "Marlon Ledesma", role: "Chief Radiographer" },
+    { name: "Yasna", role: "Radiographer" },
+  ],
+  /**
+   * Re-confirmed by the practice 2026-08-17 as over 50 years across the five
+   * sonographers. The previous figure, 25 years, was supplied when the team was
+   * understood to be three, and was left unscaled until the practice gave a new
+   * number rather than being adjusted by arithmetic.
+   *
+   * `display` is the short form for a figure in a stat row; `sentence` is the
+   * clause form for running prose. Both live here so a change lands in one
+   * place: the team page previously hardcoded "25 years" in its stat row while
+   * reading the sentence form from this file, which is exactly how a fact ends
+   * up stale in one place and current in another.
+   */
+  combinedExperience: "over 50 years of combined experience",
+  combinedExperienceDisplay: "50+ years",
+  sonographerCount: 5,
+  radiographerCount: 2,
 } as const;
 
 /** What a referrer should include. Improves protocol selection. */

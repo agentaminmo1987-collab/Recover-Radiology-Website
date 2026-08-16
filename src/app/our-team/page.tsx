@@ -52,7 +52,10 @@ const measures = [
     label: "Sonographers on staff, so ultrasound runs every day we are open.",
   },
   {
-    value: "25 years",
+    // Reads from the fact set. It was hardcoded as "25 years" while the
+    // sentence form on the same page came from clinic.ts, so the two could
+    // disagree and did.
+    value: team.combinedExperienceDisplay,
     label: "Of combined ultrasound experience between them.",
   },
   {
@@ -61,12 +64,42 @@ const measures = [
   },
 ];
 
-/** One card per person. First names only, exactly as the practice supplied. */
-function PersonCard({ name, role }: { name: string; role: string }) {
+/**
+ * One card per person, exactly as the practice supplied them.
+ *
+ * Credentials are set QUIETLY, on purpose. They are the strongest thing on this
+ * page, and the instinct is to make them badges: a gold pill, a heavier weight,
+ * a callout box. That would be a mistake twice over. It reads as boasting on a
+ * medical practice, and AHPRA section 133 is unforgiving about anything that
+ * shades from stating a fact into asserting superiority.
+ *
+ * So they sit as small lines under the role, in the same subtle grey as
+ * everything else, and let the reader notice them. A person scanning the page
+ * sees a name. A person reading it finds out their Chief Sonographer runs
+ * ultrasound at the Royal Adelaide.
+ */
+function PersonCard({
+  name,
+  role,
+  credentials,
+}: {
+  name: string;
+  role: string;
+  credentials?: readonly string[];
+}) {
   return (
     <li className="rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-bg)] p-5">
       <p className="text-[1.15rem] font-semibold tracking-[-0.01em]">{name}</p>
       <p className="mt-1.5 text-[0.88rem] text-fg-subtle">{role}</p>
+      {credentials?.length ? (
+        <ul className="mt-3 space-y-1 border-t border-[var(--card-border)] pt-3">
+          {credentials.map((c) => (
+            <li key={c} className="text-[0.82rem] leading-[1.4] text-fg-subtle">
+              {c}
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </li>
   );
 }
@@ -86,18 +119,23 @@ export default function OurTeamPage() {
       postalCode: clinic.address.postcode,
       addressCountry: clinic.address.country,
     },
-    // First names only, matching what is published on the page. No titles or
-    // credentials are asserted, because none have been supplied.
+    // Mirrors the page exactly: same names, same roles, and the same
+    // credentials where the practice has supplied them. Schema that claims more
+    // than the page does is the kind of thing that gets a site penalised, so
+    // this is derived from the same source rather than written separately.
     employee: [
       ...team.sonographers.map((s) => ({
         "@type": "Person",
         name: s.name,
-        jobTitle: "Sonographer",
+        jobTitle: s.role,
+        ...("credentials" in s && s.credentials
+          ? { award: [...s.credentials] }
+          : {}),
       })),
       ...team.radiographers.map((r) => ({
         "@type": "Person",
         name: r.name,
-        jobTitle: "Radiographer",
+        jobTitle: r.role,
       })),
       {
         "@type": "Person",
@@ -190,7 +228,9 @@ export default function OurTeamPage() {
               <p className="mt-4 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
                 Our {team.sonographerCount} sonographers cover musculoskeletal,
                 vascular, obstetric and general scanning between them, with{" "}
-                {team.combinedExperience.toLowerCase()}.
+                {team.combinedExperience.toLowerCase()}. Several are specialist
+                musculoskeletal sonographers, which is why injury and pain
+                referrals make up so much of what we do.
               </p>
               <div className="mt-8">
                 <ButtonLink href="/ultrasound" variant="ghost">
@@ -200,8 +240,21 @@ export default function OurTeamPage() {
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-3 lg:content-start">
+              {/* Uses each person's own role, so the Chief Sonographer reads as
+                  Chief Sonographer. It previously hardcoded "Sonographer" for
+                  everyone, which flattened the one piece of seniority the
+                  practice has published.
+
+                  `alsoHolds` (the Royal Adelaide Hospital position) is
+                  deliberately NOT rendered yet. It is the strongest credential
+                  on the site and it needs his consent first. QUESTIONS.md. */}
               {team.sonographers.map((s) => (
-                <PersonCard key={s.name} name={s.name} role="Sonographer" />
+                <PersonCard
+                  key={s.name}
+                  name={s.name}
+                  role={s.role}
+                  credentials={"credentials" in s ? s.credentials : undefined}
+                />
               ))}
             </ul>
           </div>
@@ -238,7 +291,7 @@ export default function OurTeamPage() {
 
             <ul className="grid gap-4 sm:grid-cols-2 lg:content-start">
               {team.radiographers.map((r) => (
-                <PersonCard key={r.name} name={r.name} role="Radiographer" />
+                <PersonCard key={r.name} name={r.name} role={r.role} />
               ))}
             </ul>
           </div>

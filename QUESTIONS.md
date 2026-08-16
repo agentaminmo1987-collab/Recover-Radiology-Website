@@ -369,3 +369,58 @@ Every canonical URL, the sitemap and the robots host all point at
 recoverradiology.com.au, which still serves the old site. **None of the SEO work
 ranks until the domain points here.** It is the highest-value outstanding action
 on the project and it is not a code change.
+
+
+---
+
+## 19. Credentials now published, and what backs them
+
+Added to /our-team on 2026-08-17, set quietly as small lines under each name
+rather than as badges. Each is a position held or an award received, which is
+verifiable fact rather than a superlative, so it sits inside AHPRA section 133
+where "expert" or "leading" would not.
+
+**Matt Le, Chief Sonographer**
+- ASA Sonographer of the Year, 2025
+- Head Sonographer, Royal Adelaide Hospital
+
+**Marlon Ledesma, Chief Radiographer**
+
+**Two things to close off.**
+
+1. **The award wording.** The ASA article supplied features Matthew Le among its
+   2025 award recipients but does not name which award, and "Sonographer of the
+   Year 2025" is not independently verifiable online. It is published on the
+   practice's statement. Keep the ASA confirmation on file in case a competitor
+   or a regulator ever queries it, and correct the wording now if it was a
+   different ASA award.
+
+2. **The hospital affiliation.** Naming someone's other employer on a commercial
+   site needs that person's agreement, and some hospitals have policies about
+   staff using the affiliation commercially. Published on the practice's
+   instruction; worth a quick confirmation from Matt.
+
+---
+
+## 20. Two sonographer names still missing
+
+The practice confirmed **five** sonographers on 2026-08-17. Three names are
+known: Matt Le, David, Laura. The count drives the prose, so every page
+correctly says five, but only three cards render until the other two names
+arrive. They drop in with no other change.
+
+Surnames for David, Laura and Yasna would also help. Matt Le and Marlon Ledesma
+now carry surnames and the others do not, which reads as inconsistent.
+
+---
+
+## 21. Ownership, and the positioning claim
+
+The competitor claims to be "locally owned and operated" and an "independent
+imaging provider", while their own structured data names Vision Radiology, a
+Victorian company, as the parent organisation.
+
+**If Recover is genuinely independent and South Australian owned, that is a
+claim worth making plainly and often.** It is not currently in the verified fact
+set and so is not on the site. Confirm the exact ownership position and the
+wording you want.
