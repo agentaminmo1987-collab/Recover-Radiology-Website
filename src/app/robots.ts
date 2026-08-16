@@ -36,12 +36,11 @@ const AI_AGENTS = [
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/insights"] },
+      { userAgent: "*", allow: "/" },
       // Same permissions as everyone else, stated by name.
       ...AI_AGENTS.map((userAgent) => ({
         userAgent,
         allow: "/",
-        disallow: ["/insights"],
       })),
     ],
     sitemap: `${SITE}/sitemap.xml`,

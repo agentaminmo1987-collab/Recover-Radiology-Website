@@ -63,6 +63,7 @@ const groups: NavGroup[] = [
       },
       { href: "/billing", label: "Billing", hint: "What is bulk billed, and what is not" },
       { href: "/contact", label: "Contact and location", hint: "Find us, or send an enquiry" },
+      { href: "/insights", label: "Common questions", hint: "Who scans you, and what it costs" },
     ],
   },
   {

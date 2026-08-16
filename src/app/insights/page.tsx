@@ -9,10 +9,10 @@ import { Section, SectionLabel } from "@/components/ui";
 export const metadata: Metadata = {
   title: "Insights",
   description:
-    "Articles and updates from Recover Radiology, the bulk billed diagnostic imaging practice in Morphett Vale, South Australia. Nothing is published here yet.",
+    "Plain answers about medical imaging: who scans you, who reports it, how bulk billing works, and what to bring. From Recover Radiology, Morphett Vale.",
   alternates: { canonical: "/insights" },
-  // Nothing publishable yet, so this stays out of the index.
-  robots: { index: false, follow: true },
+  // Previously noindex because the section was empty. It has articles now, and
+  // they are the cheapest remaining ranking gain on the site.
 };
 
 export default function InsightsPage() {

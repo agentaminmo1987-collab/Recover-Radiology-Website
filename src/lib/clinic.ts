@@ -132,6 +132,32 @@ export const MSK = {
 } as const;
 
 /**
+ * Scan capability. Confirmed by the practice 2026-08-17.
+ *
+ * Every sonographer here is qualified across every study type, including the
+ * complex ones. That is a scheduling fact as much as a clinical one: a practice
+ * where only one person can do shear wave has a bottleneck on shear wave, and a
+ * referrer feels that as a wait. Five interchangeable sonographers across four
+ * rooms is why the availability claim holds.
+ *
+ * Named individually because "complex scans" means nothing to a GP deciding
+ * where to send someone, and these are the studies they would otherwise assume
+ * they need a tertiary centre for.
+ */
+export const SCAN_CAPABILITY = {
+  claim:
+    "All five sonographers are qualified across every ultrasound type we offer, including the complex studies.",
+  complex: [
+    "Endometriosis assessment",
+    "Shear wave elastography",
+    "Advanced vascular studies",
+    "Female pelvic imaging",
+    "Musculoskeletal",
+    "Obstetric",
+  ],
+} as const;
+
+/**
  * Injury and recovery. The positioning, expressed as data.
  *
  * Every entry below is assembled from facts already in this file: the
@@ -149,6 +175,83 @@ export const MSK = {
  * already served. The person who hurt their back at work, the weekend
  * footballer, the tradesperson whose shoulder has stopped working.
  */
+/**
+ * How the practice started. Confirmed 2026-08-17.
+ *
+ * The most useful thing on the referrer page, because it answers the question a
+ * GP is actually asking, which is not "are you any good" but "do you understand
+ * how my day works". A practice that began inside an urgent care clinic has
+ * already had to answer that.
+ */
+/**
+ * Ultrasound capacity. Confirmed by the practice 2026-08-17.
+ *
+ * THE STRONGEST REFERRER ARGUMENT ON THE SITE, and it was nowhere.
+ *
+ * A GP does not choose an imaging provider on quality claims, which every
+ * provider makes and none can prove in a brochure. They choose on whether the
+ * patient in front of them can actually be seen. Bulk billed ultrasound
+ * commonly runs two to four weeks, which means a GP either delays management or
+ * sends the patient somewhere they will pay.
+ *
+ * Four rooms and five sonographers is the answer to that, and it is a capital
+ * fact rather than an adjective: it is either true or it is not, and it cannot
+ * be claimed by a practice that has not spent the money.
+ *
+ * The wait figure is stated as a market condition, not as a claim about any
+ * named competitor.
+ */
+export const CAPACITY = {
+  ultrasoundRooms: 4,
+  marketWait: "two to four weeks",
+  urgentUltrasound: "Generally same day",
+  routineUltrasound: "Typically within a couple of days",
+  urgentReport: "Same day",
+  routineReport: REPORT_TURNAROUND,
+} as const;
+
+/**
+ * How referring works. Confirmed by the practice 2026-08-17.
+ *
+ * The operational difference, and the one a GP feels immediately: the practice
+ * chases the patient rather than the other way round. A referral handed over at
+ * the end of a consult usually sits in a bag for a week before anyone rings.
+ * Here it becomes a phone call the same day.
+ *
+ * That reverses who carries the follow-up. The GP stops wondering whether the
+ * patient ever booked, and the report comes back sooner because the scan
+ * happened sooner.
+ */
+export const REFERRING = {
+  steps: [
+    {
+      h: "Send it electronically",
+      p: "We can set your practice up to order imaging electronically, so the referral reaches us the moment you write it rather than travelling in the patient's pocket.",
+    },
+    {
+      h: "We call the patient the same day",
+      p: "Your patient does not have to remember to ring us. We contact them the same day to get the appointment booked while it is still front of mind.",
+    },
+    {
+      h: "Scanned as soon as we can fit them",
+      p: "Urgent ultrasound is generally same day and routine is typically within a couple of days, because we run four ultrasound rooms rather than one.",
+    },
+    {
+      h: "Report back to you sooner",
+      p: "Urgent reports come back the same day and routine ultrasound reports within 24 to 48 hours. The scan happening sooner is what makes the report arrive sooner.",
+    },
+  ],
+  outcome:
+    "Less waiting for everyone, and faster care. You stop wondering whether the patient ever booked, and you get the answer while the consult is still recent.",
+} as const;
+
+export const ORIGIN = {
+  short:
+    "We began providing on site imaging for the Morphett Vale urgent care clinic.",
+  long:
+    "Recover Radiology started by providing imaging on site for the urgent care clinic at Morphett Vale. That is a setting where imaging has to be immediate and uncomplicated, because the patient is in front of the doctor now and the answer changes what happens next. The practice was built around that expectation and it still sets how we work.",
+} as const;
+
 export const RECOVERY = {
   /** Plain-language problems, each answerable by something already offered. */
   reasons: [

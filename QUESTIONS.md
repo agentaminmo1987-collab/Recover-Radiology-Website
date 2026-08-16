@@ -439,3 +439,76 @@ Victorian company, as the parent organisation.
 claim worth making plainly and often.** It is not currently in the verified fact
 set and so is not on the site. Confirm the exact ownership position and the
 wording you want.
+
+
+---
+
+## 22. THE PRESENTATION CONTRADICTS THE WEBSITE ON BILLING. Please resolve.
+
+The Jan 26 presentation states billing that differs from what the site says,
+and the site's version came from the OLD website when this was built. **Billing
+is the highest-stakes content here, so nothing was changed off a seven month old
+deck without you confirming it.**
+
+| | Website says now | Presentation says |
+|---|---|---|
+| Ultrasound | Bulk billed, obstetric excepted | Bulk billed, obstetric **$100 gap** |
+| CT | Usually bulk billed | **Fully** bulk billed |
+| X-ray | Bulk billed | **Fully** bulk billed |
+| Interventional | **Some are not bulk billed** | **Fully bulk billed** |
+
+The interventional row is the one that matters. The site currently warns
+patients that some procedures are not bulk billed. If that is wrong, we are
+deterring referrals for no reason. If the presentation is out of date, the site
+is right and should stay.
+
+**The obstetric gap is a specific number, $100.** Publishing an actual figure is
+far more useful than "not bulk billed" and reduces calls, but only if it is
+current.
+
+**Also differs: report turnaround.** The site says 24 to 48 hours. The
+presentation says urgent within 4 hours and routine same day or within 24 hours.
+The referrer page currently carries the slower, safer figure. If the faster one
+is accurate it is a significant competitive advantage being left unstated.
+
+---
+
+## 23. Service detail from the presentation, not yet on the site
+
+The presentation is more specific than the website about what is and is not
+offered. Confirm and we will add:
+
+- **CT excludes** cardiac, calcium scoring and National Lung Screening.
+- **X-ray excludes** dental, DEXA and mammography.
+- **Ultrasound guided:** cortisone injections, joint aspirations, breast and
+  thyroid FNA.
+- **CT guided:** spinal injections (nerve root, epidural, facet), shoulder
+  hydrodilatation, hyaluronic acid joint injections.
+
+Stating exclusions plainly saves wasted referrals, which referrers appreciate
+more than a longer list.
+
+---
+
+## 24. The osteoarthritis injection article needs a radiologist to read it
+
+/insights/osteoarthritis-injections-evidence is written and live but **noindex
+and excluded from the sitemap** until signed off, the same gate the procedure
+pages use.
+
+Figures come from your presentation. The Altman 2015 study was verified against
+PLoS One directly: real, 182,022 patients, and it has a published correction
+which is cited alongside it.
+
+**One deliberate editorial decision you should look at.** The article includes a
+section on what the evidence does NOT establish: both studies are retrospective
+claims analyses showing association rather than causation, delay to arthroplasty
+is not automatically a benefit, and guideline positions differ. That section is
+there because a referrer page that presents observational data as though it were
+randomised evidence damages your credibility with the exact audience you are
+trying to win. It reads as more trustworthy, not less.
+
+**Brand naming:** you asked to remove "Euflexxa" from patient-facing pages, and
+it is gone from those. This referrer article names hyaluronic acid generically
+too. Tell us if you want the brand named in the referrer context, where the
+audience is clinical.

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { modalities } from "@/lib/clinic";
-import { publishedPosts } from "@/lib/insights";
+import { indexablePosts } from "@/lib/insights";
 import { indexableProcedures } from "@/lib/procedures";
 import { ultrasoundTypes } from "@/lib/ultrasound-types";
 
@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/our-team", priority: 0.7 },
     { path: "/referrers", priority: 0.7 },
     { path: "/about", priority: 0.6 },
+    { path: "/insights", priority: 0.6 },
     { path: "/legal/privacy", priority: 0.3 },
   ];
 
@@ -57,7 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.6,
     })),
-    ...publishedPosts().map((p) => ({
+    ...indexablePosts().map((p) => ({
       url: `${SITE}/insights/${p.slug}`,
       lastModified: p.publishedAt ? new Date(p.publishedAt) : now,
       changeFrequency: "yearly" as const,
