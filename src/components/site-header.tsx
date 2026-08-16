@@ -43,6 +43,13 @@ const groups: NavGroup[] = [
         label: "Interventional procedures",
         hint: "Image guided injections and blocks",
       },
+      // Sits with the services because that is where someone looks for it,
+      // even though it is a reason to come rather than a machine.
+      {
+        href: "/injury-and-pain",
+        label: "Injury and pain",
+        hint: "Work, sport and everyday injuries",
+      },
     ],
   },
   {

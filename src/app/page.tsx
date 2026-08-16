@@ -4,6 +4,7 @@ import { BookingBar } from "@/components/booking-bar";
 import { Hero } from "@/components/sections/hero";
 import { TrustBand } from "@/components/sections/trust-band";
 import { Services } from "@/components/sections/services";
+import { Recovery } from "@/components/sections/recovery";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { Billing } from "@/components/sections/billing";
 import { Credibility } from "@/components/sections/credibility";
@@ -25,6 +26,10 @@ export default function Home() {
         <Hero />
         <TrustBand />
         <Services />
+        {/* Directly after the services grid, which is the right moment: the
+            reader has just seen what equipment exists, and this answers "so
+            which of those is for me". */}
+        <Recovery />
         <HowItWorks />
         <Billing />
         <Credibility />

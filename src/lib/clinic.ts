@@ -131,6 +131,46 @@ export const MSK = {
   short: "Specialist musculoskeletal sonographers and an MSK specialist radiologist.",
 } as const;
 
+/**
+ * Injury and recovery. The positioning, expressed as data.
+ *
+ * Every entry below is assembled from facts already in this file: the
+ * musculoskeletal ultrasound types, the interventional procedure list, the
+ * ReturnToWorkSA and motor vehicle billing cases, the MSK specialisation. None
+ * of it is new clinical claim. What is new is saying it in one place, in the
+ * language of the person it is for.
+ *
+ * THE POINT. The practice is called Recover, the tagline is about recovery, the
+ * interventional list is a pain management suite, and the sonographers are MSK
+ * specialists. A patient could not tell any of that from the website, which
+ * meant the name was doing no work on any page.
+ *
+ * WHO IT IS FOR, in the practice's own framing: not the elite athlete, who is
+ * already served. The person who hurt their back at work, the weekend
+ * footballer, the tradesperson whose shoulder has stopped working.
+ */
+export const RECOVERY = {
+  /** Plain-language problems, each answerable by something already offered. */
+  reasons: [
+    {
+      title: "Hurt at work",
+      body: "Back, shoulder, knee or wrist injuries from lifting, repetition or a single bad day. We bill ReturnToWorkSA directly for accepted claims.",
+    },
+    {
+      title: "Sporting and weekend injuries",
+      body: "Muscle tears, tendon problems and joint injuries. Ultrasound shows soft tissue moving, which is often what a static image cannot answer.",
+    },
+    {
+      title: "Pain that has not settled",
+      body: "Long standing back, neck, hip, knee or shoulder pain. Imaging first, and image guided injections where they are indicated.",
+    },
+    {
+      title: "After a car accident",
+      body: "Imaging related to a motor vehicle accident claim is billed to the claim. Bring your claim number.",
+    },
+  ],
+} as const;
+
 export const SAME_DAY = {
   claim: "Same day appointments",
   short: "Same day appointments are often available. Call us to book one.",

@@ -15,6 +15,7 @@ const columns = [
       { href: "/ct", label: "CT" },
       { href: "/x-ray", label: "X-ray" },
       { href: "/interventional", label: "Interventional procedures" },
+      { href: "/injury-and-pain", label: "Injury and pain" },
     ],
   },
   {

@@ -239,13 +239,29 @@ test("button hover: lift, ghost fill, and an echo that leaves nothing behind", a
   expect(restOpacity).toBe(0);
 
   await cta.hover();
-  await page.waitForTimeout(60);
+
+  // POLLED, NOT SAMPLED AT A FIXED INSTANT. This previously waited 60ms and
+  // took one reading, which meant it was really asserting "the machine ran the
+  // animation on schedule". Under full parallel load, with screenshots being
+  // captured at four widths alongside, that is not a safe assumption and it
+  // failed intermittently while passing alone every time.
+  //
+  // The echo is a one-shot keyframe, so it rises and then settles back to 0.
+  // Polling for the peak asserts what actually matters, that it fires at all,
+  // without depending on when the frame lands.
+  let peakEcho = 0;
+  const deadline = Date.now() + 3000;
+  while (Date.now() < deadline) {
+    const v = await cta.evaluate((e) => +getComputedStyle(e, "::after").opacity);
+    if (v > peakEcho) peakEcho = v;
+    if (peakEcho > 0.1) break;
+  }
+  expect(peakEcho, "echo should become visible after entry").toBeGreaterThan(0.1);
+
   const mid = await cta.evaluate((e) => {
-    const a = getComputedStyle(e, "::after");
     const s = getComputedStyle(e);
-    return { echo: +a.opacity, transform: s.transform, shadow: s.boxShadow };
+    return { transform: s.transform, shadow: s.boxShadow };
   });
-  expect(mid.echo, "echo should be visible just after entry").toBeGreaterThan(0.1);
   expect(mid.transform, "button should lift").not.toBe("none");
   expect(mid.shadow, "button should bloom").not.toBe("none");
 
@@ -1042,4 +1058,66 @@ test("same day appointments are stated, and always point at the phone", async ({
   // Assistants answering "can I be seen today" read this file.
   const llms = await (await page.request.get("/llms.txt")).text();
   expect(llms).toContain("Same day appointments");
+});
+
+test("the injury and pain positioning is on the site and reachable", async ({
+  page,
+}) => {
+  // The practice is called Recover and the tagline is about recovery, but a
+  // visitor could previously read the whole home page without learning that
+  // injury and pain is most of what the clinic does. The name was decorative.
+  await page.goto("/");
+  await expect(page.locator("main")).toContainText("We are called Recover");
+  await expect(page.locator('main a[href="/injury-and-pain"]').first()).toBeVisible();
+
+  await page.goto("/injury-and-pain");
+  const body = await page.locator("main").innerText();
+
+  // Who it is for, in plain language rather than modality names.
+  for (const reason of [
+    "Hurt at work",
+    "Sporting and weekend injuries",
+    "Pain that has not settled",
+    "After a car accident",
+  ]) {
+    expect(body, `missing "${reason}"`).toContain(reason);
+  }
+
+  // Treatment, not just diagnosis: the commercially important half.
+  expect(body).toContain("Cortisone Injection");
+  expect(body).toContain("blood thinning");
+
+  // Claims handling, the practical question for an injured worker.
+  expect(body).toContain("ReturnToWorkSA");
+  expect(body).toContain(PHONE);
+
+  // The specialisation that makes the page credible.
+  expect(body.toLowerCase()).toContain("musculoskeletal");
+
+  // Reachable from the header, not just by URL.
+  const inNav = await page
+    .locator('nav[aria-label="Main"] a')
+    .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+  expect(inNav).toContain("/injury-and-pain");
+});
+
+test("the positioning never drifts into a superlative", async ({ page }) => {
+  // The competitor leans on "excellence", "academic level" and "state of the
+  // art". That is the register AHPRA s133 restricts, and copying it would
+  // trade the one advantage this site has.
+  for (const path of ["/", "/injury-and-pain", "/our-team", "/about"]) {
+    await page.goto(path);
+    const body = (await page.locator("main").innerText()).toLowerCase();
+    for (const word of [
+      "state of the art",
+      "state-of-the-art",
+      "world class",
+      "best in",
+      "leading provider",
+      "excellence in",
+      "unrivalled",
+    ]) {
+      expect(body, `${path} uses "${word}"`).not.toContain(word);
+    }
+  }
 });

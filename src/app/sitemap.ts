@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticRoutes = [
     { path: "/", priority: 1 },
+    { path: "/injury-and-pain", priority: 0.95 },
     { path: "/patient-information", priority: 0.9 },
     { path: "/billing", priority: 0.9 },
     { path: "/contact", priority: 0.9 },
