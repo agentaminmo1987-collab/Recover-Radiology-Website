@@ -316,3 +316,56 @@ claim about a regulated health service runs at AHPRA section 133. They say what
 CT actually does instead: it shows the needle tip against the bone and the joint
 space directly, so the medication goes inside the joint rather than around it.
 That is the same point, and it is checkable rather than an assertion.
+
+
+---
+
+## 16. Staff portraits, and who is in the photographs
+
+**We looked. The old site has no staff portraits.** Its team section is a list
+of text buttons: "Emily - Practice Manager", "Matt - Sonographer" and so on,
+with no images attached. Every photograph on it is either a room or the
+building.
+
+Its images are also 650x433 web copies of the same shoot you already gave us.
+Our masters are 7400x4936, so pulling anything across from there would have been
+a downgrade. The team page uses ours.
+
+**Two photographs on the site show people. Please confirm both:**
+
+1. **The reception photograph** (three staff at the front desk, now the lead
+   image on /our-team and used again on /about). Are all three still with the
+   practice?
+2. **The reporting workstation photograph** (a man in green scrubs reading CT,
+   now in the Radiologists section of /our-team). Earlier in this build we were
+   told this frame showed someone who had left, which is why /our-clinic uses
+   only architectural shots. If that is still true, say so and it comes out
+   today.
+
+**What would improve this page most:** a headshot of each of the nine current
+staff. `team` in clinic.ts is shaped so a `photo` field drops straight in
+without touching the layout. Plain background, consistent framing, any phone
+from the last few years is fine.
+
+Nothing generated. Not for faces, on a regulated health service.
+
+---
+
+## 17. The suburb list
+
+/contact and the areaServed schema now name 13 neighbouring suburbs: Reynella,
+Old Reynella, Woodcroft, Hackham, Christie Downs, Christies Beach, Noarlunga,
+Port Noarlunga, Seaford, Happy Valley, Aberfoyle Park, Flagstaff Hill and
+Huntfield Heights.
+
+**Derived from the map, not supplied by you.** They are geography rather than a
+claim, but prune anything you would not call your catchment.
+
+---
+
+## 18. The domain is the blocker
+
+Every canonical URL, the sitemap and the robots host all point at
+recoverradiology.com.au, which still serves the old site. **None of the SEO work
+ranks until the domain points here.** It is the highest-value outstanding action
+on the project and it is not a code change.

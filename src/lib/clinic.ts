@@ -56,6 +56,37 @@ export const clinic = {
   },
 
   serviceArea: "Adelaide's southern suburbs",
+
+  /**
+   * Neighbouring suburbs, for local search.
+   *
+   * GEOGRAPHY, NOT A CLAIM. These are the suburbs adjacent to Morphett Vale in
+   * Adelaide's south. Listing them says only "we are near you", which is a
+   * verifiable fact about a map, not an assertion about the practice.
+   *
+   * They belong in `areaServed` and in a visible line on the contact page.
+   * They do NOT belong in page titles: a title stuffed with suburb names is
+   * the doorway pattern Google demotes, and it would push the actual service
+   * out of the 60 characters a title gets to show.
+   *
+   * NOTE FOR THE PRACTICE: this list was derived from the map, not supplied.
+   * Prune anything you do not consider your catchment. QUESTIONS.md.
+   */
+  nearbySuburbs: [
+    "Reynella",
+    "Old Reynella",
+    "Woodcroft",
+    "Hackham",
+    "Christie Downs",
+    "Christies Beach",
+    "Noarlunga",
+    "Port Noarlunga",
+    "Seaford",
+    "Happy Valley",
+    "Aberfoyle Park",
+    "Flagstaff Hill",
+    "Huntfield Heights",
+  ] as const,
   referrerPortal: "https://pacs.recoverradiology.com.au/Portal/app#/",
   instagram: "https://instagram.com/recoverradiology",
 } as const;

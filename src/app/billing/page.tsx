@@ -8,8 +8,10 @@ import { Section, SectionLabel, Card, ButtonLink , CallButton} from "@/component
 
 export const metadata: Metadata = {
   title: "Billing and bulk billing",
+  // Under ~155 characters, or Google truncates it. The exception has to survive
+  // the cut, so it sits in the first sentence rather than the third.
   description:
-    "Most services at Recover Radiology are bulk billed. Obstetric scans and some interventional procedures are the exceptions. What bulk billing means, and what applies to concession, DVA and private patients.",
+    "Most scans at Recover Radiology are bulk billed, with obstetric and some interventional the exceptions. Concession, DVA, ReturnToWorkSA and MVA explained.",
   alternates: { canonical: "/billing" },
 };
 

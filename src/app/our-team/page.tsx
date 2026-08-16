@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { clinic, team, REPORT_TURNAROUND } from "@/lib/clinic";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Section, SectionLabel, Card, ButtonLink, CallButton } from "@/components/ui";
+import { Section, SectionLabel, ButtonLink, CallButton } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Our team",
-  description: `The sonographers, radiographers and clerical team at ${clinic.name} in ${clinic.address.suburb}. ${team.combinedExperience} in ultrasound.`,
+  description: `The sonographers, radiographers and reception team at ${clinic.name}, ${clinic.address.suburb}. ${team.sonographerCount} sonographers with ${team.combinedExperience.toLowerCase()}.`,
   alternates: { canonical: "/our-team" },
   openGraph: {
     title: `Our team | ${clinic.name}`,
@@ -20,30 +21,35 @@ export const metadata: Metadata = {
 /**
  * The team page.
  *
- * TWO CONSTRAINTS SHAPE EVERY LINE HERE.
+ * THREE CONSTRAINTS SHAPE EVERY LINE HERE.
  *
- * 1. AHPRA section 133 bans superlatives about a regulated health service. So
- *    no "highly talented", "expert", "leading" or "best". What replaces them is
- *    measurable fact: how many sonographers, how many years between them, what
- *    they scan, how fast the report comes back. That is a stronger claim than
- *    an adjective anyway, because it is checkable.
+ * 1. AHPRA section 133 bans superlatives about a regulated health service. No
+ *    "highly talented", "expert", "leading". What replaces them is measurable
+ *    fact: how many sonographers, how many years between them, how fast the
+ *    report comes back. Checkable beats adjectival.
  *
  * 2. Named individuals go stale. The Chief Sonographer and the CT technologist
- *    both left this month and had to be scrubbed from every page. So the page
- *    is built to survive turnover: the headline numbers come from `team`, the
- *    named cards are first names only with no invented credentials, and nothing
- *    structural breaks if a name is removed from `clinic.ts`.
+ *    both left in one month and had to be scrubbed from every page. So the page
+ *    survives turnover: headline numbers come from `team`, the named cards are
+ *    first names only with no invented credentials, and nothing structural
+ *    breaks if a name is removed from clinic.ts.
  *
- * Anything not in `clinic.ts` is not here. In particular there are no
- * qualifications, no ASAR registration numbers, no photographs of staff and no
- * radiologist names, because none of those have been supplied. See QUESTIONS.md.
+ * 3. PHOTOGRAPHY IS OF THIS PRACTICE, AT FULL RESOLUTION. The old site's
+ *    pictures are 650x433 web copies of the same shoot; the masters here are
+ *    7400x4936, straight from the practice. Photographs are placed only where
+ *    they are literally true: the reception photograph sits in the reception
+ *    section, the reporting workstation sits with reporting. No stock, no
+ *    generated faces.
+ *
+ * There are still NO INDIVIDUAL PORTRAITS anywhere, because none exist. The old
+ * site never had them and the practice has not supplied any. See QUESTIONS.md;
+ * `team` is shaped so a `photo` field drops in without touching this layout.
  */
 
 const measures = [
   {
     value: String(team.sonographerCount),
-    label:
-      "Sonographers on staff, so ultrasound runs every day the practice is open.",
+    label: "Sonographers on staff, so ultrasound runs every day we are open.",
   },
   {
     value: "25 years",
@@ -55,37 +61,120 @@ const measures = [
   },
 ];
 
+/** One card per person. First names only, exactly as the practice supplied. */
+function PersonCard({ name, role }: { name: string; role: string }) {
+  return (
+    <li className="rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-bg)] p-5">
+      <p className="text-[1.15rem] font-semibold tracking-[-0.01em]">{name}</p>
+      <p className="mt-1.5 text-[0.88rem] text-fg-subtle">{role}</p>
+    </li>
+  );
+}
+
 export default function OurTeamPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    name: clinic.name,
+    url: "https://recoverradiology.com.au/our-team",
+    telephone: clinic.phone.display,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: clinic.address.line1,
+      addressLocality: clinic.address.suburb,
+      addressRegion: clinic.address.state,
+      postalCode: clinic.address.postcode,
+      addressCountry: clinic.address.country,
+    },
+    // First names only, matching what is published on the page. No titles or
+    // credentials are asserted, because none have been supplied.
+    employee: [
+      ...team.sonographers.map((s) => ({
+        "@type": "Person",
+        name: s.name,
+        jobTitle: "Sonographer",
+      })),
+      ...team.radiographers.map((r) => ({
+        "@type": "Person",
+        name: r.name,
+        jobTitle: "Radiographer",
+      })),
+      {
+        "@type": "Person",
+        name: team.practiceManager.name,
+        jobTitle: team.practiceManager.role,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
+        {/* Editorial opening: the practice's own photograph carrying the page,
+            with the copy beside it rather than floating over it. Text over
+            imagery has to hold at its worst pixel, and there is no reason to
+            take that risk when the layout can simply put them side by side. */}
         <Section className="pt-[--rr-space-xl]">
-          <SectionLabel>Our team</SectionLabel>
-          <h1 className="mt-4 max-w-[20ch] text-balance text-[clamp(2.4rem,6vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
-            The people who will scan you
-          </h1>
-          <p className="mt-6 max-w-[58ch] text-pretty text-[1.15rem] leading-[1.5] text-fg-muted">
-            A scan is a close, quiet thing. It matters who is in the room. This
-            is the team at {clinic.address.suburb}, and what they do.
-          </p>
+          <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+            <div>
+              <SectionLabel>Our team</SectionLabel>
+              <h1 className="mt-4 max-w-[16ch] text-balance text-[clamp(2.2rem,5.6vw,3.8rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+                The people who will scan you
+              </h1>
+              <p className="mt-6 max-w-[48ch] text-pretty text-[1.12rem] leading-[1.5] text-fg-muted">
+                A scan is a close, quiet thing. It matters who is in the room.
+                This is the team at {clinic.address.suburb}, and what each of
+                them does.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <ButtonLink href="/contact" size="lg" echo>
+                  Book a scan
+                </ButtonLink>
+                <CallButton variant="ghost" />
+              </div>
+            </div>
 
-          <dl className="mt-14 grid gap-8 border-t border-[var(--card-border)] pt-10 sm:grid-cols-3">
-            {measures.map((mm) => (
-              <div key={mm.label}>
-                <dt className="tabular text-[1.9rem] font-medium leading-[1.1] text-accent">
-                  {mm.value}
+            <figure className="relative">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)]">
+                <Image
+                  src="/img/clinic/reception-team-1600.avif"
+                  alt="Reception staff at Recover Radiology taking a booking at the front desk"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 52vw"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="mt-3 text-[0.85rem] text-fg-subtle">
+                Reception, {clinic.address.suburb}.
+              </figcaption>
+            </figure>
+          </div>
+
+          <dl className="mt-16 grid gap-8 border-t border-[var(--card-border)] pt-10 sm:grid-cols-3">
+            {measures.map((m, i) => (
+              <div
+                key={m.label}
+                style={{ "--i": i } as React.CSSProperties}
+              >
+                <dt className="tabular rr-hl__title text-[1.9rem] font-medium leading-[1.1]">
+                  {m.value}
                 </dt>
+                <span aria-hidden className="rr-hl__rule mt-3 block h-px w-full" />
                 <dd className="mt-3 max-w-[30ch] text-[0.97rem] leading-[1.55] text-fg-muted">
-                  {mm.label}
+                  {m.label}
                 </dd>
               </div>
             ))}
           </dl>
         </Section>
 
-        {/* Sonographers. The team the practice most wants seen, so they get the
-            page's own section rather than a row in a combined staff grid. */}
+        {/* Sonography. The group the practice most wants seen. */}
         <Section tone="raised" className="border-y border-[var(--card-border)]">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
@@ -112,24 +201,14 @@ export default function OurTeamPage() {
 
             <ul className="grid gap-4 sm:grid-cols-3 lg:content-start">
               {team.sonographers.map((s) => (
-                <li key={s.name}>
-                  <Card className="h-full">
-                    <p className="text-[1.25rem] font-semibold tracking-[-0.01em]">
-                      {s.name}
-                    </p>
-                    <p className="mt-2 text-[0.92rem] text-fg-subtle">
-                      Sonographer
-                    </p>
-                  </Card>
-                </li>
+                <PersonCard key={s.name} name={s.name} role="Sonographer" />
               ))}
             </ul>
           </div>
         </Section>
 
-        {/* Radiographers. They run X-ray and CT, which between them are most of
-            the examinations performed here, so leaving them off the page would
-            have misrepresented who a patient actually meets. */}
+        {/* Radiography. They run X-ray and CT, which between them are most of
+            the examinations performed here. */}
         <Section>
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
@@ -144,8 +223,8 @@ export default function OurTeamPage() {
                 image.
               </p>
               <p className="mt-4 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
-                They are also the people who will talk you through what is about
-                to happen, and who notice when someone is finding it hard.
+                They are also the people who talk you through what is about to
+                happen, and who notice when someone is finding it hard.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink href="/x-ray" variant="ghost">
@@ -159,84 +238,106 @@ export default function OurTeamPage() {
 
             <ul className="grid gap-4 sm:grid-cols-2 lg:content-start">
               {team.radiographers.map((r) => (
-                <li key={r.name}>
-                  <Card className="h-full">
-                    <p className="text-[1.25rem] font-semibold tracking-[-0.01em]">
-                      {r.name}
-                    </p>
-                    <p className="mt-2 text-[0.92rem] text-fg-subtle">
-                      Radiographer
-                    </p>
-                  </Card>
-                </li>
+                <PersonCard key={r.name} name={r.name} role="Radiographer" />
               ))}
             </ul>
           </div>
         </Section>
 
-        {/* Reception and clerical. Named because these are the people a patient
-            speaks to first, and often the only ones they speak to at all. */}
+        {/* Reception. The first voice you hear and the desk you check in at. */}
         <Section tone="raised" className="border-y border-[var(--card-border)]">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <div>
               <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
                 Reception and bookings
               </h2>
-              <p className="mt-6 max-w-[46ch] text-pretty leading-[1.65] text-fg-muted">
-                The first voice you hear and the desk you check in at. They book
-                the appointment, check your referral, confirm what Medicare
-                covers, and tell you the fee before you commit to anything.
+              <p className="mt-6 max-w-[48ch] text-pretty leading-[1.65] text-fg-muted">
+                They book the appointment, check your referral, confirm what
+                Medicare covers, and tell you the fee before you commit to
+                anything. If you are unsure whether your scan is bulk billed,
+                they are the people who will know.
               </p>
-              <div className="mt-8">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <CallButton variant="ghost" />
+                <ButtonLink href="/billing" variant="ghost">
+                  Billing
+                </ButtonLink>
               </div>
+
+              <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+                <PersonCard
+                  name={team.practiceManager.name}
+                  role={team.practiceManager.role}
+                />
+                <PersonCard
+                  name={team.clericalLead.name}
+                  role={team.clericalLead.role}
+                />
+                {team.clerical.map((c) => (
+                  <PersonCard key={c.name} name={c.name} role="Clerical" />
+                ))}
+              </ul>
             </div>
 
-            <ul className="grid gap-4 sm:grid-cols-2">
-              {[
-                { name: team.practiceManager.name, role: team.practiceManager.role },
-                { name: team.clericalLead.name, role: team.clericalLead.role },
-                ...team.clerical.map((c) => ({ name: c.name, role: "Clerical" })),
-              ].map((p) => (
-                <li key={p.name}>
-                  <Card className="h-full">
-                    <p className="text-[1.25rem] font-semibold tracking-[-0.01em]">
-                      {p.name}
-                    </p>
-                    <p className="mt-2 text-[0.92rem] text-fg-subtle">{p.role}</p>
-                  </Card>
-                </li>
-              ))}
-            </ul>
+            <figure>
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)]">
+                <Image
+                  src="/img/clinic/reception-1600.avif"
+                  alt="The reception desk and waiting area at Recover Radiology"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  className="object-cover"
+                />
+              </div>
+            </figure>
           </div>
         </Section>
 
-        {/* Radiologists. No names and no photograph.
-            No names, because none have been supplied, and inventing one for a
-            doctor who signs reports is not a small error. No photograph, because
-            the only staffed frames we hold show people who have since left the
-            practice. */}
-        <Section tone="sunken" className="border-y border-[var(--card-border)]">
-          <div className="max-w-[62ch]">
-            <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
-              Radiologists
-            </h2>
-            <p className="mt-6 text-pretty leading-[1.65] text-fg-muted">
-              Your images are reported by radiologists, the specialist doctors
-              trained to read them. They also perform the image guided injections
-              and blocks on our procedure days.
-            </p>
-            <p className="mt-4 text-pretty leading-[1.65] text-fg-muted">
-              Your report goes to the doctor who referred you, so the
-              conversation about what it means happens with someone who already
-              knows your history. Ultrasound reports reach them within{" "}
-              {REPORT_TURNAROUND}.
-            </p>
-            <p className="mt-8">
-              <Link href="/interventional" className="text-accent hover:underline">
-                Procedures they perform
-              </Link>
-            </p>
+        {/* Radiologists. No names, because none have been supplied, and
+            inventing one for a doctor who signs reports is not a small error.
+            The photograph is of reporting, which is what this section is about,
+            so it is placed truthfully rather than decoratively. */}
+        <Section tone="sunken" className="border-b border-[var(--card-border)]">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
+            <div className="max-w-[54ch]">
+              <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+                Radiologists
+              </h2>
+              <p className="mt-6 text-pretty leading-[1.65] text-fg-muted">
+                Your images are reported by radiologists, the specialist doctors
+                trained to read them. They also perform the image guided
+                injections and blocks on our procedure days.
+              </p>
+              <p className="mt-4 text-pretty leading-[1.65] text-fg-muted">
+                Your report goes to the doctor who referred you, so the
+                conversation about what it means happens with someone who
+                already knows your history. Ultrasound reports reach them within{" "}
+                {REPORT_TURNAROUND}.
+              </p>
+              <p className="mt-8">
+                <Link
+                  href="/interventional"
+                  className="font-semibold text-accent hover:underline"
+                >
+                  Procedures they perform &rarr;
+                </Link>
+              </p>
+            </div>
+
+            <figure>
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)]">
+                <Image
+                  src="/img/clinic/ct-operator-1600.avif"
+                  alt="Reading CT images on the diagnostic workstation at Recover Radiology"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 48vw"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="mt-3 text-[0.85rem] text-fg-subtle">
+                Reporting, on the diagnostic workstation.
+              </figcaption>
+            </figure>
           </div>
         </Section>
 

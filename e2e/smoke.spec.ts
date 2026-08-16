@@ -899,3 +899,113 @@ test("no ancestor of a scroll timeline creates a scroll container", async ({
 
   expect(clipped, JSON.stringify(clipped, null, 1)).toHaveLength(0);
 });
+
+/* --------------------------------------------------------- SEO and discovery */
+
+test("every page below the root carries a breadcrumb trail", async ({ page }) => {
+  // Google renders the trail instead of a raw URL when it can find one, and an
+  // assistant retrieving a leaf page gets no hierarchy without it: "Nerve Root
+  // Block" reads very differently when the retriever can see its parent.
+  for (const path of [
+    "/ultrasound",
+    "/ct",
+    "/x-ray",
+    "/interventional",
+    "/interventional/cortisone-injection",
+  ]) {
+    await page.goto(path);
+    const blocks = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
+    const crumbs = blocks.map((b) => JSON.parse(b)).find((o) => o["@type"] === "BreadcrumbList");
+    expect(crumbs, `${path} has no BreadcrumbList`).toBeTruthy();
+    expect(crumbs.itemListElement.length, `${path} trail too short`).toBeGreaterThan(1);
+    // The current page is the last item and must not carry an item URL.
+    const last = crumbs.itemListElement[crumbs.itemListElement.length - 1];
+    expect(last.item, `${path}: current page should have no item URL`).toBeUndefined();
+
+    // Visible too, not crawler-only markup that can drift unnoticed.
+    await expect(page.locator('nav[aria-label="Breadcrumb"]')).toBeVisible();
+  }
+});
+
+test("the business entity carries the signals that resolve it to the real clinic", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const blocks = await page
+    .locator('script[type="application/ld+json"]')
+    .allTextContents();
+  const biz = blocks.map((b) => JSON.parse(b)).find((o) => o["@type"] === "MedicalBusiness");
+  expect(biz).toBeTruthy();
+
+  // sameAs to the Google Business Profile is the strongest local signal.
+  expect(JSON.stringify(biz.sameAs)).toContain("cid=");
+  expect(biz.hasMap).toContain("cid=");
+  expect(biz.geo.latitude).toBeCloseTo(-35.1366, 3);
+
+  // AHPRA s133: never a rating.
+  expect(biz.aggregateRating, "a rating must never be published").toBeUndefined();
+  expect(biz.review, "reviews must never be published").toBeUndefined();
+});
+
+test("meta descriptions stay inside what Google will actually show", async ({
+  page,
+}) => {
+  for (const path of ["/", "/billing", "/contact", "/our-team", "/ultrasound"]) {
+    await page.goto(path);
+    const d =
+      (await page.locator('meta[name="description"]').getAttribute("content")) ?? "";
+    expect(d.length, `${path} description is empty`).toBeGreaterThan(60);
+    expect(d.length, `${path} description is ${d.length} chars, will be truncated`).toBeLessThanOrEqual(165);
+  }
+});
+
+test("AI crawlers are named and allowed in robots.txt", async ({ request }) => {
+  const txt = await (await request.get("/robots.txt")).text();
+  for (const agent of ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended"]) {
+    expect(txt, `${agent} not named`).toContain(agent);
+  }
+  expect(txt).toContain("Sitemap:");
+});
+
+test("the enquiry confirmation sends people somewhere useful", async ({ page }) => {
+  // The confirmation is the moment a visitor is most engaged, and it used to be
+  // a dead end. Rendered here by driving the real form.
+  await page.goto("/contact");
+  await page.fill('input[name="name"]', "Test Person");
+  await page.fill('input[name="phone"]', "0400000000");
+  // The action rejects anything submitted faster than MIN_SUBMIT_MS.
+  await page.waitForTimeout(3200);
+  await page.click('button[type="submit"]');
+
+  const panel = page.locator("[data-confirm-lede]");
+  await expect(panel).toBeVisible({ timeout: 15_000 });
+
+  for (const href of ["/patient-information", "/billing", "/our-clinic"]) {
+    await expect(
+      page.locator(`a[href="${href}"]`).last(),
+      `confirmation should link to ${href}`,
+    ).toBeVisible();
+  }
+});
+
+test("the team page shows the practice's own staff photography", async ({
+  page,
+}) => {
+  await page.goto("/our-team");
+  const srcs = await page
+    .locator("main img")
+    .evaluateAll((els) => els.map((e) => decodeURIComponent(e.getAttribute("src") ?? "")));
+  const joined = srcs.join(" ");
+  expect(joined, "reception team photo missing").toContain("reception-team");
+
+  // Every image needs a real alt, not a filename and not empty.
+  const alts = await page
+    .locator("main img")
+    .evaluateAll((els) => els.map((e) => e.getAttribute("alt") ?? ""));
+  for (const a of alts) {
+    expect(a.length, `weak alt text: "${a}"`).toBeGreaterThan(12);
+    expect(a).not.toMatch(/\.(avif|jpg|png|webp)/i);
+  }
+});

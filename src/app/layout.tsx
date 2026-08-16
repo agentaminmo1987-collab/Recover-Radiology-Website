@@ -22,8 +22,11 @@ export const metadata: Metadata = {
     default: `${clinic.name}, bulk billed imaging in Morphett Vale`,
     template: `%s | ${clinic.name}`,
   },
+  // Kept under ~155 characters. The previous version ran to 246 and Google cut
+  // it mid-sentence, losing the report turnaround, which is the strongest
+  // differentiator in the whole description.
   description:
-    "Bulk billed ultrasound, CT, X-ray and interventional procedures in Morphett Vale, serving Adelaide's southern suburbs. Book online or by phone, with X-ray walk-ins accepted during business hours. Reports to your doctor within 24 to 48 hours.",
+    "Bulk billed ultrasound, CT, X-ray and image guided procedures in Morphett Vale. Reports to your doctor in 24 to 48 hours. Call 08 7081 3078.",
   applicationName: clinic.name,
   alternates: { canonical: "/" },
   openGraph: {
@@ -83,14 +86,38 @@ function StructuredData() {
         closes: clinic.hours.closes,
       },
     ],
-    areaServed: { "@type": "AdministrativeArea", name: clinic.serviceArea },
+    // The region, then each neighbouring suburb by name. A local search is
+    // almost always "<service> near me" resolved against a suburb, and an
+    // areaServed that names only "Adelaide's southern suburbs" gives the engine
+    // nothing to match a specific suburb against.
+    areaServed: [
+      { "@type": "AdministrativeArea", name: clinic.serviceArea },
+      { "@type": "City", name: clinic.address.suburb },
+      ...clinic.nearbySuburbs.map((name) => ({ "@type": "City", name })),
+    ],
     availableService: [
       { "@type": "MedicalTest", name: "Ultrasound" },
       { "@type": "MedicalTest", name: "CT" },
       { "@type": "MedicalTest", name: "X-ray" },
       { "@type": "MedicalProcedure", name: "Interventional procedures" },
     ],
-    sameAs: [clinic.instagram],
+    // Entity resolution. sameAs is how a search engine, or an assistant
+    // answering "where can I get a bulk billed ultrasound in Morphett Vale",
+    // ties this page to the business it already has a record of. The Google
+    // Business Profile is the strongest of those signals for a local clinic and
+    // it was missing.
+    sameAs: [clinic.instagram, clinic.mapsUrl],
+    hasMap: clinic.mapsUrl,
+    image: `${SITE_URL}/img/clinic/exterior-1600.avif`,
+    logo: `${SITE_URL}/brand/logo-h-colour-tight.png`,
+    // Stated as a plain-language range, never as a rating. An aggregateRating
+    // would be a review signal, which AHPRA section 133 prohibits for a
+    // regulated health service.
+    priceRange: "Bulk billed for most services",
+    medicalSpecialty: "https://schema.org/Radiography",
+    isAcceptingNewPatients: true,
+    currenciesAccepted: "AUD",
+    paymentAccepted: "Medicare, EFTPOS, Credit Card",
   };
   return (
     <script

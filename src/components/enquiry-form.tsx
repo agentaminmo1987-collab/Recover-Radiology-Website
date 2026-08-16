@@ -124,8 +124,9 @@ export function EnquiryForm() {
         className="rounded-[var(--radius-lg)] border border-accent bg-surface-sunken p-8"
       >
         <h3 className="text-[1.3rem] font-semibold">Thank you, we have that.</h3>
-        <p className="mt-3 text-pretty leading-[1.6] text-fg-muted">
-          Our clerical team will be in touch. If it is urgent, calling is faster:{" "}
+        <p className="mt-3 text-pretty leading-[1.6] text-fg-muted" data-confirm-lede>
+          Our clerical team will be in touch to confirm a time. If it is urgent,
+          calling is faster:{" "}
           <a
             href={clinic.phone.href}
             className="tabular font-medium text-accent hover:underline"
@@ -134,6 +135,59 @@ export function EnquiryForm() {
           </a>
           .
         </p>
+
+        {/* The confirmation used to be a dead end: the one moment a visitor is
+            most engaged, and the page gave them nowhere to go.
+
+            These are ordered by what actually happens next, not by what we
+            would like them to read. Preparation comes first because some scans
+            need fasting or a full bladder and getting that wrong costs the
+            patient a second trip. Cost is second because it is the most common
+            unasked question. */}
+        <div className="mt-8 border-t border-[var(--card-border)] pt-6">
+          <h4 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
+            While you wait to hear from us
+          </h4>
+          <ul className="mt-4 grid gap-3">
+            {[
+              {
+                href: "/patient-information",
+                label: "Preparing for your scan",
+                hint: "Some scans need fasting or a full bladder. Worth checking now.",
+              },
+              {
+                href: "/billing",
+                label: "What it will cost",
+                hint: "Most services are bulk billed. The exceptions are listed.",
+              },
+              {
+                href: "/our-clinic",
+                label: "See the clinic",
+                hint: "The rooms, the parking, and where to find the door.",
+              },
+            ].map((l) => (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  className="group flex min-h-[56px] items-center justify-between gap-4 rounded-[var(--radius-md)] border border-[var(--card-border)] bg-[var(--card-bg)] px-5 py-3 transition-colors hover:border-accent"
+                >
+                  <span>
+                    <span className="block font-semibold text-fg">{l.label}</span>
+                    <span className="mt-0.5 block text-[0.88rem] leading-[1.4] text-fg-subtle">
+                      {l.hint}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-accent transition-transform group-hover:translate-x-1"
+                  >
+                    &rarr;
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }

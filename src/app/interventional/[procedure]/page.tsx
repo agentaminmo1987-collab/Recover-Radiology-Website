@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { clinic, getModalityMustKnow } from "@/lib/clinic";
 import { procedures, getProcedure } from "@/lib/procedures";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
@@ -127,14 +128,12 @@ export default async function ProcedurePage({
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
         <Section className="pt-[--rr-space-xl]">
-          <nav aria-label="Breadcrumb" className="mb-8">
-            <Link
-              href="/interventional"
-              className="inline-flex min-h-[44px] items-center gap-2 text-[0.95rem] text-fg-subtle hover:text-fg"
-            >
-              <span aria-hidden>&larr;</span> All procedures
-            </Link>
-          </nav>
+          <Breadcrumbs
+            trail={[
+              { label: "Interventional procedures", href: "/interventional" },
+              { label: p.name },
+            ]}
+          />
 
           <SectionLabel>Interventional</SectionLabel>
           <h1 className="mt-4 max-w-[20ch] text-balance text-[clamp(2.2rem,5.4vw,3.6rem)] font-semibold leading-[1.05] tracking-[-0.03em]">

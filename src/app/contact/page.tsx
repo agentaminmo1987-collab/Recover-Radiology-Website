@@ -8,7 +8,7 @@ import { EnquiryForm } from "@/components/enquiry-form";
 
 export const metadata: Metadata = {
   title: "Contact and location",
-  description: `Book a scan at ${clinic.name}, ${clinic.address.full}. Call ${clinic.phone.display}, ${clinic.hours.display}. X-ray walk-ins accepted during business hours.`,
+  description: `Book a scan at ${clinic.name}, ${clinic.address.line1}, ${clinic.address.suburb}. Call ${clinic.phone.display}. X-ray walk-ins during business hours.`,
   alternates: { canonical: "/contact" },
 };
 
@@ -85,6 +85,16 @@ export default function ContactPage() {
                 >
                   Open in Maps <span aria-hidden>&rarr;</span>
                 </a>
+
+                {/* The catchment, as real visible content rather than schema
+                    only. Markup a crawler can see but a person cannot is a
+                    liability: it drifts and nobody notices. This is also the
+                    honest version of what the suburb names are for. */}
+                <p className="mt-6 border-t border-[var(--card-border)] pt-5 text-pretty text-[0.92rem] leading-[1.6] text-fg-subtle">
+                  Patients come to us from across {clinic.serviceArea}, including{" "}
+                  {clinic.nearbySuburbs.slice(0, -1).join(", ")} and{" "}
+                  {clinic.nearbySuburbs[clinic.nearbySuburbs.length - 1]}.
+                </p>
               </Card>
 
               <Card>

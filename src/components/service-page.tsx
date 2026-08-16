@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { clinic, modalities, type ModalitySlug } from "@/lib/clinic";
+import { clinic, modalities, REPORT_TURNAROUND, type ModalitySlug } from "@/lib/clinic";
 import { procedures } from "@/lib/procedures";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
@@ -73,20 +74,148 @@ function procedureFor(slug: ModalitySlug, typeName: string) {
   return procedures.find((p) => p.name === typeName);
 }
 
+/**
+ * Common questions, per modality.
+ *
+ * COMPOSED, NOT WRITTEN. Every answer is assembled from `clinic.ts`: the
+ * duration, the billing rule, the preparation entries, the safety line. Nothing
+ * here states a fact that is not already in the verified set, which is what
+ * makes it safe to publish on a regulated health service and what stops these
+ * drifting out of step with the rest of the page.
+ *
+ * They are SPECIFIC TO THE SERVICE. A generic "do I need a referral" block
+ * repeated four times would be filler, and Google treats near-duplicate FAQ
+ * blocks across a site as exactly that. The questions differ per modality
+ * because the answers do: the X-ray question people actually ask is about
+ * walking in, the CT one is about contrast, the interventional one is about
+ * getting home afterwards.
+ */
+function serviceFaqs(slug: ModalitySlug): { q: string; a: string }[] {
+  const m = getModality(slug);
+  const faqs: { q: string; a: string }[] = [];
+
+  const billingAnswer =
+    m.bulkBilled === "yes"
+      ? `Yes. ${m.name} is bulk billed at ${clinic.name}, so Medicare is billed directly and there is nothing for you to pay. You will need a valid referral and your Medicare card.`
+      : m.bulkBilled === "mostly"
+        ? `Usually. Most ${m.name} scans here are bulk billed, which means Medicare is billed directly and there is no gap fee. Eligibility depends on the type of scan and the details on your referral, and our clerical team will confirm before you book.`
+        : `Mostly, with exceptions. ${m.bulkBilledNote} Our clerical team will tell you the fee when you book, before you commit to anything.`;
+
+  faqs.push({ q: `Is ${m.name.toLowerCase()} bulk billed?`, a: billingAnswer });
+  faqs.push({
+    q: `How long does ${m.name.toLowerCase()} take?`,
+    a: `${m.duration}. It is worth allowing a little longer than the examination itself for checking in at reception.`,
+  });
+
+  // Preparation, verbatim from the fact set. This is the most-read content on
+  // any radiology site, and getting it wrong costs the patient a second trip.
+  for (const p of m.preparation) {
+    faqs.push({ q: `${p.label}: what do I need to do?`, a: p.instruction });
+  }
+
+  if (m.mustKnow) {
+    faqs.push({
+      q: `Is there anything I must tell you before my ${m.name.toLowerCase()}?`,
+      a: m.mustKnow,
+    });
+  }
+
+  if (slug === "ultrasound") {
+    faqs.push({
+      q: "When will my doctor get the report?",
+      a: `Ultrasound reports reach your referring doctor within ${REPORT_TURNAROUND}. Results go to the doctor who referred you rather than to you directly, so the conversation about what they mean happens with someone who knows your history.`,
+    });
+  }
+
+  if (slug === "x-ray") {
+    faqs.push({
+      q: "Can I walk in for an X-ray, or do I need an appointment?",
+      a: `Both work. Booking ahead gives you the shortest wait, and we also accept walk-ins during business hours, usually same day. We are open ${clinic.hours.display.toLowerCase()}.`,
+    });
+  }
+
+  faqs.push({
+    q: "What should I bring?",
+    a: "Your referral and your Medicare card. If you have a concession or DVA card, bring that too, because it can change what is covered.",
+  });
+
+  return faqs;
+}
+
 export function getModality(slug: ModalitySlug) {
   const m = modalities.find((x) => x.slug === slug);
   if (!m) throw new Error(`Unknown modality: ${slug}`);
   return m;
 }
 
+/**
+ * Search phrasing, per modality.
+ *
+ * Titles previously read "CT in Morphett Vale". Nobody searches "CT". They
+ * search "CT scan", and overwhelmingly they qualify it with "bulk billed" or
+ * "bulk billing", which is the single highest-intent modifier in Australian
+ * diagnostic imaging search.
+ *
+ * "Bulk billed" is only put in a TITLE where it is unconditionally true, which
+ * is X-ray alone. Ultrasound has an obstetric exception and interventional has
+ * its own, and a title has no room for the exception beside the claim. Putting
+ * an unqualified billing claim in the title of those two would be misleading
+ * advertising by a regulated health service, which is the thing the site's
+ * compliance test exists to prevent. Those two carry the qualified statement in
+ * the description instead, where there is room to state it properly.
+ */
+const SEARCH_TITLE: Record<ModalitySlug, string> = {
+  ultrasound: "Ultrasound",
+  ct: "CT scan",
+  "x-ray": "Bulk billed X-ray",
+  // Nobody searches "interventional radiology". They search for the procedure
+  // they have been referred for, and cortisone is by far the most common of
+  // them, so the title leads with the words a patient would actually type.
+  interventional: "Cortisone injections",
+};
+
+/**
+ * Billing, stated with its exception intact, for the meta description.
+ *
+ * Written per case rather than composed from bulkBilledNote. Splicing the note
+ * in produced "Bulk billed, except obstetric scans are not bulk billed", which
+ * is a double negative, and on interventional it pushed the description to 230
+ * characters so Google cut it before the phone number.
+ */
+function billingPhrase(slug: ModalitySlug): string {
+  switch (slug) {
+    case "x-ray":
+      return "Bulk billed X-ray";
+    case "ct":
+      return "Usually bulk billed CT";
+    case "ultrasound":
+      return "Bulk billed ultrasound, except obstetric";
+    case "interventional":
+      return "Image guided procedures, most bulk billed";
+  }
+}
+
 export function serviceMetadata(slug: ModalitySlug): Metadata {
   const m = getModality(slug);
-  const title = `${m.name} in ${clinic.address.suburb}`;
+  const title = `${SEARCH_TITLE[slug]} in ${clinic.address.suburb}`;
+
+  // Leads with billing, because that is what the query was qualified by, then
+  // location, then the one practical detail that earns the click.
+  //
+  // The duration clause is DROPPED rather than truncated when it would push the
+  // description past what Google shows. Interventional's duration is a sentence
+  // and a half long, so composing blindly produced 174 characters and lost the
+  // phone number, which is the only part that converts.
+  const head = `${billingPhrase(slug)} in ${clinic.address.suburb}, ${clinic.serviceArea}.`;
+  const tail = `Call ${clinic.phone.display}.`;
+  const withDuration = `${head} ${m.duration}. ${tail}`;
+  const description = withDuration.length <= 155 ? withDuration : `${head} ${tail}`;
+
   return {
     title,
-    description: m.summary,
+    description,
     alternates: { canonical: `/${slug}` },
-    openGraph: { title, description: m.summary, url: `/${slug}` },
+    openGraph: { title, description, url: `/${slug}` },
   };
 }
 
@@ -104,6 +233,7 @@ function BillingLine({ slug }: { slug: ModalitySlug }) {
 export function ServicePage({ slug }: { slug: ModalitySlug }) {
   const m = getModality(slug);
   const others = modalities.filter((x) => x.slug !== slug);
+  const faqs = serviceFaqs(slug);
 
   /** MedicalProcedure / MedicalTest schema, §8. */
   const jsonLd = {
@@ -153,14 +283,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
           ) : null}
           <div className="relative z-10">
         <Section className="pt-[--rr-space-xl]">
-          <nav aria-label="Breadcrumb" className="mb-8">
-            <Link
-              href="/"
-              className="inline-flex min-h-[44px] items-center gap-2 text-[0.95rem] text-fg-subtle hover:text-fg"
-            >
-              <span aria-hidden>&larr;</span> All services
-            </Link>
-          </nav>
+          <Breadcrumbs trail={[{ label: m.name }]} />
 
           <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
             <div>
@@ -314,6 +437,49 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
           </p>
         </Section>
 
+        {/* Common questions. Native <details>, so it works with no JavaScript,
+            is keyboard accessible and screen-reader announced for free, and the
+            answers are in the DOM as real text for a crawler or a retriever
+            regardless of whether the disclosure is open. */}
+        <Section tone="raised" className="border-t border-[var(--card-border)]">
+          <SectionLabel>Common questions</SectionLabel>
+          <h2 className="mt-4 max-w-[22ch] text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+            {m.name} questions we are asked
+          </h2>
+
+          <div className="mt-10 max-w-[74ch] divide-y divide-[var(--card-border)] border-y border-[var(--card-border)]">
+            {faqs.map((f) => (
+              <details key={f.q} className="group/faq">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+                  <h3 className="text-pretty text-[1.05rem] font-semibold leading-[1.45] text-fg">
+                    {f.q}
+                  </h3>
+                  <span
+                    aria-hidden
+                    className="mt-1 shrink-0 text-[0.8rem] text-accent transition-transform duration-[var(--rr-dur-base)] group-open/faq:rotate-180"
+                  >
+                    &#9660;
+                  </span>
+                </summary>
+                <p className="max-w-[66ch] pb-6 text-pretty leading-[1.65] text-fg-muted">
+                  {f.a}
+                </p>
+              </details>
+            ))}
+          </div>
+
+          <p className="mt-8 text-[0.97rem] text-fg-subtle">
+            Not answered here? Call{" "}
+            <a
+              href={clinic.phone.href}
+              className="tabular font-medium text-accent hover:underline"
+            >
+              {clinic.phone.display}
+            </a>{" "}
+            and our clerical team will help.
+          </p>
+        </Section>
+
         {/* Other services */}
         <Section tone="sunken">
           <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
@@ -344,6 +510,22 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* FAQPage, so these can surface as People Also Ask and be retrieved as
+          discrete question/answer pairs by an assistant. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        }}
       />
     </>
   );
