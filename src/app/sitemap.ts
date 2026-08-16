@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { modalities } from "@/lib/clinic";
 import { publishedPosts } from "@/lib/insights";
 import { indexableProcedures } from "@/lib/procedures";
+import { ultrasoundTypes } from "@/lib/ultrasound-types";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://recoverradiology.com.au";
 
@@ -40,6 +41,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    // Ultrasound is the practice's specialty, so each kind ranks on its own.
+    ...ultrasoundTypes.map((t) => ({
+      url: `${SITE}/ultrasound/${t.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
     })),
     // Only procedures a radiologist has signed off. The rest render and are
     // linked so they can be reviewed, but stay out of search until then.

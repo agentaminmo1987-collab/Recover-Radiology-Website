@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { clinic, modalities, REPORT_TURNAROUND, SAME_DAY, type ModalitySlug } from "@/lib/clinic";
 import { procedures } from "@/lib/procedures";
+import { ultrasoundTypes } from "@/lib/ultrasound-types";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -72,6 +73,19 @@ const PLATE_ALT: Record<ModalitySlug, string> = {
 function procedureFor(slug: ModalitySlug, typeName: string) {
   if (slug !== "interventional") return undefined;
   return procedures.find((p) => p.name === typeName);
+}
+
+/**
+ * The same lookup for ultrasound, which now has a page per kind.
+ *
+ * Ultrasound is the practice's specialty and it was one page with four bullet
+ * points, competing for a single ranking against clinics with a page per study.
+ * Matched on the visible name for the same reason as procedures: a rename in
+ * one file and not the other produces a missing link, never a wrong one.
+ */
+function ultrasoundTypeFor(slug: ModalitySlug, typeName: string) {
+  if (slug !== "ultrasound") return undefined;
+  return ultrasoundTypes.find((t) => t.name === typeName);
 }
 
 /**
@@ -364,12 +378,23 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
               lists render exactly as before. */}
           <ul className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[var(--card-border)] bg-[var(--card-border)] sm:grid-cols-2">
             {m.types.map((t) => {
+              // Interventional and ultrasound both have a page per entry now.
+              // Anything without one still renders as plain text, so adding a
+              // sub-page later is additive rather than a rewrite.
               const proc = procedureFor(slug, t.name);
+              const us = ultrasoundTypeFor(slug, t.name);
+              const detail = proc ?? us;
+              const href = proc
+                ? `/interventional/${proc.slug}`
+                : us
+                  ? `/ultrasound/${us.slug}`
+                  : undefined;
+
               const body = (
                 <>
                   <h3 className="text-[1.1rem] font-semibold">
                     {t.name}
-                    {proc ? (
+                    {href ? (
                       <span
                         aria-hidden
                         className="ml-2 inline-block text-accent transition-transform group-hover:translate-x-1"
@@ -378,9 +403,9 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
                       </span>
                     ) : null}
                   </h3>
-                  {proc ? (
+                  {detail ? (
                     <p className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
-                      {proc.summary}
+                      {detail.summary}
                     </p>
                   ) : t.detail ? (
                     <p className="mt-2 text-pretty text-[0.97rem] leading-[1.55] text-fg-muted">
@@ -392,9 +417,9 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
 
               return (
                 <li key={t.name} className="bg-[var(--card-bg)]">
-                  {proc ? (
+                  {href ? (
                     <Link
-                      href={`/interventional/${proc.slug}`}
+                      href={href}
                       className="group block h-full p-6 transition-colors hover:bg-surface-sunken md:p-8"
                     >
                       {body}

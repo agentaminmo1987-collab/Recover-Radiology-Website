@@ -1121,3 +1121,52 @@ test("the positioning never drifts into a superlative", async ({ page }) => {
     }
   }
 });
+
+test("each kind of ultrasound has its own page, linked from the parent", async ({
+  page,
+}) => {
+  // Ultrasound is the practice's specialty and it was one page with four
+  // bullets, competing for a single ranking against clinics with a page per
+  // study.
+  await page.goto("/ultrasound");
+  const links = await page
+    .locator('main a[href^="/ultrasound/"]')
+    .evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+  for (const slug of ["musculoskeletal", "vascular", "obstetric", "general"]) {
+    expect(links, `parent does not link ${slug}`).toContain(`/ultrasound/${slug}`);
+  }
+
+  // Preparation is read from clinic.ts rather than restated, so the sub-page
+  // and the parent cannot give different instructions. Getting this wrong
+  // costs the patient a second trip.
+  await page.goto("/ultrasound/general");
+  await expect(page.locator("main")).toContainText("Fast from food and drink for six hours");
+
+  await page.goto("/ultrasound/musculoskeletal");
+  const msk = await page.locator("main").innerText();
+  expect(msk.toLowerCase()).toContain("tendon");
+  expect(msk).toContain("Injury and pain");
+});
+
+test("obstetric ultrasound says it is not bulk billed, before booking", async ({
+  page,
+}) => {
+  // The one ultrasound with a fee. Someone must not be able to book it
+  // believing it is free, so it appears in the search result, in the cost row
+  // and as a highlighted note.
+  await page.goto("/ultrasound/obstetric");
+  const desc =
+    (await page.locator('meta[name="description"]').getAttribute("content")) ?? "";
+  expect(desc.toLowerCase(), "search result must say it").toContain("not bulk billed");
+
+  const body = await page.locator("main").innerText();
+  expect(body).toContain("Not bulk billed");
+  expect(body.toLowerCase()).toContain("tell you the fee when you book");
+
+  // And the others must not have been mislabelled by the same logic.
+  for (const slug of ["musculoskeletal", "vascular", "general"]) {
+    await page.goto(`/ultrasound/${slug}`);
+    const b = await page.locator("main").innerText();
+    expect(b, `${slug} wrongly marked as chargeable`).not.toContain("Not bulk billed");
+  }
+});
