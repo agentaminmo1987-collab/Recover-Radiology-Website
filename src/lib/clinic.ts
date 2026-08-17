@@ -203,8 +203,19 @@ export const SCAN_CAPABILITY = {
  */
 export const CAPACITY = {
   ultrasoundRooms: 4,
+  /**
+   * The wait figure is ULTRASOUND SPECIFIC. That is where the market shortage
+   * actually is, and stating it against every modality would overclaim.
+   */
   marketWait: "two to four weeks",
-  urgentUltrasound: "Generally same day",
+  /**
+   * Urgent is ALL MODALITIES, corrected 2026-08-17. It previously read as an
+   * ultrasound-only promise, which undersold it: a GP with an urgent CT or
+   * X-ray question was being told nothing.
+   */
+  urgentScan: "Generally same day",
+  urgentScanNote:
+    "Any modality. Call and tell us it is urgent, and we will find a slot.",
   routineUltrasound: "Typically within a couple of days",
   urgentReport: "Same day",
   routineReport: REPORT_TURNAROUND,

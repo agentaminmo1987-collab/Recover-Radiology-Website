@@ -64,7 +64,7 @@ export default function AboutPage() {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <Breadcrumbs trail={[{ label: "About us" }]} />
 
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">

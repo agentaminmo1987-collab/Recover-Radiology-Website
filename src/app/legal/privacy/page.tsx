@@ -45,7 +45,7 @@ export default function PrivacyPage() {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <SectionLabel>Legal</SectionLabel>
           <h1 className="mt-4 max-w-[20ch] text-balance text-[clamp(2.2rem,5.4vw,3.4rem)] font-semibold leading-[1.06] tracking-[-0.03em]">
             Privacy on this website

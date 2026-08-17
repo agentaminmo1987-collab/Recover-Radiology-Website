@@ -19,7 +19,7 @@ export default function NotFound() {
     <>
       <SiteHeader />
       <main id="main">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <p className="text-[0.95rem] font-medium text-accent">404</p>
           <h1 className="mt-4 max-w-[18ch] text-balance text-[clamp(2.2rem,5.4vw,3.4rem)] font-semibold leading-[1.06] tracking-[-0.03em]">
             That page does not exist

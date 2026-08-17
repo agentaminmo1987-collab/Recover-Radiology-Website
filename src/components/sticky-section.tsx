@@ -44,7 +44,19 @@ export function StickySection({
       className={`relative border-t border-[var(--card-border)] ${bg}`}
       aria-label={title}
     >
-      <div className="mx-auto w-full max-w-[1180px] px-6 py-[--rr-space-xl] md:px-10">
+      {/* Generous vertical rhythm, deliberately more than the rest of the site.
+          Each of these is a section of a talk rather than a paragraph of a
+          page, and the pause between them is what lets whoever is presenting
+          land one point before the next arrives. The sticky pane also needs
+          room to travel: too tight and it unpins almost as soon as it pins,
+          which reads as a glitch rather than as a device. */}
+      {/* py-[var(--x)], NOT py-[var(--x)]. The bare form generates no CSS at all in
+          Tailwind v4 and fails silently, which is recorded in
+          DESIGN-DECISIONS.md and which I reintroduced here by hand: these
+          sections shipped with zero vertical padding and it took measuring the
+          computed style to notice, because the content still had its own
+          margins and the page looked plausible. */}
+      <div className="mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-2xl)] md:px-10 md:py-[var(--rr-space-3xl)]">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           {/* The pinned pane. `self-start` is required: a grid item stretches
               to the row height by default, and a full-height item has nothing

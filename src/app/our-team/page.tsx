@@ -157,7 +157,7 @@ export default function OurTeamPage() {
             with the copy beside it rather than floating over it. Text over
             imagery has to hold at its worst pixel, and there is no reason to
             take that risk when the layout can simply put them side by side. */}
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
             <div>
               <SectionLabel>Our team</SectionLabel>

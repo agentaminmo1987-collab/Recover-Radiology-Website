@@ -82,7 +82,7 @@ export default function OurClinicPage() {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <SectionLabel>Our clinic</SectionLabel>
           <h1 className="mt-4 max-w-[18ch] text-balance text-[clamp(2.4rem,6vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
             Have a look before you come in

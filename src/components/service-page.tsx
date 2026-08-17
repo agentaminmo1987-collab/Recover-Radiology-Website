@@ -304,7 +304,7 @@ export function ServicePage({ slug }: { slug: ModalitySlug }) {
             </>
           ) : null}
           <div className="relative z-10">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <Breadcrumbs trail={[{ label: m.name }]} />
 
           <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">

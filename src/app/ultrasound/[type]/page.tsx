@@ -88,7 +88,7 @@ export default async function UltrasoundTypePage({
       />
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <Breadcrumbs
             trail={[
               { label: "Ultrasound", href: "/ultrasound" },

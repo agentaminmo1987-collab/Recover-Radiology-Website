@@ -71,7 +71,7 @@ export function TrustBand() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-[1180px] px-6 py-[--rr-space-lg] md:px-10">
+      <div className="relative mx-auto w-full max-w-[1180px] px-6 py-[var(--rr-space-lg)] md:px-10">
         <h2 id="trust-heading" className="sr-only">
           Why patients are referred here
         </h2>

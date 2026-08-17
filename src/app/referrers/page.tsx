@@ -65,6 +65,10 @@ const reasons = [
     p: "Image guided injections and blocks are performed on site on dedicated procedure days, so a patient who needs one does not require a second referral to a third party.",
   },
   {
+    h: "Urgent scans are generally same day",
+    p: "Any modality, not just ultrasound. Call and say it is urgent and we will find a slot, and the report comes back the same day.",
+  },
+  {
     h: "The team is experienced",
     p: `${team.sonographerCount} sonographers with ${team.combinedExperience.toLowerCase()}, none of them junior, led by the Head Sonographer at the Royal Adelaide Hospital.`,
   },
@@ -84,7 +88,7 @@ export default function ReferrersPage() {
       <main id="main" className="pb-[88px] sm:pb-0">
         {/* Opening. Deliberately spare: a title, the one line that matters and
             the two actions a GP might take. */}
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <Breadcrumbs trail={[{ label: "For referring doctors" }]} />
 
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
@@ -178,7 +182,7 @@ export default function ReferrersPage() {
         <StickySection
           label="02"
           title="Availability is the whole point"
-          lede={`Demand for bulk billed ultrasound is high, and waits of ${CAPACITY.marketWait} are common. That leaves you delaying management or sending the patient somewhere they will pay.`}
+          lede={`Urgent scans are generally same day, whatever the modality. And demand for bulk billed ultrasound in particular is high, with waits of ${CAPACITY.marketWait} common, which leaves you delaying management or sending the patient somewhere they will pay.`}
           aside={
             <div className="rounded-[var(--radius-lg)] border border-accent bg-surface-sunken p-6">
               <p className="tabular text-[2.6rem] font-medium leading-[1] text-accent">
@@ -195,7 +199,7 @@ export default function ReferrersPage() {
         >
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              { h: "Urgent ultrasound", v: CAPACITY.urgentUltrasound, s: "Call and tell us it is urgent. We will find a slot." },
+              { h: "Urgent scans, any modality", v: CAPACITY.urgentScan, s: CAPACITY.urgentScanNote },
               { h: "Routine ultrasound", v: CAPACITY.routineUltrasound, s: "Rather than the two to four weeks that is common elsewhere." },
               { h: "Urgent reports", v: CAPACITY.urgentReport, s: "Reported and back with you the same day." },
               { h: "Routine reports", v: CAPACITY.routineReport, s: "Ultrasound reports to the referring doctor." },

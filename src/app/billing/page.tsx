@@ -65,7 +65,7 @@ export default function BillingPage() {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Section className="pt-[--rr-space-xl]">
+        <Section className="pt-[var(--rr-space-xl)]">
           <SectionLabel>Cost</SectionLabel>
           {/* The answer, at the top, at the largest size on the page. Someone
               who reads only the next two lines still leaves correctly informed. */}

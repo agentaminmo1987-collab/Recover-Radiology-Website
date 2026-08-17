@@ -1184,3 +1184,31 @@ test("obstetric ultrasound says it is not bulk billed, before booking", async ({
     expect(b, `${slug} wrongly marked as chargeable`).not.toContain("Not bulk billed");
   }
 });
+
+test("no Tailwind arbitrary value silently generates nothing", async ({ page }) => {
+  // `pt-[--token]` compiles to ZERO css in Tailwind v4 and fails silently, so
+  // the class looks correct in the markup forever. It has bitten this project
+  // three times: the original [--var] sweep, the hover media-query variant, and
+  // then seventeen section paddings that shipped at 0px because a component was
+  // written by hand.
+  //
+  // Measured rather than grepped: this asserts the padding actually resolves,
+  // which is the thing that was broken.
+  for (const path of ["/", "/referrers", "/our-team", "/injury-and-pain", "/insights"]) {
+    await page.goto(path);
+    const zero = await page.evaluate(() => {
+      const bad: string[] = [];
+      document.querySelectorAll("main section > div").forEach((el) => {
+        const cls = String((el as HTMLElement).className);
+        // Only inspect elements that ASK for token-based vertical padding.
+        if (!/p[ty]?-\[/.test(cls)) return;
+        const cs = getComputedStyle(el);
+        if (cs.paddingTop === "0px" && cs.paddingBottom === "0px") {
+          bad.push(cls.slice(0, 80));
+        }
+      });
+      return bad;
+    });
+    expect(zero, `${path}: padding utilities resolved to nothing`).toHaveLength(0);
+  }
+});
