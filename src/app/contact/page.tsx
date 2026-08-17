@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { clinic, SAME_DAY } from "@/lib/clinic";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -36,6 +37,20 @@ export default function ContactPage() {
               <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                 Send an enquiry
               </h2>
+              {/* Stated above the form rather than under it. Someone deciding
+                  whether to attach a referral wants to know this before they
+                  start, not after they have submitted. */}
+              <p className="mt-3 max-w-[52ch] text-[0.95rem] leading-[1.6] text-fg-muted">
+                You can attach your referral here. It is health information, so
+                it is handled accordingly:{" "}
+                <Link
+                  href="/legal/privacy"
+                  className="font-medium text-accent underline underline-offset-2"
+                >
+                  how we handle your information
+                </Link>
+                .
+              </p>
               <div className="mt-8">
                 <EnquiryForm />
               </div>

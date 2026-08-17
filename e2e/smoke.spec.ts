@@ -1268,3 +1268,34 @@ test("we ask for reviews but never publish one", async ({ page }) => {
     expect(html, `${path} publishes aggregateRating`).not.toContain("aggregateRating");
   }
 });
+
+test("the privacy notice is reachable at the point of collection", async ({
+  page,
+}) => {
+  // Not just in the footer. A referral is health information, and the Privacy
+  // Act expects the notice at or before collection. A link under the submit
+  // button is neither: by then the person has already handed it over.
+  await page.goto("/contact");
+
+  const links = page.locator('a[href="/legal/privacy"]');
+  expect(await links.count(), "contact page should link it more than once").toBeGreaterThan(2);
+
+  // Specifically beside the upload field, above the submit button.
+  const upload = page.locator('input[name="referral"]');
+  const notice = await upload.evaluate((el) => {
+    const field = el.closest("div")?.parentElement;
+    return field?.textContent ?? "";
+  });
+  expect(notice.toLowerCase(), "no privacy notice at the upload field").toContain(
+    "health information",
+  );
+
+  const submitTop = await page
+    .locator('button[type="submit"]')
+    .evaluate((e) => e.getBoundingClientRect().top);
+  const noticeTop = await page
+    .locator('a[href="/legal/privacy"]')
+    .first()
+    .evaluate((e) => e.getBoundingClientRect().top);
+  expect(noticeTop, "the notice must sit above the submit button").toBeLessThan(submitTop);
+});

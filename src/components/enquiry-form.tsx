@@ -356,6 +356,23 @@ export function EnquiryForm() {
             {picked === 1 ? "1 file ready to send." : `${picked} files ready to send.`}
           </p>
         ) : null}
+
+        {/* AT the point of collection, not after the submit button.
+            A referral is health information, and this is the field that
+            collects it. The Privacy Act expects the notice at or before
+            collection, and a link below the button is neither: by then the
+            person has already handed it over. */}
+        <p className="mt-3 text-[0.88rem] leading-[1.5] text-fg-subtle">
+          A referral is health information. It is sent encrypted, stored
+          privately and seen only by practice staff.{" "}
+          <a
+            href="/legal/privacy"
+            className="font-medium text-accent underline underline-offset-2"
+          >
+            How we handle it
+          </a>
+          .
+        </p>
       </Field>
 
       <Field
@@ -392,7 +409,10 @@ export function EnquiryForm() {
         We use these details, and anything you attach, only to book and carry out
         your scan. Referrals are stored securely and are not shared outside the
         practice and your referring doctor. See our{" "}
-        <a href="/legal/privacy" className="text-accent hover:underline">
+        <a
+          href="/legal/privacy"
+          className="font-medium text-accent underline underline-offset-2"
+        >
           privacy notice
         </a>
         . This form is not monitored outside business hours, so for anything
