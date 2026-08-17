@@ -7,7 +7,7 @@ import { Section, SectionLabel } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: `How ${clinic.name} handles personal information collected through this website.`,
+  description: `How ${clinic.name} handles your information, including referrals you upload and how we use My Health Record.`,
   alternates: { canonical: "/legal/privacy" },
 };
 
@@ -110,6 +110,84 @@ export default function PrivacyPage() {
                   {clinic.phone.display}
                 </a>{" "}
                 or speak to your referring doctor.
+              </p>
+            </div>
+
+            {/* MY HEALTH RECORD.
+                The most important addition this page has had. Two-way: reports
+                go up, and the practice reads what is already there.
+
+                Written pre-emptively because of the notification point. A
+                patient with alerts enabled will get a message saying this
+                practice opened their record, possibly before they have even had
+                the scan. Explaining that in advance turns an alarming
+                notification into an expected one, and there is no way to explain
+                it afterwards that lands as well. */}
+            <div>
+              <h2 className="text-[1.2rem] font-semibold">
+                My Health Record
+              </h2>
+              <p className="mt-3 leading-[1.7] text-fg-muted">
+                When we validate your Medicare details, we become connected to
+                your My Health Record. That connection works in both directions,
+                and it is worth knowing what it means before your scan rather
+                than afterwards.
+              </p>
+
+              <h3 className="mt-6 text-[1rem] font-semibold text-fg">
+                What we send
+              </h3>
+              <p className="mt-2 leading-[1.7] text-fg-muted">
+                We upload information to your My Health Record, which includes
+                your diagnostic imaging reports. This is the national default for
+                imaging reports, and it means your report is available to any
+                treating practitioner you see later, not only the doctor who
+                referred you.
+              </p>
+
+              <h3 className="mt-6 text-[1rem] font-semibold text-fg">
+                What we look at, and why
+              </h3>
+              <p className="mt-2 leading-[1.7] text-fg-muted">
+                We may also read your My Health Record. Two things in particular:
+              </p>
+              <ul className="mt-3 space-y-2">
+                {[
+                  "Previous imaging reports, so the radiologist can compare against an earlier scan. Comparison is often the difference between a finding that means something and one that has been stable for years.",
+                  "Pathology results, where they affect the scan. Kidney function before a CT with contrast is the common example.",
+                ].map((t) => (
+                  <li key={t} className="flex gap-3">
+                    <span
+                      aria-hidden
+                      className="mt-[0.65em] h-[6px] w-[6px] shrink-0 rounded-full bg-accent"
+                    />
+                    <span className="leading-[1.65] text-fg-muted">{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 leading-[1.7] text-fg-muted">
+                Access is governed by our internal My Health Record policy, and
+                only for purposes connected to your care.
+              </p>
+
+              <p className="mt-6 rounded-[var(--radius-md)] border-l-4 border-accent bg-surface-sunken p-5 leading-[1.65] text-fg">
+                <span className="font-semibold">
+                  If you have notifications turned on
+                </span>{" "}
+                you may receive an alert saying we have accessed your record,
+                sometimes before your appointment. That is expected, and it is
+                us preparing for your scan rather than anything being wrong.
+              </p>
+
+              <h3 className="mt-6 text-[1rem] font-semibold text-fg">
+                If you would rather we did not
+              </h3>
+              <p className="mt-2 leading-[1.7] text-fg-muted">
+                You can ask us not to upload a particular report to your My
+                Health Record, and we will honour that. Tell reception when you
+                book or when you arrive, and it is easiest to raise before the
+                scan rather than after the report is written. You can also
+                control access to your record yourself through myGov.
               </p>
             </div>
 

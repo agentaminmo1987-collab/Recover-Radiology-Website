@@ -121,6 +121,30 @@ export default function ContactPage() {
                 </p>
               </Card>
 
+              {/* Asking for a review is permitted. Publishing reviews is not,
+                  under AHPRA s133, which is why no rating appears anywhere on
+                  this site. Volume and recency on the listing is also what
+                  actually moves local rank; a widget here would move nothing. */}
+              <Card>
+                <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
+                  Been here before?
+                </h2>
+                <p className="mt-4 text-pretty leading-[1.55] text-fg-muted">
+                  If we looked after you well, a review on Google helps other
+                  people in {clinic.serviceArea} find us. It takes a minute.
+                </p>
+                <p className="mt-5">
+                  <a
+                    href={clinic.reviewUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-[44px] items-center gap-2 font-semibold text-accent hover:underline"
+                  >
+                    Leave a Google review <span aria-hidden>&rarr;</span>
+                  </a>
+                </p>
+              </Card>
+
               <Card>
                 <h2 className="text-[0.8rem] font-semibold tracking-[0.01em] text-fg-subtle">
                   X-ray without an appointment

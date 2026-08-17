@@ -604,7 +604,13 @@ test("map links point at the practice's own listing, and no rating is quoted", a
     expect(body, `${path} quotes a star rating`).not.toMatch(
       /\b[1-5]\.\d\s*(stars?|\/\s*5|out of 5)/i,
     );
-    expect(body.toLowerCase()).not.toContain("google review");
+    // Was `not.toContain("google review")`, which was too blunt: it banned the
+    // words rather than the thing. ASKING for a review is permitted, PUBLISHING
+    // one is not, and the site now legitimately asks. What must never appear is
+    // a rating, a quoted review, or review markup.
+    const html = await page.content();
+    expect(html, `${path} publishes review markup`).not.toContain("aggregateRating");
+    expect(html, `${path} publishes review markup`).not.toMatch(/"@type":\s*"Review"/);
   }
 });
 
@@ -1210,5 +1216,55 @@ test("no Tailwind arbitrary value silently generates nothing", async ({ page }) 
       return bad;
     });
     expect(zero, `${path}: padding utilities resolved to nothing`).toHaveLength(0);
+  }
+});
+
+test("My Health Record is explained before it can surprise anyone", async ({
+  page,
+}) => {
+  // Reports upload by national default and the practice also reads the record
+  // before a scan. A patient with alerts on may be notified that their record
+  // was opened, sometimes before the appointment. Explaining that in advance is
+  // the whole point; there is no version of explaining it afterwards that
+  // lands as well.
+  await page.goto("/legal/privacy");
+  const privacy = await page.locator("main").innerText();
+
+  // Both directions stated, not just the upload.
+  expect(privacy).toContain("My Health Record");
+  expect(privacy.toLowerCase()).toContain("upload");
+  expect(privacy.toLowerCase(), "must say we also read it").toMatch(
+    /read your my health record|we may also read/i,
+  );
+  // The notification warning, which is the part that prevents alarm.
+  expect(privacy.toLowerCase()).toContain("notifications turned on");
+  // The opt-out, and how to exercise it.
+  expect(privacy.toLowerCase()).toContain("ask us not to upload");
+  expect(privacy.toLowerCase()).toContain("reception");
+
+  // And a plain-language version where patients actually look.
+  await page.goto("/patient-information");
+  const info = await page.locator("main").innerText();
+  expect(info).toContain("My Health Record");
+  expect(info.toLowerCase()).toContain("ask us not to upload");
+  await expect(page.locator('main a[href="/legal/privacy"]').first()).toBeVisible();
+});
+
+test("we ask for reviews but never publish one", async ({ page }) => {
+  // Asking is permitted. Publishing is not, under AHPRA s133. The distinction
+  // is the entire reason there is no widget on this site.
+  await page.goto("/contact");
+  const link = page.locator('main a[href*="cid="]', { hasText: /review/i });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute("rel", /noopener/);
+
+  for (const path of ["/", "/contact", "/our-team", "/about", "/referrers"]) {
+    await page.goto(path);
+    const body = await page.locator("body").innerText();
+    expect(body, `${path} quotes a rating`).not.toMatch(
+      /\b[1-5]\.\d\s*(stars?|\/\s*5|out of 5)/i,
+    );
+    const html = await page.content();
+    expect(html, `${path} publishes aggregateRating`).not.toContain("aggregateRating");
   }
 });

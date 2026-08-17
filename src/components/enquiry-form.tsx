@@ -187,6 +187,23 @@ export function EnquiryForm() {
               </li>
             ))}
           </ul>
+
+          {/* Asking is permitted; publishing reviews is not. See clinic.ts.
+              Placed here because it is the moment a patient has just chosen
+              this practice, which is when they are most willing, and because
+              review volume on the listing is what actually moves local rank. */}
+          <p className="mt-6 text-[0.9rem] leading-[1.55] text-fg-subtle">
+            Been here before?{" "}
+            <a
+              href={clinic.reviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent hover:underline"
+            >
+              Leave us a review on Google
+            </a>
+            . It genuinely helps other people in the area find us.
+          </p>
         </div>
       </div>
     );

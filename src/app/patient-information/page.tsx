@@ -149,6 +149,41 @@ export default function PatientInformationPage() {
           </Section>
         ))}
 
+        {/* My Health Record, in plain language and before the FAQ, because most
+            people do not know the national default changed and the first they
+            will hear of it should not be an access notification on their
+            phone. Full detail sits in the privacy notice. */}
+        <Section>
+          <div className="max-w-[68ch]">
+            <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
+              Your scan and My Health Record
+            </h2>
+            <p className="mt-6 text-pretty leading-[1.7] text-fg-muted">
+              Your imaging report is uploaded to your My Health Record, so it is
+              available to any practitioner treating you later rather than only
+              the doctor who referred you.
+            </p>
+            <p className="mt-4 text-pretty leading-[1.7] text-fg-muted">
+              We may also read your record before your scan, to compare against
+              earlier imaging or to check pathology results that affect how the
+              scan is done. If you have notifications turned on you may get an
+              alert about that. It is expected, and it is us preparing.
+            </p>
+            <p className="mt-4 text-pretty leading-[1.7] text-fg-muted">
+              You can ask us not to upload a report. Tell reception when you book
+              or when you arrive, and we will honour it.
+            </p>
+            <p className="mt-6">
+              <Link
+                href="/legal/privacy"
+                className="font-semibold text-accent hover:underline"
+              >
+                How we handle your information &rarr;
+              </Link>
+            </p>
+          </div>
+        </Section>
+
         <Section tone="raised" className="border-t border-[var(--card-border)]">
           <h2 className="text-[clamp(1.7rem,3.6vw,2.4rem)] font-semibold tracking-[-0.02em]">
             Common questions

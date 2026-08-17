@@ -45,6 +45,27 @@ export const clinic = {
    */
   mapsUrl: "https://maps.google.com/?cid=10215540237414592139",
 
+  /**
+   * Where we send people to leave a review. Same listing, different intent.
+   *
+   * THIS IS THE ONE THING ALLOWED, and it is worth being precise about why,
+   * because the distinction is not obvious.
+   *
+   * ASKING for a review is not advertising. PUBLISHING reviews is. AHPRA
+   * section 133 prohibits using testimonials to advertise a regulated health
+   * service, which is why no rating, review or review widget appears anywhere
+   * on this site and why a test fails the build if one does.
+   *
+   * Reviews sitting on the Google listing are fine: the practice did not
+   * publish them, patients did, on a platform the practice does not control.
+   * Republishing them here would make them the practice's own advertising.
+   *
+   * It is also the more effective option. A widget on this site does nothing
+   * for rank. Review volume and recency on the LISTING is what moves the local
+   * pack, and this link is what generates that.
+   */
+  reviewUrl: "https://maps.google.com/?cid=10215540237414592139",
+
   phone: { display: "08 7081 3078", href: "tel:+61870813078" },
   fax: { display: "08 7093 7169" },
 
