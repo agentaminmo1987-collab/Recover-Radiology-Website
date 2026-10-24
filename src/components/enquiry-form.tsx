@@ -102,6 +102,8 @@ export function EnquiryForm() {
   const successRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Mount-only by design (see above): these values must not exist during SSR.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStartedAt(Date.now());
     const now = new Date();
     const limit = new Date(now);
