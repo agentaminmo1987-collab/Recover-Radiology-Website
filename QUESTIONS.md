@@ -512,3 +512,50 @@ trying to win. It reads as more trustworthy, not less.
 it is gone from those. This referrer article names hyaluronic acid generically
 too. Tell us if you want the brand named in the referrer context, where the
 audience is clinical.
+
+---
+
+## 25. The home page scroll story (added 2026-11-26)
+
+The home page now opens on a pinned scroll sequence: one knee, shown as a
+sculpture, then as ultrasound, X-ray and CT see it, then the booking card. The
+style follows the reference reel you sent. Code is in
+`src/components/sections/scroll-story.tsx`; copy is in `src/lib/story.ts`.
+
+**Default applied:** every sentence is assembled from `clinic.ts`. The pictures
+are generated illustrations, labelled as such in their alt text and in
+`public/img/story/README.md`.
+
+**Need from you:**
+
+1. **The callout labels.** Tendons, Ligaments, Muscle on the ultrasound stage;
+   Thigh bone, Kneecap, Shin bone on the X-ray stage; "One cross section" and
+   "Rebuilt into a volume" on the CT stage. Plain-language anatomy pointing at a
+   generated picture. Confirm, reword or remove.
+2. **The anatomy itself.** A referring GP will look at the X-ray and soft tissue
+   stages more closely than a patient will. If anything reads as wrong, say
+   which stage and it is re-rendered.
+3. **The knee.** Chosen because the practice is positioned around injury and
+   recovery. Shoulder or spine would work the same way.
+4. **The old hero.** `sections/hero.tsx` and `/video/ct-forming.mp4` are still
+   in the repo, unused, so the previous home page is one line away.
+
+## 26. Accreditation: the certificate is on file (added 2026-11-26)
+
+Item 1 asked for the accrediting body, number and expiry. Your own DIAS notes
+record HDAA, DIAS Entry Level, certificate 12942DIA1, issued 3 Nov 2025,
+expiring 2 Nov 2027. Nothing was published from that: the content rules say no
+accreditation mark until you confirm it. Say yes and the credibility band shows
+"Accredited under the Diagnostic Imaging Accreditation Scheme" with the
+accreditor named.
+
+## 27. "Specialist" is still on the site (added 2026-11-26)
+
+The wording rules you adopted on 2026-11-01 say no "specialist" or
+"specialises" unless you confirm the exact wording in writing. The site was
+written before that and still uses it in `clinic.ts` (the MSK lines), and on
+/about, /our-team, /injury-and-pain, the ultrasound type pages, two home page
+sections and the insights articles. Not changed here, because the replacement
+wording is yours to choose. "Substantial experience in" is the lower-risk form
+your own rules name.
+

@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BookingBar } from "@/components/booking-bar";
-import { Hero } from "@/components/sections/hero";
+import { ScrollStory } from "@/components/sections/scroll-story";
 import { TrustBand } from "@/components/sections/trust-band";
 import { Services } from "@/components/sections/services";
 import { Recovery } from "@/components/sections/recovery";
@@ -23,7 +23,7 @@ export default function Home() {
     <>
       <SiteHeader />
       <main id="main" className="pb-[88px] sm:pb-0">
-        <Hero />
+        <ScrollStory />
         <TrustBand />
         <Services />
         {/* Directly after the services grid, which is the right moment: the

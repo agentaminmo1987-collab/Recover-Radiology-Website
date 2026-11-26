@@ -33,6 +33,12 @@ node scripts/optimise-images.mjs   # masters in public/img/_raw -> AVIF + WebP
 
 Masters are gitignored. 237 MB in, 7.2 MB shipped.
 
+```bash
+node scripts/build-story-frames.mjs   # home page scroll story: stills + frames
+```
+
+Needs Microsoft Edge, which decodes the clips. See `public/img/story/README.md`.
+
 ## Read these before changing anything
 
 | File | Why |
